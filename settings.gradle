@@ -1,0 +1,16 @@
+rootProject.name = 'rental'
+
+include 'client', 'backend'
+
+/*
+This gives the submodule gradle files their own name.
+Instead of build.gradle for all, we have client.gradle and backend.gradle.
+ */
+rootProject.children.each {project ->
+    String fileBaseName = project.name.replaceAll("\\p{Upper}") { "${it.toLowerCase()}" }
+    String projectDirName = "$fileBaseName"
+    project.projectDir = new File(settingsDir, projectDirName)
+    project.buildFileName = "${fileBaseName}.gradle"
+    assert project.projectDir.isDirectory()
+    assert project.buildFile.isFile()
+}

@@ -1,0 +1,47 @@
+plugins {
+	id 'org.springframework.boot' version '2.1.8.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+	id 'java'
+	id 'war'
+}
+
+sourceCompatibility = 11
+targetCompatibility = 11
+
+
+repositories {
+    jcenter()
+	mavenCentral()
+}
+
+if (project.hasProperty('bundle-client')) {
+    // Add the client project's output so that it is bundled and served out by spring boot
+    sourceSets.main.resources.srcDirs += "$rootDir/client/dist"
+}
+
+processResources {
+    if (project.hasProperty('prod-build')) {
+        // Make sure this isn't accidentally packaged in the final war file.
+        exclude('**/application-local.properties')
+    }
+}
+
+bootWar {
+    archiveFileName = "rental-" + project.version.toString() + ".war"
+}
+
+
+
+dependencies {
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.springframework:spring-jdbc'
+    compile 'com.google.guava:guava:27.0-jre'
+    compile 'org.apache.commons:commons-text:1.6'
+    compile 'commons-io:commons-io:2.6'
+
+	runtimeOnly 'mysql:mysql-connector-java'
+    compileOnly 'org.springframework.boot:spring-boot-devtools'
+	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
