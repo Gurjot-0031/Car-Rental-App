@@ -4,7 +4,7 @@
 1. Richard Grand'Maison - 26145965 - rich.grandmaison@gmail.com
 1. Pargol Poshtareh - id - pargol.poshtareh@gmail.com
 1. Gurjot Singh - id - gurjot5076@gmail.com
-1. Adrien - id - email
+1. Adrien - 40072965 - ad_dat@encs.concordia.com (for Gdrive purposes, use dridri.dat@gmail.com)
 1. name - id - email
 
 
