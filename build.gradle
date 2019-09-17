@@ -1,5 +1,3 @@
-
-
 def getVersionString() {
     def v = rootProject.file('version.txt').text.trim()
     // is this a tag? if not append "-SNAPSHOT" to the version number
