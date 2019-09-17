@@ -1,0 +1,12 @@
+
+
+def getVersionString() {
+    def v = rootProject.file('version.txt').text.trim()
+    // is this a tag? if not append "-SNAPSHOT" to the version number
+    // see https://stackoverflow.com/a/1593574/501930
+    return 'git describe --exact-match HEAD'.execute().waitFor() != 0 ? "$v-SNAPSHOT" : v
+}
+
+allprojects {
+    version = getVersionString()
+}
