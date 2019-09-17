@@ -1,6 +1,6 @@
 rootProject.name = 'rental'
 
-include 'backend'
+include 'client', 'backend'
 
 /*
 This gives the submodule gradle files their own name.
