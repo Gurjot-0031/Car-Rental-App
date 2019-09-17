@@ -24,4 +24,5 @@ Spring Initialz: https://start.spring.io/
 ###  Running the application
 
 1. From your IDE, you should be able to create a Sprint Boot run configuration. Set RentalApplication as the main class and Run.
-1. Open a terminal, and cd to the /client folder. Once there, run `ng serve` to build and serve the front end
+1. Open a terminal, and cd to the /client folder. Once there, run `ng serve` to build and serve the front end.
+1. Open a browser and head to localhost:4200 !
