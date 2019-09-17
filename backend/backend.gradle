@@ -5,9 +5,7 @@ plugins {
 	id 'war'
 }
 
-group = 'com.soen6461'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+sourceCompatibility = 11
 targetCompatibility = 11
 
 
@@ -40,10 +38,10 @@ dependencies {
     compile 'com.google.guava:guava:27.0-jre'
     compile 'org.apache.commons:commons-text:1.6'
     compile 'commons-io:commons-io:2.6'
-    
+
 	runtimeOnly 'mysql:mysql-connector-java'
     compileOnly 'org.springframework.boot:spring-boot-devtools'
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
-    
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
