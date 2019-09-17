@@ -3,7 +3,7 @@
 ## Team Members
 1. Richard Grand'Maison - 26145965 - rich.grandmaison@gmail.com
 1. Pargol Poshtareh - 26428126 - pargol.poshtareh@gmail.com
-1. Gurjot Singh - id - gurjot5076@gmail.com
+1. Gurjot Singh - 40091208 - gurjot5076@gmail.com
 1. Adrien - 40072965 - ad_dat@encs.concordia.com (for Gdrive purposes, use dridri.dat@gmail.com)
 1. Ravneet Singh Brar - 40078628 - rippybrar1994@gmail.com
 
