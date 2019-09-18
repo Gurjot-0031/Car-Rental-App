@@ -25,6 +25,7 @@ https://datasift.github.io/gitflow/IntroducingGitFlow.html
 
 Inspired from: https://www.baeldung.com/spring-boot-angular-web
 
+* NodeJS: https://nodejs.org/en/
 * Angular CLI: https://cli.angular.io/
 * Java 11 JDK: https://www.oracle.com/java/technologies/javase-jdk11-downloads.html
 * Spring Initialz: https://start.spring.io/
