@@ -3,6 +3,7 @@ plugins {
 	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
 	id 'java'
 	id 'war'
+    id 'org.flywaydb.flyway' version "6.0.3" // https://flywaydb.org/documentation/gradle/
 }
 
 sourceCompatibility = 11
@@ -11,7 +12,7 @@ targetCompatibility = 11
 
 repositories {
     jcenter()
-	mavenCentral()
+    mavenCentral()
 }
 
 if (project.hasProperty('bundle-client')) {
@@ -30,18 +31,52 @@ bootWar {
     archiveFileName = "rental-" + project.version.toString() + ".war"
 }
 
-
+configurations {
+    generatedCompile
+    compile {
+        extendsFrom generatedCompile
+    }
+}
 
 dependencies {
+    compile 'mysql:mysql-connector-java:8.0.12'
+
     compile 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.springframework.boot:spring-boot-devtools'
     compile 'org.springframework:spring-jdbc'
     compile 'com.google.guava:guava:27.0-jre'
     compile 'org.apache.commons:commons-text:1.6'
     compile 'commons-io:commons-io:2.6'
+    compile 'org.flywaydb:flyway-core:6.0.3'
 
-	runtimeOnly 'mysql:mysql-connector-java'
     compileOnly 'org.springframework.boot:spring-boot-devtools'
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+flyway {
+    url = 'jdbc:mysql://localhost/soen6461?useSSL=false'
+    user = 'dbuser'
+    password = 'cc1234'
+    schemas = ["soen6461"]
+    outOfOrder = true
+    validateOnMigrate = false
+    locations = ["filesystem:${buildFile.parent}/src/main/resources/db/migration"]
+}
+
+sourceSets {
+    generated {
+        java {
+            srcDir 'src/generated/java'
+        }
+    }
+    main {
+        compileClasspath += sourceSets.generated.output
+        runtimeClasspath += sourceSets.generated.output
+    }
+    test {
+        compileClasspath += sourceSets.generated.output
+        runtimeClasspath += sourceSets.generated.output
+    }
 }
