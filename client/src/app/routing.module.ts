@@ -1,10 +1,6 @@
 import {RouterModule, Routes} from "@angular/router";
-import {RootComponent} from "./root/root.component";
 import {TestComponent} from "./test/test.component";
 import {NgModule} from "@angular/core";
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {FormsModule} from "@angular/forms";
-import {Test} from "tslint";
 
 const routes: Routes = [
   {

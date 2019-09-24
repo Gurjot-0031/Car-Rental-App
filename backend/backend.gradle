@@ -56,7 +56,7 @@ dependencies {
 }
 
 flyway {
-    url = 'jdbc:mysql://localhost/soen6461?useSSL=false'
+    url = 'jdbc:mysql://localhost/soen6461?useSSL=false&allowPublicKeyRetrieval=true'
     user = 'dbuser'
     password = 'cc1234'
     schemas = ["soen6461"]
