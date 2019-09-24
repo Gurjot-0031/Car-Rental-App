@@ -8,11 +8,11 @@ public class Vehicle {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int pkid;
+    private Integer pkid;
     private String type;
     private String make;
     private String model;
-    private int year;
+    private Integer year;
     private String color;
     private String license;
 
@@ -21,7 +21,7 @@ public class Vehicle {
     public Vehicle(String type,
                    String make,
                    String model,
-                   int year,
+                   Integer year,
                    String color,
                    String license) {
         this.type = type;
@@ -32,7 +32,7 @@ public class Vehicle {
         this.license = license;
     }
 
-    public int getPkid() {
+    public Integer getPkid() {
         return pkid;
     }
 
@@ -48,7 +48,7 @@ public class Vehicle {
         return model;
     }
 
-    public int getYear() {
+    public Integer getYear() {
         return year;
     }
 
