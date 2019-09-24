@@ -4,17 +4,17 @@ import {TestComponent} from "./test/test.component";
 import {NgModule} from "@angular/core";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {FormsModule} from "@angular/forms";
+import {Test} from "tslint";
 
 const routes: Routes = [
   {
     path: '',
-    component: RootComponent,
-    children: [
-      {
-        path: 'test',
-        component: TestComponent
-      }
-    ]
+    redirectTo: '/test',
+    pathMatch: 'full'
+  },
+  {
+    path: 'test',
+    component: TestComponent
   }
 ];
 
