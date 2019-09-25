@@ -1,7 +1,7 @@
 package com.soen6461.rental;
 
-import com.soen6461.rental.data.VehicleRepository;
-import com.soen6461.rental.model.Vehicle;
+import com.soen6461.rental.vehicle.VehicleRepository;
+import com.soen6461.rental.vehicle.Vehicle;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -26,14 +26,4 @@ public class RentalApplication implements WebMvcConfigurer {
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("forward:/index.html");
     }
-
-    @Bean
-    public CommandLineRunner demo(VehicleRepository repository) {
-	    return (args) -> {
-	        for (Vehicle vehicle: repository.findAll()) {
-                System.out.println(vehicle.toString());
-            }
-        };
-    }
-
 }

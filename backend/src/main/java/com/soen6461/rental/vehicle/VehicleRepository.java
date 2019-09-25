@@ -1,6 +1,5 @@
-package com.soen6461.rental.data;
+package com.soen6461.rental.vehicle;
 
-import com.soen6461.rental.model.Vehicle;
 import org.springframework.data.repository.CrudRepository;
 
 public interface VehicleRepository extends CrudRepository<Vehicle, Integer> {

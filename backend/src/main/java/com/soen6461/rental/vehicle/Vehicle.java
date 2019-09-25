@@ -1,4 +1,4 @@
-package com.soen6461.rental.model;
+package com.soen6461.rental.vehicle;
 
 import javax.persistence.*;
 
