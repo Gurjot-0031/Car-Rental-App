@@ -1,0 +1,42 @@
+.centered {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  /* bring your own prefixes */
+  transform: translate(-50%, -50%);
+}
+
+.table-container {
+  padding-top: 24px;
+  padding-left: 96px;
+  padding-right: 96px;
+}
+
+table {
+  width: 100%;
+}
+
+.mat-header-cell {
+  padding-top: 16px;
+}
+
+.mat-cell {
+  padding-top: 16px;
+}
+
+/* Column Widths */
+.mat-column-type {
+  width: 20%;
+}
+.mat-column-make {
+  width: 20%;
+}
+.mat-column-model {
+  width: 20%;
+}
+.mat-column-year {
+  width: 20%;
+}
+.mat-column-color {
+  width: 20%;
+}

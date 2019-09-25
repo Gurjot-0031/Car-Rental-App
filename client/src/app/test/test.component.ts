@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {Vehicle, VehicleApiService} from "../api/vehicle-api.service";
 
 @Component({
   selector: 'app-test',
@@ -7,9 +8,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TestComponent implements OnInit {
 
-  constructor() { }
+  isLoading: boolean;
+  vehicles: Vehicle[];
+
+  displayedColumns: string[] = ['type', 'make', 'model', 'year', 'color'];
+
+  constructor(private vehicleApiService: VehicleApiService) { }
 
   ngOnInit() {
+    this.isLoading = true;
+    this.vehicleApiService.getAllVehicles().subscribe(
+      result => {
+        this.vehicles = result;
+        this.isLoading = false;
+      }
+    )
   }
-
 }

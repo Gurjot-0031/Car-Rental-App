@@ -1,6 +1,7 @@
 import {RouterModule, Routes} from "@angular/router";
 import {TestComponent} from "./test/test.component";
 import {NgModule} from "@angular/core";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 const routes: Routes = [
   {
@@ -16,7 +17,8 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, {useHash: true})
+    RouterModule.forRoot(routes, {useHash: true}),
+    BrowserAnimationsModule,
   ],
   exports: [
     RouterModule
