@@ -47,8 +47,14 @@ If you use Windows and Git Bash, the MySQL might hang. Try this to solve it: htt
 
  ###  Running the application
 
+1. Copy the `application.properties` file and create a file called `application-local.properties` located in the same place. Here, you must enter your mysql username and password.
+1. Create a run configuration for Spring that accepts "local" as the profile.
 1. From your IDE, you should be able to create a Spring Boot run configuration. Set RentalApplication as the main class and Run.
 1. Open a terminal, and cd to the /client folder. Once there, run `ng serve` to build and serve the front end.
 1. Open a browser and head to localhost:4200 !
+
+### Useful links
+
+* Spring JPA: https://spring.io/guides/gs/accessing-data-jpa/
 
 
