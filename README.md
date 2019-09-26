@@ -55,6 +55,6 @@ If you use Windows and Git Bash, the MySQL might hang. Try this to solve it: htt
 
 ### Useful links
 
-
+* Running queries using JDBC - https://www.baeldung.com/spring-jdbc-jdbctemplate
 
 
