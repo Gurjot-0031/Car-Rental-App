@@ -4,6 +4,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 @Component
@@ -19,19 +21,22 @@ public class VehicleService {
         return getJdbcTemplate()
             .query(
                 "SELECT * FROM Vehicle",
-                (rs, rowNum) -> {
-                    Vehicle vehicle = new Vehicle();
-                    vehicle.setPkid(rs.getInt("pkid"));
-                    vehicle.setColor(rs.getString("color"));
-                    vehicle.setLicense(rs.getString("license"));
-                    vehicle.setMake(rs.getString("make"));
-                    vehicle.setModel(rs.getString("model"));
-                    vehicle.setType(rs.getString("type"));
-                    vehicle.setYear(rs.getInt("year"));
-                    return vehicle;
-                }
+                (rs, rowNum) -> mapResultSetToVehicle(rs)
             );
     }
+
+    private Vehicle mapResultSetToVehicle(ResultSet rs) throws SQLException {
+        Vehicle vehicle = new Vehicle();
+        vehicle.setPkid(rs.getInt("pkid"));
+        vehicle.setColor(rs.getString("color"));
+        vehicle.setLicense(rs.getString("license"));
+        vehicle.setMake(rs.getString("make"));
+        vehicle.setModel(rs.getString("model"));
+        vehicle.setType(rs.getString("type"));
+        vehicle.setYear(rs.getInt("year"));
+        return vehicle;
+    }
+
 
     private JdbcTemplate getJdbcTemplate() {
         return new JdbcTemplate(dataSource);
