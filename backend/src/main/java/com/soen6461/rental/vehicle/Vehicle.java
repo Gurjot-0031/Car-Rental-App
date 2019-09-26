@@ -1,13 +1,7 @@
 package com.soen6461.rental.vehicle;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name="vehicle")
 public class Vehicle {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer pkid;
     private String type;
     private String make;
@@ -15,22 +9,6 @@ public class Vehicle {
     private Integer year;
     private String color;
     private String license;
-
-    public Vehicle() {}
-
-    public Vehicle(String type,
-                   String make,
-                   String model,
-                   Integer year,
-                   String color,
-                   String license) {
-        this.type = type;
-        this.make = make;
-        this.model = model;
-        this.year = year;
-        this.color = color;
-        this.license = license;
-    }
 
     public Integer getPkid() {
         return pkid;
@@ -58,6 +36,34 @@ public class Vehicle {
 
     public String getLicense() {
         return license;
+    }
+
+    public void setPkid(Integer pkid) {
+        this.pkid = pkid;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setMake(String make) {
+        this.make = make;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public void setLicense(String license) {
+        this.license = license;
     }
 
     @Override
