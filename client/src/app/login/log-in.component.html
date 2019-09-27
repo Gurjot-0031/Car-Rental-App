@@ -1,0 +1,31 @@
+<div class="centered">
+
+  <h1>Car Rental System</h1>
+
+  <form [formGroup]="loginForm" (submit)="onLoginClicked()">
+    <div class="login-container">
+
+    <mat-form-field >
+      <label>
+        <input formControlName="username"
+               matInput
+               placeholder="Username">
+      </label>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input formControlName="password"
+             type="password"
+             matInput placeholder="Password">
+    </mat-form-field>
+
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit">
+      <span>Login</span>
+    </button>
+    </div>
+  </form>
+</div>
+

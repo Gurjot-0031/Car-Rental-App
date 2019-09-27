@@ -8,11 +8,17 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {MatTableModule} from "@angular/material/table";
 import {HttpClientModule} from "@angular/common/http";
 import {MatButtonModule} from "@angular/material/button";
+import { LogInComponent } from './login/log-in.component';
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatInputModule} from "@angular/material/input";
+import {ReactiveFormsModule} from "@angular/forms";
+import {MatSnackBarModule} from "@angular/material/snack-bar";
 
 @NgModule({
   declarations: [
     RootComponent,
-    TestComponent
+    TestComponent,
+    LogInComponent
   ],
   imports: [
     BrowserModule,
@@ -21,7 +27,11 @@ import {MatButtonModule} from "@angular/material/button";
     MatProgressSpinnerModule,
     MatTableModule,
     HttpClientModule,
-    MatButtonModule
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    MatSnackBarModule
   ],
   entryComponents: [
     RootComponent
