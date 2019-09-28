@@ -2,7 +2,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RootComponent } from './root/root.component';
 import {RouterModule} from "@angular/router";
-import { TestComponent } from './test/test.component';
 import {RoutingModule} from "./routing.module";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {MatTableModule} from "@angular/material/table";
@@ -17,14 +16,22 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatDividerModule} from "@angular/material/divider";
 import {MatListModule} from "@angular/material/list";
+import { VehicleCatalogComponent } from './vehicle-catalog/vehicle-catalog.component';
+import { ClientRecordsComponent } from './client-records/client-records.component';
+import { RentalsComponent } from './rentals/rentals.component';
+import { ReservationsComponent } from './reservations/reservations.component';
+import { ReturnsComponent } from './returns/returns.component';
 
 @NgModule({
   declarations: [
     RootComponent,
-    TestComponent,
     HomeComponent,
-    TestComponent,
-    LogInComponent
+    LogInComponent,
+    VehicleCatalogComponent,
+    ClientRecordsComponent,
+    RentalsComponent,
+    ReservationsComponent,
+    ReturnsComponent
   ],
   imports: [
     BrowserModule,

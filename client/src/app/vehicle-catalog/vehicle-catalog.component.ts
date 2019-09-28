@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import {Vehicle, VehicleApiService} from "../api/vehicle-api.service";
 
 @Component({
-  selector: 'app-test',
-  templateUrl: './test.component.html',
-  styleUrls: ['./test.component.css']
+  selector: 'app-vehicle-catalog',
+  templateUrl: './vehicle-catalog.component.html',
+  styleUrls: ['./vehicle-catalog.component.scss']
 })
-export class TestComponent implements OnInit {
+export class VehicleCatalogComponent implements OnInit {
 
   isLoading: boolean;
   vehicles: Vehicle[];
