@@ -1,3 +1,7 @@
+.sidenav-container {
+  height: 100vh;
+}
+
 .sidenav {
   width: 230px;
   box-shadow: 1px 0 6px rgba(0, 0, 0, .24);
@@ -5,4 +9,8 @@
 
 .list-button {
   min-width: 140px;
+}
+
+.outlet-container {
+  padding: 24px;
 }
