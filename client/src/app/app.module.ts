@@ -10,12 +10,19 @@ import {HttpClientModule} from "@angular/common/http";
 import {MatButtonModule} from "@angular/material/button";
 import { HomeComponent } from './home/home.component';
 import {MatSidenavModule} from "@angular/material/sidenav";
+import { LogInComponent } from './login/log-in.component';
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatInputModule} from "@angular/material/input";
+import {ReactiveFormsModule} from "@angular/forms";
+import {MatSnackBarModule} from "@angular/material/snack-bar";
 
 @NgModule({
   declarations: [
     RootComponent,
     TestComponent,
-    HomeComponent
+    HomeComponent,
+    TestComponent,
+    LogInComponent
   ],
   imports: [
     BrowserModule,
@@ -25,7 +32,12 @@ import {MatSidenavModule} from "@angular/material/sidenav";
     MatTableModule,
     HttpClientModule,
     MatButtonModule,
-    MatSidenavModule
+    MatSidenavModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    MatSnackBarModule
   ],
   entryComponents: [
     RootComponent
