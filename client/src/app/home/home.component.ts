@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {LogInService} from "../api/login-in.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-home',
@@ -8,10 +9,14 @@ import {LogInService} from "../api/login-in.service";
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private loginService: LogInService) { }
+  constructor(
+    private loginService: LogInService,
+    private router: Router) { }
 
   ngOnInit() {
-    console.log('HOME');
+    if (!this.loginService.username) {
+      this.router.navigate(['']);
+    }
   }
 
   getUsername() {
