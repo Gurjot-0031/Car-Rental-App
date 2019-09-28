@@ -1,5 +1,58 @@
 <mat-sidenav-container>
-  <mat-sidenav mode="side" opened>Sidenav content</mat-sidenav>
+  <mat-sidenav
+    class="sidenav"
+    mode="side" opened>
+    <h1>Car Rental</h1>
+    <h3>User: {{ getUsername() }}</h3>
+    <h3>Role: {{ getRole() }}</h3>
+
+    <mat-divider></mat-divider>
+
+    <mat-nav-list>
+      <a mat-list-item [routerLink]="['/test']">
+        <button
+          mat-raised-button
+          class="list-button"
+          color="primary">
+          Vehicle Catalog
+        </button>
+      </a>
+      <a mat-list-item [routerLink]="['/test']">
+        <button
+          mat-raised-button
+          class="list-button"
+          color="primary">
+          Client Records
+        </button>
+      </a>
+      <a mat-list-item [routerLink]="['/test']">
+        <button
+          mat-raised-button
+          class="list-button"
+          color="primary">
+          Rentals
+        </button>
+      </a>
+      <a mat-list-item [routerLink]="['/test']">
+        <button
+          mat-raised-button
+          class="list-button"
+          color="primary">
+          Reservations
+        </button>
+      </a>
+      <a mat-list-item [routerLink]="['/test']">
+        <button
+          mat-raised-button
+          class="list-button"
+          color="primary">
+          Returns
+        </button>
+      </a>
+    </mat-nav-list>
+
+
+  </mat-sidenav>
   <mat-sidenav-content>
     <router-outlet></router-outlet>
   </mat-sidenav-content>
