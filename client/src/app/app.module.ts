@@ -2,23 +2,36 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RootComponent } from './root/root.component';
 import {RouterModule} from "@angular/router";
-import { TestComponent } from './test/test.component';
 import {RoutingModule} from "./routing.module";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {MatTableModule} from "@angular/material/table";
 import {HttpClientModule} from "@angular/common/http";
 import {MatButtonModule} from "@angular/material/button";
+import { HomeComponent } from './home/home.component';
+import {MatSidenavModule} from "@angular/material/sidenav";
 import { LogInComponent } from './login/log-in.component';
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {ReactiveFormsModule} from "@angular/forms";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
+import {MatDividerModule} from "@angular/material/divider";
+import {MatListModule} from "@angular/material/list";
+import { VehicleCatalogComponent } from './vehicle-catalog/vehicle-catalog.component';
+import { ClientRecordsComponent } from './client-records/client-records.component';
+import { RentalsComponent } from './rentals/rentals.component';
+import { ReservationsComponent } from './reservations/reservations.component';
+import { ReturnsComponent } from './returns/returns.component';
 
 @NgModule({
   declarations: [
     RootComponent,
-    TestComponent,
-    LogInComponent
+    HomeComponent,
+    LogInComponent,
+    VehicleCatalogComponent,
+    ClientRecordsComponent,
+    RentalsComponent,
+    ReservationsComponent,
+    ReturnsComponent
   ],
   imports: [
     BrowserModule,
@@ -28,10 +41,14 @@ import {MatSnackBarModule} from "@angular/material/snack-bar";
     MatTableModule,
     HttpClientModule,
     MatButtonModule,
+    MatSidenavModule,
+    MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatDividerModule,
+    MatListModule
   ],
   entryComponents: [
     RootComponent

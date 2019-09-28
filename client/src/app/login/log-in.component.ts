@@ -33,7 +33,7 @@ export class LogInComponent implements OnInit {
       .signIn(this.username.value, this.password.value)
       .subscribe(success => {
         if (success) {
-          this.router.navigate(['/test']);
+          this.router.navigate(['/home']);
         } else {
           this.snackBar.open('Invalid username and/or password', '', {duration: 5000});
         }
