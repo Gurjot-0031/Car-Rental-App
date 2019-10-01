@@ -1,3 +1,46 @@
 .container {
   height: 100%;
+  width: 100%;
+}
+
+table{
+  width: 100%;
+}
+
+.mat-header-cell {
+  padding-top: 16px;
+}
+
+.mat-cell {
+  padding-top: 16px;
+}
+
+.fab-container {
+  position: fixed;
+  bottom: 30px;
+  right: 50px;
+}
+
+.add-client-button {
+  margin-bottom: 20px;
+}
+
+/* Column Widths */
+.mat-column-lastName {
+  width: 20vw;
+}
+.mat-column-firstName {
+  width: 20vw;
+}
+.mat-column-driverLicense {
+  width: 24vw;
+}
+.mat-column-expirationDate {
+  width: 12vw;
+}
+.mat-column-phoneNumber {
+  width: 12vw;
+}
+.mat-column-actions {
+  width: 12vw;
 }

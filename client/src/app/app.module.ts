@@ -21,6 +21,7 @@ import { ClientRecordsComponent } from './client-records/client-records.componen
 import { RentalsComponent } from './rentals/rentals.component';
 import { ReservationsComponent } from './reservations/reservations.component';
 import { ReturnsComponent } from './returns/returns.component';
+import {MatIconModule} from "@angular/material/icon";
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { ReturnsComponent } from './returns/returns.component';
     ReactiveFormsModule,
     MatSnackBarModule,
     MatDividerModule,
-    MatListModule
+    MatListModule,
+    MatIconModule
   ],
   entryComponents: [
     RootComponent

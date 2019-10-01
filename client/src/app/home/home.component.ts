@@ -14,16 +14,17 @@ export class HomeComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit() {
-    if (!this.loginService.username) {
-      this.router.navigate(['']);
-    }
+    //TODO reimplement this when we care about concurrency
+    // if (!this.loginService.username) {
+    //   this.router.navigate(['']);
+    // }
   }
 
   getUsername() {
-    return this.loginService.username;
+    return this.loginService.username ? this.loginService.username : "No User";
   }
 
   getRole() {
-    return this.loginService.role;
+    return this.loginService.role ? this.loginService.role : "No Role";
   }
 }
