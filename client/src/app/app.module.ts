@@ -23,6 +23,8 @@ import { ReservationsComponent } from './reservations/reservations.component';
 import { ReturnsComponent } from './returns/returns.component';
 import {MatIconModule} from "@angular/material/icon";
 import { DialogClientRecordComponent } from './client-records/dialog-client-record/dialog-client-record.component';
+import {MatProgressBarModule} from "@angular/material/progress-bar";
+import {MatDialogModule} from "@angular/material/dialog";
 
 @NgModule({
   declarations: [
@@ -52,10 +54,13 @@ import { DialogClientRecordComponent } from './client-records/dialog-client-reco
     MatSnackBarModule,
     MatDividerModule,
     MatListModule,
-    MatIconModule
+    MatIconModule,
+    MatProgressBarModule,
+    MatDialogModule
   ],
   entryComponents: [
-    RootComponent
+    RootComponent,
+    DialogClientRecordComponent
   ],
   providers: [],
   bootstrap: [RootComponent]

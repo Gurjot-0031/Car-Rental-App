@@ -6,7 +6,7 @@
 
   <h1>Client Records</h1>
 
-  <mat-table [dataSource]="clientRecords" class="mat-elevation-z8">
+  <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
     <ng-container matColumnDef="lastName">
       <th mat-header-cell *matHeaderCellDef>Last Name</th>
       <td mat-cell *matCellDef="let client"> {{client.lastName}} </td>
@@ -35,7 +35,7 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef>Actions</th>
       <td mat-cell *matCellDef="let client">
-        <button mat-icon-button (click)="editClientRecord(client)">
+        <button mat-icon-button (click)="addOrEditClientRecord(client)">
           <mat-icon>edit</mat-icon>
         </button>
         <button mat-icon-button (click)="deleteClientRecord(client)">
@@ -54,7 +54,7 @@
               color="primary"
               type="submit"
               tabindex="3"
-              (click)="createNewClient()"
+              (click)="addOrEditClientRecord()"
               data-auto="add-user-fab">
         <mat-icon>add</mat-icon>
       </button>

@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MatDialog} from "@angular/material/dialog";
 import {DialogClientRecordComponent} from "./dialog-client-record/dialog-client-record.component";
+import {MatTableDataSource} from "@angular/material/table";
 
 @Component({
   selector: 'app-client-records',
@@ -10,20 +11,25 @@ import {DialogClientRecordComponent} from "./dialog-client-record/dialog-client-
 export class ClientRecordsComponent implements OnInit {
 
   isLoading: boolean;
+  dataSource: MatTableDataSource<ClientRecord>;
   clientRecords: ClientRecord[];
   displayedColumns: string[] = ['lastName', 'firstName', 'driverLicense', 'expirationDate', 'phoneNumber', 'actions'];
 
-  constructor(public dialog: MatDialog) { }
+  constructor(public dialog: MatDialog) {
+  }
+
   ngOnInit() {
     this.isLoading = true;
     this.createStubClientRecords();
+    this.dataSource = new MatTableDataSource<ClientRecord>();
+    this.dataSource.data = this.clientRecords;
     this.isLoading = false;
   }
 
   // This method is to be replaced when we implement concurrency
   createStubClientRecords() {
     this.clientRecords = [];
-    for (let i = 0; i < 25; i++) {
+    for (let i = 0; i < 10; i++) {
       const cr = new ClientRecord();
       cr.firstName = "John" + i;
       cr.lastName = "Doe" + i;
@@ -38,22 +44,30 @@ export class ClientRecordsComponent implements OnInit {
     }
   }
 
-
-  editClientRecord(client: ClientRecord) {
-    console.log(client);
-    const dialogRef = this.dialog.open(DialogClientRecordComponent, {
+  addOrEditClientRecord(client?: ClientRecord) {
+    this.dialog.open(DialogClientRecordComponent, {
+      disableClose: true,
+      autoFocus: false,
       width: '40vw',
       data: {client: client}
-    });
+    }).afterClosed().subscribe(data => {
+        console.log(data);
+        const clientRecord = data['client'];
+        const isNewClient = data['isNewClient'];
+
+        if (clientRecord && isNewClient) {
+          this.clientRecords.push(clientRecord);
+          this.dataSource.data = this.clientRecords;
+        }
+      }
+    )
   }
 
   deleteClientRecord(client: any) {
     this.clientRecords = this.clientRecords.filter(cr => cr !== client);
+    this.dataSource.data = this.clientRecords;
   }
 
-  createNewClient() {
-    alert("This will create a new usewr!!!");
-  }
 }
 
 export class ClientRecord {
