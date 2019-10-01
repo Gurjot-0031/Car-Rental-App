@@ -21,6 +21,10 @@ import { ClientRecordsComponent } from './client-records/client-records.componen
 import { RentalsComponent } from './rentals/rentals.component';
 import { ReservationsComponent } from './reservations/reservations.component';
 import { ReturnsComponent } from './returns/returns.component';
+import {MatIconModule} from "@angular/material/icon";
+import { DialogClientRecordComponent } from './client-records/dialog-client-record/dialog-client-record.component';
+import {MatProgressBarModule} from "@angular/material/progress-bar";
+import {MatDialogModule} from "@angular/material/dialog";
 
 @NgModule({
   declarations: [
@@ -31,7 +35,8 @@ import { ReturnsComponent } from './returns/returns.component';
     ClientRecordsComponent,
     RentalsComponent,
     ReservationsComponent,
-    ReturnsComponent
+    ReturnsComponent,
+    DialogClientRecordComponent
   ],
   imports: [
     BrowserModule,
@@ -48,10 +53,14 @@ import { ReturnsComponent } from './returns/returns.component';
     ReactiveFormsModule,
     MatSnackBarModule,
     MatDividerModule,
-    MatListModule
+    MatListModule,
+    MatIconModule,
+    MatProgressBarModule,
+    MatDialogModule
   ],
   entryComponents: [
-    RootComponent
+    RootComponent,
+    DialogClientRecordComponent
   ],
   providers: [],
   bootstrap: [RootComponent]

@@ -1,4 +1,64 @@
-<div class="container">
-  <p>client-records works!</p>
+<div class="centered" *ngIf="isLoading">
+  <mat-spinner></mat-spinner>
 </div>
 
+<div class="table-container" *ngIf="!isLoading">
+
+  <h1>Client Records</h1>
+
+  <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <ng-container matColumnDef="lastName">
+      <th mat-header-cell *matHeaderCellDef>Last Name</th>
+      <td mat-cell *matCellDef="let client"> {{client.lastName}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="firstName">
+      <th mat-header-cell *matHeaderCellDef>First Name</th>
+      <td mat-cell *matCellDef="let client"> {{client.firstName}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="driverLicense">
+      <th mat-header-cell *matHeaderCellDef>Driver License</th>
+      <td mat-cell *matCellDef="let client"> {{client.driverLicense}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="expirationDate">
+      <th mat-header-cell *matHeaderCellDef>Expiration Date</th>
+      <td mat-cell *matCellDef="let client"> {{client.expirationDate}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="phoneNumber">
+      <th mat-header-cell *matHeaderCellDef>Phone Number</th>
+      <td mat-cell *matCellDef="let client"> {{client.phoneNumber}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell *matCellDef="let client">
+        <button mat-icon-button (click)="addOrEditClientRecord(client)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button (click)="deleteClientRecord(client)">
+          <mat-icon>delete_forever</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let client; columns: displayedColumns;"></tr>
+  </mat-table>
+
+  <div class="fab-container">
+    <div class="add-client-button">
+      <button mat-fab
+              color="primary"
+              type="submit"
+              tabindex="3"
+              (click)="addOrEditClientRecord()"
+              data-auto="add-user-fab">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+  </div>
+
+</div>

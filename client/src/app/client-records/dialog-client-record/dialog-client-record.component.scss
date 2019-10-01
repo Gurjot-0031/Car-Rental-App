@@ -1,0 +1,13 @@
+.container {
+  width: 100%;
+}
+
+.client-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.client-actions {
+  display: flex;
+  justify-content: left;
+}
