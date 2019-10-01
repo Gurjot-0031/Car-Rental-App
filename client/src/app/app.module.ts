@@ -22,6 +22,7 @@ import { RentalsComponent } from './rentals/rentals.component';
 import { ReservationsComponent } from './reservations/reservations.component';
 import { ReturnsComponent } from './returns/returns.component';
 import {MatIconModule} from "@angular/material/icon";
+import { DialogClientRecordComponent } from './client-records/dialog-client-record/dialog-client-record.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import {MatIconModule} from "@angular/material/icon";
     ClientRecordsComponent,
     RentalsComponent,
     ReservationsComponent,
-    ReturnsComponent
+    ReturnsComponent,
+    DialogClientRecordComponent
   ],
   imports: [
     BrowserModule,

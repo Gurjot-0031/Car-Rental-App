@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {MatDialog} from "@angular/material/dialog";
+import {DialogClientRecordComponent} from "./dialog-client-record/dialog-client-record.component";
 
 @Component({
   selector: 'app-client-records',
@@ -11,7 +13,7 @@ export class ClientRecordsComponent implements OnInit {
   clientRecords: ClientRecord[];
   displayedColumns: string[] = ['lastName', 'firstName', 'driverLicense', 'expirationDate', 'phoneNumber', 'actions'];
 
-  constructor() { }
+  constructor(public dialog: MatDialog) { }
   ngOnInit() {
     this.isLoading = true;
     this.createStubClientRecords();
@@ -39,6 +41,10 @@ export class ClientRecordsComponent implements OnInit {
 
   editClientRecord(client: ClientRecord) {
     console.log(client);
+    const dialogRef = this.dialog.open(DialogClientRecordComponent, {
+      width: '40vw',
+      data: {client: client}
+    });
   }
 
   deleteClientRecord(client: any) {
