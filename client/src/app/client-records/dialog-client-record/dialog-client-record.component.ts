@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormControl, FormGroup, ValidatorFn, Validators} from "@angular/forms";
 import {ClientRecord} from "../client-records.component";
 
 @Component({
@@ -15,7 +15,12 @@ export class DialogClientRecordComponent implements OnInit {
 
   firstName = new FormControl('', [Validators.required]);
   lastName = new FormControl('', [Validators.required]);
-  driverLicense = new FormControl('', [Validators.required]);
+  // Pattern matches A-1234-123456-12
+  driverLicense = new FormControl('', [
+    Validators.required,
+    this.regexValidator({pattern: '^[A-Z]{1}-\\d{4}-\\d{6}-\\d{2}$', msg: 'Must match format A-1234-123456-12'})
+    ]
+  );
   expirationDate = new FormControl('', [Validators.required]);
   phoneNumber = new FormControl('');
 
@@ -26,7 +31,6 @@ export class DialogClientRecordComponent implements OnInit {
     phoneNumber: this.phoneNumber,
     expirationDate: this.expirationDate,
   });
-
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data,
@@ -47,6 +51,19 @@ export class DialogClientRecordComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  public regexValidator(config: any): ValidatorFn {
+    return (control: FormControl) => {
+      let urlRegEx: RegExp = config.pattern;
+      if (control.value && !control.value.match(urlRegEx)) {
+        return {
+          invalidMsg: config.msg
+        };
+      } else {
+        return null;
+      }
+    };
   }
 
   onSubmitClicked() {

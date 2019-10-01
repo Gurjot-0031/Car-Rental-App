@@ -56,6 +56,9 @@
         <mat-error *ngIf="driverLicense.errors && driverLicense.errors['required']">
           This field is required.
         </mat-error>
+        <mat-error *ngIf="driverLicense.errors && clientForm.controls.driverLicense.errors.invalidMsg">
+          The Driver License format is A-1234-123456-12.
+        </mat-error>
       </mat-form-field>
 
       <mat-form-field>

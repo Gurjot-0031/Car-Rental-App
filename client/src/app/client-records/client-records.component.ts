@@ -51,13 +51,11 @@ export class ClientRecordsComponent implements OnInit {
       width: '40vw',
       data: {client: client}
     }).afterClosed().subscribe(data => {
-        console.log(data);
-        const clientRecord = data['client'];
-        const isNewClient = data['isNewClient'];
-
-        if (clientRecord && isNewClient) {
-          this.clientRecords.push(clientRecord);
-          this.dataSource.data = this.clientRecords;
+        if (data) {
+          if (data['isNewClient']) {
+            this.clientRecords.push(data['client']);
+            this.dataSource.data = this.clientRecords;
+          }
         }
       }
     )
