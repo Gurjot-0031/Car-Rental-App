@@ -6,6 +6,12 @@
   transform: translate(-50%, -50%);
 }
 
+.catalog-options {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 24px;
+}
+
 table{
   width: 100%;
 }
