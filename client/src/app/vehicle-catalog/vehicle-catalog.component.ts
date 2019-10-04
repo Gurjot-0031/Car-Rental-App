@@ -74,6 +74,37 @@ export class VehicleCatalogComponent implements OnInit {
     }
   }
 
+  searchWithFilters() {
+    this.isLoading = true;
+    if (!this.allVehicles) {
+      this.vehicleApiService.getAllVehicles().subscribe(
+        result => {
+          this.allVehicles = result;
+          this.isLoading = false;
+          this.applyFilters(this.allVehicles);
+
+        }
+      );
+    } else {
+      this.isLoading = false;
+      this.applyFilters(this.allVehicles);
+    }
+  }
+
+  applyFilters(vehicles: Vehicle[]) {
+    console.log(vehicles);
+    console.log(this.type.value);
+    console.log(this.model.value);
+
+    this.dataSource.data = vehicles
+      .filter(v => this.make.value ? this.make.value.includes(v.make) : true)
+      .filter(v => this.type.value ? this.type.value.includes(v.type) : true)
+      .filter(v => this.model.value ? this.model.value.includes(v.model) : true)
+      .filter(v => this.color.value ? this.color.value.includes(v.model) : true)
+      .filter(v => this.minYear.value ? this.minYear.value <= v.year : true)
+      .filter(v => this.maxYear.value ? this.maxYear.value >= v.year : true);
+  }
+
   getMakeList() {
     return [
       'BMW', 'Honda', 'KIA', 'Mercedes', 'Jeep', 'Toyota', 'Volkswagen', 'Hyundai', 'Porsche',
@@ -104,7 +135,7 @@ export class VehicleCatalogComponent implements OnInit {
     datepicker.close();
   }
 
-    setMaxYear(normalizedYear, datepicker: MatDatepicker<any>) {
+  setMaxYear(normalizedYear, datepicker: MatDatepicker<any>) {
     const ctrlValue = this.maxYear.value;
     ctrlValue.year(normalizedYear.year());
     this.maxYear.setValue(ctrlValue);
