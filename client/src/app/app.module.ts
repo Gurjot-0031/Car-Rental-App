@@ -25,6 +25,15 @@ import {MatIconModule} from "@angular/material/icon";
 import { DialogClientRecordComponent } from './client-records/dialog-client-record/dialog-client-record.component';
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {MatDialogModule} from "@angular/material/dialog";
+import {MatSelectModule} from '@angular/material/select';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatMomentDateModule} from '@angular/material-moment-adapter';
+import {MomentDateModule} from '@angular/material-moment-adapter';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatRadioModule} from "@angular/material/radio";
+import {FormsModule} from "@angular/forms";
+import { DialogVehicleDetailsComponent } from './vehicle-catalog/dialog-vehicle-details/dialog-vehicle-details.component';
+
 
 @NgModule({
   declarations: [
@@ -36,7 +45,8 @@ import {MatDialogModule} from "@angular/material/dialog";
     RentalsComponent,
     ReservationsComponent,
     ReturnsComponent,
-    DialogClientRecordComponent
+    DialogClientRecordComponent,
+    DialogVehicleDetailsComponent
   ],
   imports: [
     BrowserModule,
@@ -56,11 +66,19 @@ import {MatDialogModule} from "@angular/material/dialog";
     MatListModule,
     MatIconModule,
     MatProgressBarModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatMomentDateModule,
+    MomentDateModule,
+    MatExpansionModule,
+    MatRadioModule,
+    FormsModule
   ],
   entryComponents: [
     RootComponent,
-    DialogClientRecordComponent
+    DialogClientRecordComponent,
+    DialogVehicleDetailsComponent
   ],
   providers: [],
   bootstrap: [RootComponent]
