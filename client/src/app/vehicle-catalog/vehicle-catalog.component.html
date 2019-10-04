@@ -1,10 +1,55 @@
 <div class="table-container">
   <h1>Vehicle Catalog</h1>
 
-  <div class="catalog-options">
+  <div class="random-order">
     <button mat-raised-button color="primary" (click)="listVehiclesInRandomOrder()">
       <span>Random Order</span>
     </button>
+  </div>
+
+  <div class="filters">
+    <div>
+      <mat-form-field>
+        <mat-label>Type</mat-label>
+        <mat-select [formControl]="type" multiple>
+          <mat-option *ngFor="let type of getTypeList()" [value]="type">{{type}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field>
+        <mat-label>Make</mat-label>
+        <mat-select [formControl]="make" multiple>
+          <mat-option *ngFor="let make of getMakeList()" [value]="make">{{make}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field>
+        <mat-label>Model</mat-label>
+        <mat-select [formControl]="model" multiple>
+          <mat-option *ngFor="let model of getModelList()" [value]="model">{{model}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field>
+        <mat-label>Color</mat-label>
+        <mat-select [formControl]="color" multiple>
+          <mat-option *ngFor="let color of getColorList()" [value]="color">{{color}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field>
+        <input matInput [matDatepicker]="dp" placeholder="Min Year" [formControl]="minYear">
+        <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+        <mat-datepicker #dp startView="multi-year" 
+          (yearSelected)="chosenYearHandler($event)"
+          panelClass="example-month-picker">
+        </mat-datepicker>
+      </mat-form-field>
+    </div>
   </div>
 
   <div class="centered" *ngIf="isLoading">

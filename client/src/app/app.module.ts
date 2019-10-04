@@ -25,6 +25,10 @@ import {MatIconModule} from "@angular/material/icon";
 import { DialogClientRecordComponent } from './client-records/dialog-client-record/dialog-client-record.component';
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {MatDialogModule} from "@angular/material/dialog";
+import {MatSelectModule} from '@angular/material/select';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatMomentDateModule} from '@angular/material-moment-adapter';
+
 
 @NgModule({
   declarations: [
@@ -56,7 +60,9 @@ import {MatDialogModule} from "@angular/material/dialog";
     MatListModule,
     MatIconModule,
     MatProgressBarModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSelectModule,
+    MatDatepickerModule
   ],
   entryComponents: [
     RootComponent,
