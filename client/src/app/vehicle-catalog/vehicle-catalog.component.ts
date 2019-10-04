@@ -53,7 +53,7 @@ export class VehicleCatalogComponent implements OnInit {
   maxYear = new FormControl(moment());
 
   sortColumn: string;
-  sortColumnsOptions = ['random', 'type', 'make', 'model', 'year', 'color'];
+  sortColumnsOptions = ['Random', 'Type', 'Make', 'Model', 'Year', 'Color'];
   sortDirection: string;
   sortDirectionOptions = ['Ascending', 'Descending'];
 
@@ -92,7 +92,6 @@ export class VehicleCatalogComponent implements OnInit {
       );
     } else {
       this.isLoading = false;
-      this.applyFilters(this.allVehicles);
       let filtered = this.applyFilters(this.allVehicles);
       this.dataSource.data = this.applySorting(filtered);
     }
@@ -110,7 +109,7 @@ export class VehicleCatalogComponent implements OnInit {
 
   private applySorting(vehicles: Vehicle[]): Vehicle[] {
     if (this.sortColumn === 'Random') {
-      return vehicles;
+      return this.randomizeArray(vehicles);
     } else {
       return vehicles.sort(this.propertyComparator(this.sortColumn));
     }
@@ -119,9 +118,11 @@ export class VehicleCatalogComponent implements OnInit {
   // https://stackoverflow.com/questions/8537602/any-way-to-extend-javascripts-array-sort-method-to-accept-another-parameter
   propertyComparator = (property) => {
     if (!this.sortDirection || this.sortDirection === 'Ascending') {
-      return (a, b) => a[property] == b[property] ? 0 : a[property] < b[property] ? -1 : 1;
+      return (a, b) => a[property.toLowerCase()] == b[property.toLowerCase()] ? 0 :
+        a[property.toLowerCase()] < b[property.toLowerCase()] ? -1 : 1;
     } else {
-      return (a, b) => a[property] == b[property] ? 0 : a[property] < b[property] ? 1 : -1;
+      return (a, b) => a[property.toLowerCase()] == b[property.toLowerCase()] ? 0 :
+        a[property.toLowerCase()] < b[property.toLowerCase()] ? 1 : -1;
     }
   };
 
