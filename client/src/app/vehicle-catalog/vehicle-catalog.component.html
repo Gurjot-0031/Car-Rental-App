@@ -7,62 +7,71 @@
     </button>
   </div>
 
-  <div class="filters">
-    <div>
-      <mat-form-field>
-        <mat-label>Type</mat-label>
-        <mat-select [formControl]="type" multiple>
-          <mat-option *ngFor="let type of getTypeList()" [value]="type">{{type}}</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-    <div>
-      <mat-form-field>
-        <mat-label>Make</mat-label>
-        <mat-select [formControl]="make" multiple>
-          <mat-option *ngFor="let make of getMakeList()" [value]="make">{{make}}</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-    <div>
-      <mat-form-field>
-        <mat-label>Model</mat-label>
-        <mat-select [formControl]="model" multiple>
-          <mat-option *ngFor="let model of getModelList()" [value]="model">{{model}}</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-    <div>
-      <mat-form-field>
-        <mat-label>Color</mat-label>
-        <mat-select [formControl]="color" multiple>
-          <mat-option *ngFor="let color of getColorList()" [value]="color">{{color}}</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-    <div>
-      <mat-form-field>
-        <input matInput [matDatepicker]="dpmin" placeholder="Min Year" [formControl]="minYear">
-        <mat-datepicker-toggle matSuffix [for]="dpmin"></mat-datepicker-toggle>
-        <mat-datepicker #dpmin 
-          startView="multi-year" 
-          (yearSelected)="setMinYear($event, dpmin)"
-          panelClass="example-month-picker">
-        </mat-datepicker>
-      </mat-form-field>
-    </div>
+  <mat-accordion>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Search Filters
+        </mat-panel-title>
+        <mat-panel-description>
+          Click to customize your search
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <div class="filters">
         <div>
-      <mat-form-field>
-        <input matInput [matDatepicker]="dpmax" placeholder="Max Year" [formControl]="maxYear">
-        <mat-datepicker-toggle matSuffix [for]="dpmax"></mat-datepicker-toggle>
-        <mat-datepicker #dpmax 
-          startView="multi-year" 
-          (yearSelected)="setMaxYear($event, dpmax)"
-          panelClass="example-month-picker">
-        </mat-datepicker>
-      </mat-form-field>
-    </div>
-  </div>
+          <mat-form-field class="search-filter-spacing">
+            <mat-label>Type</mat-label>
+            <mat-select [formControl]="type" multiple>
+              <mat-option *ngFor="let type of getTypeList()" [value]="type">{{type}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field class="search-filter-spacing">
+            <mat-label>Make</mat-label>
+            <mat-select [formControl]="make" multiple>
+              <mat-option *ngFor="let make of getMakeList()" [value]="make">{{make}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field class="search-filter-spacing">
+            <mat-label>Model</mat-label>
+            <mat-select [formControl]="model" multiple>
+              <mat-option *ngFor="let model of getModelList()" [value]="model">{{model}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field class="search-filter-spacing">
+               <mat-label>Color</mat-label>
+              <mat-select [formControl]="color" multiple>
+                <mat-option *ngFor="let color of getColorList()" [value]="color">{{color}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field class="search-filter-spacing">
+            <input matInput [matDatepicker]="dpmin" placeholder="Min Year" [formControl]="minYear">
+            <mat-datepicker-toggle matSuffix [for]="dpmin"></mat-datepicker-toggle>
+            <mat-datepicker #dpmin startView="multi-year" (yearSelected)="setMinYear($event, dpmin)"
+              panelClass="example-month-picker">
+            </mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field class="search-filter-spacing">
+            <input matInput [matDatepicker]="dpmax" placeholder="Max Year" [formControl]="maxYear">
+            <mat-datepicker-toggle matSuffix [for]="dpmax"></mat-datepicker-toggle>
+            <mat-datepicker #dpmax startView="multi-year" (yearSelected)="setMaxYear($event, dpmax)"
+              panelClass="example-month-picker">
+            </mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+
 
   <div class="centered" *ngIf="isLoading">
     <mat-spinner></mat-spinner>

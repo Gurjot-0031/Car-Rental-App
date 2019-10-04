@@ -29,6 +29,7 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatMomentDateModule} from '@angular/material-moment-adapter';
 import {MomentDateModule} from '@angular/material-moment-adapter';
+import {MatExpansionModule} from '@angular/material/expansion';
 
 
 @NgModule({
@@ -65,7 +66,8 @@ import {MomentDateModule} from '@angular/material-moment-adapter';
     MatSelectModule,
     MatDatepickerModule,
     MatMomentDateModule,
-    MomentDateModule
+    MomentDateModule,
+    MatExpansionModule
   ],
   entryComponents: [
     RootComponent,
