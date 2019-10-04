@@ -50,9 +50,9 @@
           </div>
           <div>
             <mat-form-field class="search-filter-spacing">
-              <input matInput [matDatepicker]="dpmin" placeholder="Min Year" [formControl]="minYear">
-              <mat-datepicker-toggle matSuffix [for]="dpmin"></mat-datepicker-toggle>
-              <mat-datepicker #dpmin startView="multi-year" (yearSelected)="setMinYear($event, dpmin)"
+              <input matInput [matDatepicker]="dp" placeholder="Min Year" [formControl]="minYear">
+              <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+              <mat-datepicker #dp startView="multi-year" (yearSelected)="setMinYear($event, dp)"
                 panelClass="example-month-picker">
               </mat-datepicker>
             </mat-form-field>

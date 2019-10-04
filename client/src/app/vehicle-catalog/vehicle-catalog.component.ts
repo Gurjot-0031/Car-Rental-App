@@ -49,8 +49,8 @@ export class VehicleCatalogComponent implements OnInit {
   model = new FormControl();
   type = new FormControl();
   color = new FormControl();
-  minYear = new FormControl();
-  maxYear = new FormControl();
+  minYear = new FormControl(moment().subtract(20, 'years'));
+  maxYear = new FormControl(moment());
 
   constructor(private vehicleApiService: VehicleApiService) { }
 
@@ -92,17 +92,16 @@ export class VehicleCatalogComponent implements OnInit {
   }
 
   applyFilters(vehicles: Vehicle[]) {
-    console.log(vehicles);
-    console.log(this.type.value);
-    console.log(this.model.value);
+    console.log('min', parseInt(this.minYear.value.format('YYYY'), 10));
+    console.log('max', this.maxYear.value);
 
     this.dataSource.data = vehicles
-      .filter(v => this.make.value ? this.make.value.includes(v.make) : true)
-      .filter(v => this.type.value ? this.type.value.includes(v.type) : true)
-      .filter(v => this.model.value ? this.model.value.includes(v.model) : true)
-      .filter(v => this.color.value ? this.color.value.includes(v.model) : true)
-      .filter(v => this.minYear.value ? this.minYear.value <= v.year : true)
-      .filter(v => this.maxYear.value ? this.maxYear.value >= v.year : true);
+      .filter(v => (this.make.value && this.make.value.length > 0) ? this.make.value.includes(v.make) : true)
+      .filter(v => (this.type.value && this.type.value.length > 0) ? this.type.value.includes(v.type) : true)
+      .filter(v => (this.model.value && this.model.value.length > 0) ? this.model.value.includes(v.model) : true)
+      .filter(v => (this.color.value && this.color.value.length > 0) ? this.color.value.includes(v.color) : true)
+      .filter(v => this.minYear.value ? parseInt(this.minYear.value.format('YYYY'), 10) <= v.year : true)
+      .filter(v => this.maxYear.value ? parseInt(this.maxYear.value.format('YYYY'), 10) >= v.year : true);
   }
 
   getMakeList() {
@@ -129,10 +128,10 @@ export class VehicleCatalogComponent implements OnInit {
   }
 
   setMinYear(normalizedYear, datepicker: MatDatepicker<any>) {
+    datepicker.close();
     const ctrlValue = this.minYear.value;
     ctrlValue.year(normalizedYear.year());
     this.minYear.setValue(ctrlValue);
-    datepicker.close();
   }
 
   setMaxYear(normalizedYear, datepicker: MatDatepicker<any>) {
