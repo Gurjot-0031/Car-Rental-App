@@ -2,15 +2,40 @@ import { Component, OnInit } from '@angular/core';
 import { Vehicle, VehicleApiService } from "../api/vehicle-api.service";
 import { MatTableDataSource } from "@angular/material/table";
 import { FormControl } from '@angular/forms';
-import {MomentDateAdapter} from '@angular/material-moment-adapter';
-import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
+import { MomentDateAdapter } from '@angular/material-moment-adapter';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatDatepicker } from '@angular/material/datepicker';
 
 import * as _moment from 'moment';
+
+const moment = _moment;
+
+export const MY_FORMATS = {
+  parse: {
+    dateInput: 'YYYY',
+  },
+  display: {
+    dateInput: 'YYYY',
+    monthYearLabel: 'YYYY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'YYYY',
+  },
+};
 
 @Component({
   selector: 'app-vehicle-catalog',
   templateUrl: './vehicle-catalog.component.html',
-  styleUrls: ['./vehicle-catalog.component.scss']
+  styleUrls: ['./vehicle-catalog.component.scss'],
+  providers: [
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE]
+    },
+    {
+      provide: MAT_DATE_FORMATS, useValue: MY_FORMATS
+    },
+  ]
 })
 export class VehicleCatalogComponent implements OnInit {
 
@@ -72,10 +97,18 @@ export class VehicleCatalogComponent implements OnInit {
     return ['red', 'black', 'white', 'blue']
   }
 
-  chosenYearHandler(normalizedYear: Moment) {
-    const ctrlValue = this.date.value;
+  setMinYear(normalizedYear, datepicker: MatDatepicker<any>) {
+    const ctrlValue = this.minYear.value;
     ctrlValue.year(normalizedYear.year());
-    this.date.setValue(ctrlValue);
+    this.minYear.setValue(ctrlValue);
+    datepicker.close();
+  }
+
+    setMaxYear(normalizedYear, datepicker: MatDatepicker<any>) {
+    const ctrlValue = this.maxYear.value;
+    ctrlValue.year(normalizedYear.year());
+    this.maxYear.setValue(ctrlValue);
+    datepicker.close();
   }
 
   private randomizeArray(arr: any[]): any[] {

@@ -51,3 +51,11 @@ table {
 .mat-column-color {
   width: 20vw;
 }
+
+.example-month-picker .mat-calendar-period-button {
+  pointer-events: none;
+}
+
+.example-month-picker .mat-calendar-arrow {
+  display: none;
+}

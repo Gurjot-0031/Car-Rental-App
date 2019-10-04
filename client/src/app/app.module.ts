@@ -28,6 +28,7 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {MatSelectModule} from '@angular/material/select';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatMomentDateModule} from '@angular/material-moment-adapter';
+import {MomentDateModule} from '@angular/material-moment-adapter';
 
 
 @NgModule({
@@ -62,7 +63,9 @@ import {MatMomentDateModule} from '@angular/material-moment-adapter';
     MatProgressBarModule,
     MatDialogModule,
     MatSelectModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    MatMomentDateModule,
+    MomentDateModule
   ],
   entryComponents: [
     RootComponent,

@@ -42,10 +42,22 @@
     </div>
     <div>
       <mat-form-field>
-        <input matInput [matDatepicker]="dp" placeholder="Min Year" [formControl]="minYear">
-        <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
-        <mat-datepicker #dp startView="multi-year" 
-          (yearSelected)="chosenYearHandler($event)"
+        <input matInput [matDatepicker]="dpmin" placeholder="Min Year" [formControl]="minYear">
+        <mat-datepicker-toggle matSuffix [for]="dpmin"></mat-datepicker-toggle>
+        <mat-datepicker #dpmin 
+          startView="multi-year" 
+          (yearSelected)="setMinYear($event, dpmin)"
+          panelClass="example-month-picker">
+        </mat-datepicker>
+      </mat-form-field>
+    </div>
+        <div>
+      <mat-form-field>
+        <input matInput [matDatepicker]="dpmax" placeholder="Max Year" [formControl]="maxYear">
+        <mat-datepicker-toggle matSuffix [for]="dpmax"></mat-datepicker-toggle>
+        <mat-datepicker #dpmax 
+          startView="multi-year" 
+          (yearSelected)="setMaxYear($event, dpmax)"
           panelClass="example-month-picker">
         </mat-datepicker>
       </mat-form-field>
