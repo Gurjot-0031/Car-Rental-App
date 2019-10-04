@@ -7,6 +7,9 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import { MatDatepicker } from '@angular/material/datepicker';
 
 import * as _moment from 'moment';
+import {DialogClientRecordComponent} from "../client-records/dialog-client-record/dialog-client-record.component";
+import {MatDialog} from "@angular/material/dialog";
+import {DialogVehicleDetailsComponent} from "./dialog-vehicle-details/dialog-vehicle-details.component";
 
 const moment = _moment;
 
@@ -43,7 +46,7 @@ export class VehicleCatalogComponent implements OnInit {
   allVehicles: Vehicle[];
   dataSource: MatTableDataSource<Vehicle>;
 
-  displayedColumns: string[] = ['type', 'make', 'model', 'year', 'color'];
+  displayedColumns: string[] = ['type', 'make', 'model', 'year', 'color', 'actions'];
 
   make = new FormControl();
   model = new FormControl();
@@ -53,11 +56,13 @@ export class VehicleCatalogComponent implements OnInit {
   maxYear = new FormControl(moment());
 
   sortColumn: string;
-  sortColumnsOptions = ['Random', 'Type', 'Make', 'Model', 'Year', 'Color'];
+  sortColumnsOptions = ['Random', 'type', 'make', 'model', 'year', 'color'];
   sortDirection: string;
   sortDirectionOptions = ['Ascending', 'Descending'];
 
-  constructor(private vehicleApiService: VehicleApiService) { }
+  constructor(
+    private vehicleApiService: VehicleApiService,
+    public dialog: MatDialog) { }
 
   ngOnInit() {
     this.dataSource = new MatTableDataSource<Vehicle>();
@@ -118,11 +123,11 @@ export class VehicleCatalogComponent implements OnInit {
   // https://stackoverflow.com/questions/8537602/any-way-to-extend-javascripts-array-sort-method-to-accept-another-parameter
   propertyComparator = (property) => {
     if (!this.sortDirection || this.sortDirection === 'Ascending') {
-      return (a, b) => a[property.toLowerCase()] == b[property.toLowerCase()] ? 0 :
-        a[property.toLowerCase()] < b[property.toLowerCase()] ? -1 : 1;
+      return (a, b) => a[property] == b[property] ? 0 :
+        a[property] < b[property] ? -1 : 1;
     } else {
-      return (a, b) => a[property.toLowerCase()] == b[property.toLowerCase()] ? 0 :
-        a[property.toLowerCase()] < b[property.toLowerCase()] ? 1 : -1;
+      return (a, b) => a[property] == b[property] ? 0 :
+        a[property] < b[property] ? 1 : -1;
     }
   };
 
@@ -177,5 +182,17 @@ export class VehicleCatalogComponent implements OnInit {
       [arr[i], arr[j]] = [arr[j], arr[i]];
     }
     return arr;
+  }
+
+  viewVehicleDetails(vehicle: any) {
+    this.dialog.open(DialogVehicleDetailsComponent, {
+      disableClose: true,
+      autoFocus: false,
+      width: '40vw',
+      data: {
+        vehicle: vehicle,
+        resultSetVehicles: this.dataSource.data
+      }
+    });
   }
 }

@@ -32,6 +32,7 @@ import {MomentDateModule} from '@angular/material-moment-adapter';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatRadioModule} from "@angular/material/radio";
 import {FormsModule} from "@angular/forms";
+import { DialogVehicleDetailsComponent } from './vehicle-catalog/dialog-vehicle-details/dialog-vehicle-details.component';
 
 
 @NgModule({
@@ -44,7 +45,8 @@ import {FormsModule} from "@angular/forms";
     RentalsComponent,
     ReservationsComponent,
     ReturnsComponent,
-    DialogClientRecordComponent
+    DialogClientRecordComponent,
+    DialogVehicleDetailsComponent
   ],
   imports: [
     BrowserModule,
@@ -75,7 +77,8 @@ import {FormsModule} from "@angular/forms";
   ],
   entryComponents: [
     RootComponent,
-    DialogClientRecordComponent
+    DialogClientRecordComponent,
+    DialogVehicleDetailsComponent
   ],
   providers: [],
   bootstrap: [RootComponent]
