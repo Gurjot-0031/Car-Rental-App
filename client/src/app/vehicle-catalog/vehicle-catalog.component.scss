@@ -64,3 +64,13 @@ table {
 .example-month-picker .mat-calendar-arrow {
   display: none;
 }
+
+.sort-radio-group {
+  display: flex;
+  flex-direction: row;
+  margin-right: 12px;
+}
+
+.sort-radio-button {
+  margin: 5px;
+}

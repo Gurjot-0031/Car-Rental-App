@@ -30,6 +30,8 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatMomentDateModule} from '@angular/material-moment-adapter';
 import {MomentDateModule} from '@angular/material-moment-adapter';
 import {MatExpansionModule} from '@angular/material/expansion';
+import {MatRadioModule} from "@angular/material/radio";
+import {FormsModule} from "@angular/forms";
 
 
 @NgModule({
@@ -67,7 +69,9 @@ import {MatExpansionModule} from '@angular/material/expansion';
     MatDatepickerModule,
     MatMomentDateModule,
     MomentDateModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatRadioModule,
+    FormsModule
   ],
   entryComponents: [
     RootComponent,

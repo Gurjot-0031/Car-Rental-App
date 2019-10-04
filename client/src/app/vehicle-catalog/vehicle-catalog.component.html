@@ -15,6 +15,7 @@
             Search Filters
           </mat-panel-title>
         </mat-expansion-panel-header>
+        <strong>Filters</strong>
         <div class="filters">
           <div>
             <mat-form-field class="search-filter-spacing">
@@ -66,6 +67,25 @@
               </mat-datepicker>
             </mat-form-field>
           </div>
+        </div>
+        <strong>Sort Column</strong>
+        <div class="filters">
+          <mat-radio-group
+            aria-labelledby="example-radio-group-label"
+            class="sort-radio-group"
+            [(ngModel)]="sortColumn">
+            <mat-radio-button class="sort-radio-button" *ngFor="let col of sortColumnsOptions" [value]="col">
+              {{col}}
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <strong>Sort Direction</strong>
+        <div class="filters">
+          <mat-radio-group [(ngModel)]="sortDirection" class="sort-radio-group">
+            <mat-radio-button class="sort-radio-button" *ngFor="let direction of sortDirectionOptions" [value]="direction">
+              {{direction}}
+            </mat-radio-button>
+          </mat-radio-group>
         </div>
         <button mat-raised-button color="primary" (click)="searchWithFilters()">
           <span>Search</span>

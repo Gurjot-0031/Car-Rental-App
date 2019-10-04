@@ -52,6 +52,11 @@ export class VehicleCatalogComponent implements OnInit {
   minYear = new FormControl(moment().subtract(20, 'years'));
   maxYear = new FormControl(moment());
 
+  sortColumn: string;
+  sortColumnsOptions = ['random', 'type', 'make', 'model', 'year', 'color'];
+  sortDirection: string;
+  sortDirectionOptions = ['Ascending', 'Descending'];
+
   constructor(private vehicleApiService: VehicleApiService) { }
 
   ngOnInit() {
@@ -80,28 +85,51 @@ export class VehicleCatalogComponent implements OnInit {
       this.vehicleApiService.getAllVehicles().subscribe(
         result => {
           this.allVehicles = result;
+          let filtered = this.applyFilters(this.allVehicles);
+          this.dataSource.data = this.applySorting(filtered);
           this.isLoading = false;
-          this.applyFilters(this.allVehicles);
-
         }
       );
     } else {
       this.isLoading = false;
       this.applyFilters(this.allVehicles);
+      let filtered = this.applyFilters(this.allVehicles);
+      this.dataSource.data = this.applySorting(filtered);
     }
   }
 
-  applyFilters(vehicles: Vehicle[]) {
-    console.log('min', parseInt(this.minYear.value.format('YYYY'), 10));
-    console.log('max', this.maxYear.value);
-
-    this.dataSource.data = vehicles
+  private applyFilters(vehicles: Vehicle[]): Vehicle[] {
+    return vehicles
       .filter(v => (this.make.value && this.make.value.length > 0) ? this.make.value.includes(v.make) : true)
       .filter(v => (this.type.value && this.type.value.length > 0) ? this.type.value.includes(v.type) : true)
       .filter(v => (this.model.value && this.model.value.length > 0) ? this.model.value.includes(v.model) : true)
       .filter(v => (this.color.value && this.color.value.length > 0) ? this.color.value.includes(v.color) : true)
       .filter(v => this.minYear.value ? parseInt(this.minYear.value.format('YYYY'), 10) <= v.year : true)
       .filter(v => this.maxYear.value ? parseInt(this.maxYear.value.format('YYYY'), 10) >= v.year : true);
+  }
+
+  private applySorting(vehicles: Vehicle[]): Vehicle[] {
+    if (this.sortColumn === 'Random') {
+      return vehicles;
+    } else {
+      return vehicles.sort(this.propertyComparator(this.sortColumn));
+    }
+
+  }
+  // https://stackoverflow.com/questions/8537602/any-way-to-extend-javascripts-array-sort-method-to-accept-another-parameter
+  propertyComparator = (property) => {
+    if (!this.sortDirection || this.sortDirection === 'Ascending') {
+      return (a, b) => a[property] == b[property] ? 0 : a[property] < b[property] ? -1 : 1;
+    } else {
+      return (a, b) => a[property] == b[property] ? 0 : a[property] < b[property] ? 1 : -1;
+    }
+  };
+
+
+  private propertySort(property) {
+    if (!this.sortDirection || this.sortDirection === 'Ascending') {
+
+    }
   }
 
   getMakeList() {
