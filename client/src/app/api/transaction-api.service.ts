@@ -22,8 +22,13 @@ export class TransactionApiService {
     this.returns = [];
   }
 
+  // https://stackoverflow.com/questions/325933/determine-whether-two-date-ranges-overlap
   getAvailableVehicleForDates(start: Moment, end: Moment): Observable<Vehicle[]> {
-    let rentedVehicles: Vehicle[] = this.rentals.filter(r => !r.returned).map(r => r.vehicle);
+    let rentedVehicles: Vehicle[] =
+      this.rentals
+        .filter(r => !r.returned)
+        .filter(r => start.isSameOrBefore(_moment(r.dueDate)) && end.isSameOrAfter(_moment(r.timestamp)))
+        .map(r => r.vehicle);
 
     // get all vehicle, removes the one that are in the rented vehicles
     return this.vehicleApiService.getAllVehicles()
