@@ -23,9 +23,17 @@ export class TransactionApiService {
   }
 
   // https://stackoverflow.com/questions/325933/determine-whether-two-date-ranges-overlap
+  // TODO this method has a lot of refactoring opportunities
+  // MAKE IT WORK. MAKE IT RIGHT. MAKE IT FAST.
   getAvailableVehicleForDates(start: Moment, end: Moment): Observable<Vehicle[]> {
     let rentedVehicles: Vehicle[] =
       this.rentals
+        .filter(r => !r.returned)
+        .filter(r => start.isSameOrBefore(_moment(r.dueDate)) && end.isSameOrAfter(_moment(r.timestamp)))
+        .map(r => r.vehicle);
+
+    let reservedVehicles: Vehicle[] =
+      this.reservations
         .filter(r => !r.returned)
         .filter(r => start.isSameOrBefore(_moment(r.dueDate)) && end.isSameOrAfter(_moment(r.timestamp)))
         .map(r => r.vehicle);
@@ -34,11 +42,11 @@ export class TransactionApiService {
     return this.vehicleApiService.getAllVehicles()
       .pipe(
         map(vehicles => {
-          return vehicles.filter((v) =>
-            !rentedVehicles.map(r => r.pkid).includes(v.pkid)
-          );
+          return vehicles
+            .filter((v) => !rentedVehicles.map(r => r.pkid).includes(v.pkid))
+            .filter((v) => !reservedVehicles.map(r => r.pkid).includes(v.pkid))
         })
-      )
+      );
   }
 
   makeRental(client: Client, vehicle: Vehicle, now: Moment, dueDate: Moment) {
@@ -55,6 +63,18 @@ export class TransactionApiService {
 
   getRentals() {
     return this.rentals;
+  }
+
+  makeReservation(client: Client, vehicle: Vehicle, start: Moment, dueDate: Moment) {
+    const reservation = new Reservation();
+    reservation.vehicle = vehicle;
+    reservation.client = client;
+    reservation.timestamp = _moment().format('YYYY-MM-DD');
+    reservation.startDate = start.format('YYYY-MM-DD');
+    reservation.dueDate = dueDate.format('YYYY-MM-DD');
+    reservation.returned = false;
+
+    this.reservations.push(reservation);
   }
 }
 
