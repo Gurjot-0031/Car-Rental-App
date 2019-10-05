@@ -1,10 +1,11 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 
 import * as _moment from 'moment';
 import {Vehicle, VehicleApiService} from "./vehicle-api.service";
 import {Client} from "./client-api.service";
 import {Moment} from "moment";
-import {Observable} from "rxjs";
+import {Observable, of} from "rxjs";
+import {map, switchMap} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +23,17 @@ export class TransactionApiService {
   }
 
   getAvailableVehicleForDates(start: Moment, end: Moment): Observable<Vehicle[]> {
-    return this.vehicleApiService.getAllVehicles();
+    let rentedVehicles: Vehicle[] = this.rentals.filter(r => !r.returned).map(r => r.vehicle);
+
+    // get all vehicle, removes the one that are in the rented vehicles
+    return this.vehicleApiService.getAllVehicles()
+      .pipe(
+        map(vehicles => {
+          return vehicles.filter((v) =>
+            !rentedVehicles.map(r => r.pkid).includes(v.pkid)
+          );
+        })
+      )
   }
 
   makeRental(client: Client, vehicle: Vehicle, now: Moment, dueDate: Moment) {
