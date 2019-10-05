@@ -36,6 +36,11 @@ export class LogInService {
       )
   }
 
+  logout(){
+    this.username =null;
+    this.role = null; 
+  }
+
   getUsername() {
     if (this.username) {
       return this.username;

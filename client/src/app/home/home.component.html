@@ -49,6 +49,15 @@
           Returns
         </button>
       </a>
+      <a mat-list-item [routerLink]="['/login']">
+        <button
+          mat-raised-button
+          class="list-button"
+          color="primary"
+          (click)="logout()">
+          Logout
+        </button>
+      </a>
     </mat-nav-list>
 
 
