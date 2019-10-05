@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {FormControl, FormGroup, ValidatorFn, Validators} from "@angular/forms";
-import {ClientRecord} from "../client-records.component";
+import {Client} from "../../api/client-api.service";
 
 @Component({
   selector: 'app-dialog-client-record',
@@ -11,7 +11,7 @@ import {ClientRecord} from "../client-records.component";
 export class DialogClientRecordComponent implements OnInit {
 
   isNewClient: boolean;
-  client: ClientRecord;
+  client: Client;
 
   firstName = new FormControl('', [Validators.required]);
   lastName = new FormControl('', [Validators.required]);
@@ -67,7 +67,7 @@ export class DialogClientRecordComponent implements OnInit {
   }
 
   onSubmitClicked() {
-    const clientRecord = new ClientRecord();
+    const clientRecord = new Client();
 
     if (this.isNewClient) {
       clientRecord.firstName = this.firstName.value;
@@ -88,9 +88,6 @@ export class DialogClientRecordComponent implements OnInit {
       this.client.phoneNumber = this.phoneNumber.value;
       this.dialogRef.close()
     }
-
-
-
   }
 
   onCancelClicked() {

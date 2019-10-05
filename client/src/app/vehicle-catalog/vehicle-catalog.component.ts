@@ -7,7 +7,6 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import { MatDatepicker } from '@angular/material/datepicker';
 
 import * as _moment from 'moment';
-import {DialogClientRecordComponent} from "../client-records/dialog-client-record/dialog-client-record.component";
 import {MatDialog} from "@angular/material/dialog";
 import {DialogVehicleDetailsComponent} from "./dialog-vehicle-details/dialog-vehicle-details.component";
 
@@ -43,7 +42,7 @@ export const MY_FORMATS = {
 export class VehicleCatalogComponent implements OnInit {
 
   isLoading: boolean;
-  allVehicles: Vehicle[];
+  resultVehicles: Vehicle[];
   dataSource: MatTableDataSource<Vehicle>;
 
   displayedColumns: string[] = ['type', 'make', 'model', 'year', 'color', 'actions'];
@@ -70,34 +69,34 @@ export class VehicleCatalogComponent implements OnInit {
 
   listVehiclesInRandomOrder() {
     this.isLoading = true;
-    if (!this.allVehicles) {
+    if (!this.resultVehicles) {
       this.vehicleApiService.getAllVehicles().subscribe(
         result => {
-          this.allVehicles = result;
-          this.dataSource.data = this.randomizeArray(this.allVehicles);
+          this.resultVehicles = result;
+          this.dataSource.data = this.randomizeArray(this.resultVehicles);
           this.isLoading = false;
         }
       );
     } else {
-      this.dataSource.data = this.randomizeArray(this.allVehicles);
+      this.dataSource.data = this.randomizeArray(this.resultVehicles);
       this.isLoading = false;
     }
   }
 
   searchWithFilters() {
     this.isLoading = true;
-    if (!this.allVehicles) {
+    if (!this.resultVehicles) {
       this.vehicleApiService.getAllVehicles().subscribe(
         result => {
-          this.allVehicles = result;
-          let filtered = this.applyFilters(this.allVehicles);
+          this.resultVehicles = result;
+          let filtered = this.applyFilters(this.resultVehicles);
           this.dataSource.data = this.applySorting(filtered);
           this.isLoading = false;
         }
       );
     } else {
       this.isLoading = false;
-      let filtered = this.applyFilters(this.allVehicles);
+      let filtered = this.applyFilters(this.resultVehicles);
       this.dataSource.data = this.applySorting(filtered);
     }
   }
