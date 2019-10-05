@@ -24,7 +24,6 @@ export class TransactionApiService {
 
   // https://stackoverflow.com/questions/325933/determine-whether-two-date-ranges-overlap
   // TODO this method has a lot of refactoring opportunities
-  // MAKE IT WORK. MAKE IT RIGHT. MAKE IT FAST.
   getAvailableVehicleForDates(start: Moment, end: Moment): Observable<Vehicle[]> {
     let rentedVehicles: Vehicle[] =
       this.rentals
@@ -47,6 +46,22 @@ export class TransactionApiService {
             .filter((v) => !reservedVehicles.map(r => r.pkid).includes(v.pkid))
         })
       );
+  }
+
+  isVehicleAvailableForDates(vehicle: Vehicle, start: Moment, end: Moment) {
+    let isRented = this.rentals
+      .filter(r => r.vehicle.pkid === vehicle.pkid) // Only consider the passed vehicle
+      .filter(r => !r.returned) // Only consider rentals that aren't returned
+      .filter(r => start.isSameOrBefore(_moment(r.dueDate)) && end.isSameOrAfter(_moment(r.timestamp)))
+      .length > 0;
+
+    let isReserved = this.reservations
+      .filter(r => r.vehicle.pkid === vehicle.pkid)
+      .filter(r => !r.returned)
+      .filter(r => start.isSameOrBefore(_moment(r.dueDate)) && end.isSameOrAfter(_moment(r.startDate)))
+      .length > 0;
+
+    return !isRented && !isReserved;
   }
 
   makeRental(client: Client, vehicle: Vehicle, now: Moment, dueDate: Moment) {

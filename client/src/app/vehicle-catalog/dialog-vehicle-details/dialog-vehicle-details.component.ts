@@ -2,6 +2,9 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {Vehicle} from "../../api/vehicle-api.service";
 import {FormControl, FormGroup} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import {TransactionApiService} from "../../api/transaction-api.service";
+
+import * as _moment from 'moment';
 
 @Component({
   selector: 'app-dialog-vehicle-details',
@@ -36,6 +39,7 @@ export class DialogVehicleDetailsComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data,
     public dialogRef: MatDialogRef<DialogVehicleDetailsComponent>,
+    private transactionApiService: TransactionApiService,
   ) {
     this.vehicle = data['vehicle'];
     this.resultSetVehicles = data['resultSetVehicles'];
@@ -67,7 +71,8 @@ export class DialogVehicleDetailsComponent implements OnInit {
   }
 
   getVehicleStatus() {
-    return this.isAvailable ? 'Available' : 'Unavailable';
+    return this.transactionApiService.isVehicleAvailableForDates(this.vehicle, _moment(), _moment()) ?
+      'Available' : 'Unavailable';
   }
 
   onPreviousClicked() {
