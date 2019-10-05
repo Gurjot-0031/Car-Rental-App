@@ -99,7 +99,7 @@
     <mat-spinner></mat-spinner>
   </div>
 
-  <div *ngIf="!isLoading && this.allVehicles">
+  <div *ngIf="!isLoading && this.resultVehicles">
     <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
       <ng-container matColumnDef="type">

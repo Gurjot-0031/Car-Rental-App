@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {MatDialog} from "@angular/material/dialog";
 import {DialogClientRecordComponent} from "./dialog-client-record/dialog-client-record.component";
 import {MatTableDataSource} from "@angular/material/table";
+import {Client, ClientApiService} from "../api/client-api.service";
 
 @Component({
   selector: 'app-client-records',
@@ -11,40 +12,23 @@ import {MatTableDataSource} from "@angular/material/table";
 export class ClientRecordsComponent implements OnInit {
 
   isLoading: boolean;
-  dataSource: MatTableDataSource<ClientRecord>;
-  clientRecords: ClientRecord[];
+  dataSource: MatTableDataSource<Client>;
   displayedColumns: string[] = ['lastName', 'firstName', 'driverLicense', 'expirationDate', 'phoneNumber', 'actions'];
 
-  constructor(public dialog: MatDialog) {
+  constructor(
+    public dialog: MatDialog,
+    public clientApiService: ClientApiService) {
   }
 
   ngOnInit() {
     this.isLoading = true;
-    this.createStubClientRecords();
-    this.dataSource = new MatTableDataSource<ClientRecord>();
-    this.dataSource.data = this.clientRecords;
+    this.dataSource = new MatTableDataSource<Client>();
+    this.dataSource.data = this.clientApiService.getAllClientRecords();
     this.isLoading = false;
   }
 
-  // This method is to be replaced when we implement concurrency
-  createStubClientRecords() {
-    this.clientRecords = [];
-    for (let i = 0; i < 10; i++) {
-      const cr = new ClientRecord();
-      cr.firstName = "John" + i;
-      cr.lastName = "Doe" + i;
-      cr.expirationDate = new Date().toLocaleDateString();
-      cr.phoneNumber = "51412345" + i;
-      cr.driverLicense = "A-" + i % 9 +
-        "234-" + i % 2 +
-        "234" + i % 5 +
-        "6-1" + i % 7;
-      cr.pkid = i;
-      this.clientRecords.push(cr);
-    }
-  }
 
-  addOrEditClientRecord(client?: ClientRecord) {
+  addOrEditClientRecord(client?: Client) {
     this.dialog.open(DialogClientRecordComponent, {
       disableClose: true,
       autoFocus: false,
@@ -53,26 +37,18 @@ export class ClientRecordsComponent implements OnInit {
     }).afterClosed().subscribe(data => {
         if (data) {
           if (data['isNewClient']) {
-            this.clientRecords.push(data['client']);
-            this.dataSource.data = this.clientRecords;
+            this.clientApiService.addClient(data['client']);
+
+            // this should be replace by observable style pattern. The datasource should listen to record changes
+            this.dataSource.data = this.clientApiService.getAllClientRecords();
           }
         }
       }
     )
   }
 
-  deleteClientRecord(client: any) {
-    this.clientRecords = this.clientRecords.filter(cr => cr !== client);
-    this.dataSource.data = this.clientRecords;
+  deleteClientRecord(client: Client) {
+    this.clientApiService.deleteClient(client)
+    this.dataSource.data = this.clientApiService.getAllClientRecords();
   }
-
-}
-
-export class ClientRecord {
-  pkid: number;
-  firstName: string;
-  lastName: string;
-  driverLicense: string;
-  expirationDate: string;
-  phoneNumber: string;
 }
