@@ -76,8 +76,12 @@ export class TransactionApiService {
     //TODO return successful add
   }
 
-  getRentals() {
+  getRentals(): Rental[] {
     return this.rentals;
+  }
+
+  getReservations(): Reservation[] {
+    return this.reservations;
   }
 
   makeReservation(client: Client, vehicle: Vehicle, start: Moment, dueDate: Moment) {
@@ -90,6 +94,10 @@ export class TransactionApiService {
     reservation.returned = false;
 
     this.reservations.push(reservation);
+  }
+
+  cancelReservation(reservation: Reservation) {
+    this.reservations = this.reservations.filter(r => r !== reservation)
   }
 }
 

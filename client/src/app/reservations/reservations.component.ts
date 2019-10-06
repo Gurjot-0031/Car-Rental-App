@@ -3,12 +3,13 @@ import {MatTableDataSource} from "@angular/material/table";
 import {Vehicle} from "../api/vehicle-api.service";
 import {FormControl, FormGroup, ValidatorFn, Validators} from "@angular/forms";
 import {Client, ClientApiService} from "../api/client-api.service";
-import {TransactionApiService} from "../api/transaction-api.service";
+import {Reservation, TransactionApiService} from "../api/transaction-api.service";
 import {MatDialog} from "@angular/material/dialog";
 import {StepperSelectionEvent} from "@angular/cdk/stepper";
 import * as _moment from "moment";
 import {DialogVehicleDetailsComponent} from "../vehicle-catalog/dialog-vehicle-details/dialog-vehicle-details.component";
 import {MatVerticalStepper} from "@angular/material/stepper";
+import {MatTabChangeEvent} from "@angular/material/tabs";
 
 @Component({
   selector: 'app-reservations',
@@ -17,7 +18,8 @@ import {MatVerticalStepper} from "@angular/material/stepper";
 })
 export class ReservationsComponent implements OnInit {
 
-  dataSource: MatTableDataSource<Vehicle>;
+  dataSourceCancelReservation: MatTableDataSource<Reservation>;
+  dataSourceMakeReservation: MatTableDataSource<Vehicle>;
   driverLicense = new FormControl('', [
       Validators.required,
       this.regexValidator({pattern: '^[A-Z]{1}-\\d{4}-\\d{6}-\\d{2}$', msg: 'Must match format A-1234-123456-12'})
@@ -29,20 +31,21 @@ export class ReservationsComponent implements OnInit {
   );
 
   startDate = new FormControl('', Validators.required);
-  startDateFormGroup = new FormGroup({
-    startDate: this.startDate
-  });
-
   dueDate = new FormControl('', Validators.required);
   dueDateFormGroup = new FormGroup({
-    dueDate: this.dueDate
+    dueDate: this.dueDate,
+    startDate: this.startDate
   });
 
   isClientFound: boolean;
   client: Client;
   isVehicleFound: boolean;
   isVehicleSelected: boolean;
-  displayedColumns: string[] = ['type', 'make', 'model', 'actions'];
+  makeReservationDisplayedColumns: string[] = ['type', 'make', 'model', 'actions'];
+  cancelReservationDisplayedColumns: string[] =
+    ['makeC', 'modelC', 'licensePlate', 'firstName', 'lastName', 'driverLicense', 'startDate', 'dueDate', 'actionsC'];
+
+  isCancelTabIsLoading: boolean;
 
   constructor(
     private transactionApiService: TransactionApiService,
@@ -54,7 +57,9 @@ export class ReservationsComponent implements OnInit {
     this.isClientFound = false;
     this.isVehicleFound = false;
     this.isVehicleSelected = false;
-    this.dataSource = new MatTableDataSource<Vehicle>();
+    this.isCancelTabIsLoading = false;
+    this.dataSourceMakeReservation = new MatTableDataSource<Vehicle>();
+    this.dataSourceCancelReservation = new MatTableDataSource<Reservation>();
   }
 
   // This is now duplicate code. Should extract
@@ -90,7 +95,7 @@ export class ReservationsComponent implements OnInit {
       this.transactionApiService
         .getAvailableVehicleForDates(now, dueDate)
         .subscribe(vehicles => {
-          this.dataSource.data = vehicles;
+          this.dataSourceMakeReservation.data = vehicles;
           this.isVehicleFound = vehicles.length > 0;
         });
     }
@@ -103,7 +108,7 @@ export class ReservationsComponent implements OnInit {
       width: '40vw',
       data: {
         vehicle: vehicle,
-        resultSetVehicles: this.dataSource.data
+        resultSetVehicles: this.dataSourceMakeReservation.data
       }
     });
   }
@@ -121,7 +126,23 @@ export class ReservationsComponent implements OnInit {
     this.isVehicleFound = false;
     this.isVehicleSelected = false;
     this.client = null;
-    this.dataSource.data = null;
+    this.dataSourceMakeReservation.data = null;
     stepper.selectedIndex = 0;
+  }
+
+  onTabChange($event: MatTabChangeEvent) {
+    if ($event.index === 1) {
+      this.isCancelTabIsLoading = true;
+      this.dataSourceCancelReservation.data = this.transactionApiService.getReservations();
+      this.isCancelTabIsLoading = false;
+    }
+
+  }
+
+  cancelReservation(res: Reservation) {
+    this.transactionApiService.cancelReservation(res);
+    this.isCancelTabIsLoading = true;
+    this.dataSourceCancelReservation.data = this.transactionApiService.getReservations();
+    this.isCancelTabIsLoading = false;
   }
 }
