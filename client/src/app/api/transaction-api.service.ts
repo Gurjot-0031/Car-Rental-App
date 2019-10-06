@@ -28,13 +28,13 @@ export class TransactionApiService {
     let rentedVehicles: Vehicle[] =
       this.rentals
         .filter(r => !r.returned)
-        .filter(r => start.isSameOrBefore(_moment(r.dueDate)) && end.isSameOrAfter(_moment(r.timestamp)))
+        .filter(r => start.isSameOrBefore(_moment(r.dueDate)) && end.isSameOrAfter(_moment(r.startDate)))
         .map(r => r.vehicle);
 
     let reservedVehicles: Vehicle[] =
       this.reservations
         .filter(r => !r.returned)
-        .filter(r => start.isSameOrBefore(_moment(r.dueDate)) && end.isSameOrAfter(_moment(r.timestamp)))
+        .filter(r => start.isSameOrBefore(_moment(r.dueDate)) && end.isSameOrAfter(_moment(r.startDate)))
         .map(r => r.vehicle);
 
     // get all vehicle, removes the one that are in the rented vehicles
@@ -52,7 +52,7 @@ export class TransactionApiService {
     let isRented = this.rentals
       .filter(r => r.vehicle.pkid === vehicle.pkid) // Only consider the passed vehicle
       .filter(r => !r.returned) // Only consider rentals that aren't returned
-      .filter(r => start.isSameOrBefore(_moment(r.dueDate)) && end.isSameOrAfter(_moment(r.timestamp)))
+      .filter(r => start.isSameOrBefore(_moment(r.dueDate)) && end.isSameOrAfter(_moment(r.startDate)))
       .length > 0;
 
     let isReserved = this.reservations
@@ -69,6 +69,7 @@ export class TransactionApiService {
     rental.vehicle = vehicle;
     rental.client = client;
     rental.timestamp = now.format('YYYY-MM-DD');
+    rental.startDate = now.format('YYYY-MM-DD');
     rental.dueDate = dueDate.format('YYYY-MM-DD');
     rental.returned = false;
 
@@ -99,24 +100,32 @@ export class TransactionApiService {
   cancelReservation(reservation: Reservation) {
     this.reservations = this.reservations.filter(r => r !== reservation)
   }
+
+  returnTransaction(transaction: Transaction) {
+    if (transaction instanceof Rental) {
+      this.rentals = this.rentals.filter(r => r !== transaction);
+    } else if (transaction instanceof Reservation) {
+      this.reservations = this.reservations.filter(r => r !== transaction);
+    }
+  }
 }
 
 // All these dates should be expressed as YYYY-MM-DD
-export class Rental {
+export class Transaction {
   timestamp: string;
   client: Client;
   vehicle: Vehicle;
   returned: boolean;
+  startDate: string;
+}
+
+
+export class Rental extends Transaction {
   dueDate: string;
 }
 
-export class Reservation {
-  timestamp: string;
-  client: Client;
-  vehicle: Vehicle;
-  returned: boolean;
+export class Reservation extends Transaction {
   dueDate: string;
-  startDate: string;
 }
 
 export class Return {

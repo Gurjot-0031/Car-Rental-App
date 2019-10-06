@@ -89,6 +89,7 @@ export class ReservationsComponent implements OnInit {
   selectionChange($event: StepperSelectionEvent) {
     // index 2 = vehicle selection
     if ($event.selectedIndex === 2) {
+      let pargol = 2;
       let now = _moment();
       let dueDate = this.dueDate.value;
 
