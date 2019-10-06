@@ -1,107 +1,176 @@
 <!-- https://material.angular.io/components/stepper/overview -->
 <h1>Vehicle Reservation</h1>
-<mat-vertical-stepper [linear]="true" #stepper (selectionChange)="selectionChange($event)">
 
-  <mat-step [stepControl]="clientFormGroup">
-    <form [formGroup]="clientFormGroup">
-      <ng-template matStepLabel>Choose client - A-0234-023406-10</ng-template>
-      <mat-form-field style="margin-right: 1vw">
-        <input matInput placeholder="Driver's License" formControlName="driverLicense">
-        <mat-error *ngIf="driverLicense.errors && driverLicense.errors['required']">
-          This field is required.
-        </mat-error>
-        <mat-error *ngIf="driverLicense.errors && clientFormGroup.controls.driverLicense.errors.invalidMsg">
-          The Driver License format is A-1234-123456-12.
-        </mat-error>
-      </mat-form-field>
-      <button
-        mat-raised-button
-        color="primary"
-        [disabled]="clientFormGroup.invalid"
-        (click)="searchForClient()">
-        <span>Search</span>
-      </button>
-      <div *ngIf="isClientFound">
-        <h3>Client Found! : {{client.firstName}} {{client.lastName}} - Driver License #{{client.driverLicense}}</h3>
-      </div>
-      <br/>
-      <div *ngIf="isClientFound">
-        <button mat-flat-button color="accent" matStepperNext>Next</button>
-      </div>
-    </form>
-  </mat-step>
+<mat-tab-group (selectedTabChange)="onTabChange($event)">
+  <mat-tab label="Make New Reservation">
+    <h3>Make a new reservation</h3>
+    <mat-vertical-stepper [linear]="true" #stepper (selectionChange)="selectionChange($event)">
+      <mat-step [stepControl]="clientFormGroup">
+        <form [formGroup]="clientFormGroup">
+          <ng-template matStepLabel>Choose client - A-0234-023406-10</ng-template>
+          <mat-form-field style="margin-right: 1vw">
+            <input matInput placeholder="Driver's License" formControlName="driverLicense">
+            <mat-error *ngIf="driverLicense.errors && driverLicense.errors['required']">
+              This field is required.
+            </mat-error>
+            <mat-error *ngIf="driverLicense.errors && clientFormGroup.controls.driverLicense.errors.invalidMsg">
+              The Driver License format is A-1234-123456-12.
+            </mat-error>
+          </mat-form-field>
+          <button
+            mat-raised-button
+            color="primary"
+            [disabled]="clientFormGroup.invalid"
+            (click)="searchForClient()">
+            <span>Search</span>
+          </button>
+          <div *ngIf="isClientFound">
+            <h3>Client Found! : {{client.firstName}} {{client.lastName}} - Driver License #{{client.driverLicense}}</h3>
+          </div>
+          <br/>
+          <div *ngIf="isClientFound">
+            <button mat-flat-button color="accent" matStepperNext>Next</button>
+          </div>
+        </form>
+      </mat-step>
 
-  <mat-step [stepControl]="dueDateFormGroup">
-    <form [formGroup]="dueDateFormGroup">
-      <ng-template matStepLabel>Choose reservation date range</ng-template>
-      <!-- TODO add date validation? -->
-      <mat-form-field style="margin-right: 1vw">
-        <input matInput [matDatepicker]="startpicker" placeholder="Start date" [formControl]="startDate">
-        <mat-datepicker-toggle matSuffix [for]="startpicker"></mat-datepicker-toggle>
-        <mat-datepicker #startpicker></mat-datepicker>
-      </mat-form-field>
-      <mat-form-field>
-        <input matInput [matDatepicker]="duepicker" placeholder="Due date" [formControl]="dueDate">
-        <mat-datepicker-toggle matSuffix [for]="duepicker"></mat-datepicker-toggle>
-        <mat-datepicker #duepicker></mat-datepicker>
-      </mat-form-field>
-      <div>
-        <button mat-flat-button color="accent" matStepperPrevious style="margin-right: 1vw">Back</button>
-        <button mat-flat-button color="accent" matStepperNext>Next</button>
-      </div>
-    </form>
-  </mat-step>
+      <mat-step [stepControl]="dueDateFormGroup">
+        <form [formGroup]="dueDateFormGroup">
+          <ng-template matStepLabel>Choose reservation date range</ng-template>
+          <!-- TODO add date validation? -->
+          <mat-form-field style="margin-right: 1vw">
+            <input matInput [matDatepicker]="startpicker" placeholder="Start date" [formControl]="startDate">
+            <mat-datepicker-toggle matSuffix [for]="startpicker"></mat-datepicker-toggle>
+            <mat-datepicker #startpicker></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput [matDatepicker]="duepicker" placeholder="Due date" [formControl]="dueDate">
+            <mat-datepicker-toggle matSuffix [for]="duepicker"></mat-datepicker-toggle>
+            <mat-datepicker #duepicker></mat-datepicker>
+          </mat-form-field>
+          <div>
+            <button mat-flat-button color="accent" matStepperPrevious style="margin-right: 1vw">Back</button>
+            <button mat-flat-button color="accent" matStepperNext>Next</button>
+          </div>
+        </form>
+      </mat-step>
 
-  <mat-step>
-    <ng-template matStepLabel>Select a vehicle</ng-template>
+      <mat-step>
+        <ng-template matStepLabel>Select a vehicle</ng-template>
 
-    <div *ngIf="!isVehicleFound">
-      <p>Searching for available vehicles...</p>
-      <mat-spinner></mat-spinner>
-    </div>
+        <div *ngIf="!isVehicleFound">
+          <p>Searching for available vehicles...</p>
+          <mat-spinner></mat-spinner>
+        </div>
 
-    <div *ngIf="isVehicleFound && !isVehicleSelected" style="margin-top: 1vh">
+        <div *ngIf="isVehicleFound && !isVehicleSelected" style="margin-top: 1vh">
 
-      <h3>Choose an available vehicle</h3>
-      <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+          <h3>Choose an available vehicle</h3>
+          <mat-table [dataSource]="dataSourceMakeReservation" class="mat-elevation-z8">
 
-        <ng-container matColumnDef="type">
-          <th mat-header-cell *matHeaderCellDef>Type</th>
-          <td mat-cell *matCellDef="let vehicle"> {{vehicle.type}} </td>
-        </ng-container>
+            <ng-container matColumnDef="type">
+              <th mat-header-cell *matHeaderCellDef>Type</th>
+              <td mat-cell *matCellDef="let vehicle"> {{vehicle.type}} </td>
+            </ng-container>
 
-        <ng-container matColumnDef="make">
+            <ng-container matColumnDef="make">
+              <th mat-header-cell *matHeaderCellDef>Make</th>
+              <td mat-cell *matCellDef="let vehicle"> {{vehicle.make}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="model">
+              <th mat-header-cell *matHeaderCellDef>Model</th>
+              <td mat-cell *matCellDef="let vehicle"> {{vehicle.model}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let vehicle">
+                <button mat-icon-button (click)="viewVehicleDetails(vehicle)">
+                  <mat-icon>search</mat-icon>
+                </button>
+                <button mat-stroked-button color="primary" (click)="reserveVehicle(vehicle)">Select</button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="makeReservationDisplayedColumns"></tr>
+            <tr mat-row *matRowDef="let vehicle; columns: makeReservationDisplayedColumns;"></tr>
+          </mat-table>
+        </div>
+
+        <div *ngIf="isVehicleSelected">
+          Reservation successfully registered.
+        </div>
+
+        <div style="margin-top: 1vh">
+          <button mat-flat-button color="accent" matStepperPrevious style="margin-right: 1vw">Back</button>
+          <button mat-flat-button color="accent" (click)="reset(stepper)">New Rental</button>
+        </div>
+      </mat-step>
+    </mat-vertical-stepper>
+  </mat-tab>
+
+  <mat-tab label="Cancel Reservation">
+    <h3>Choose a reservation to cancel</h3>
+
+    <div *ngIf="!isCancelTabIsLoading">
+      <mat-table [dataSource]="dataSourceCancelReservation" class="mat-elevation-z8">
+
+        <ng-container matColumnDef="makeC">
           <th mat-header-cell *matHeaderCellDef>Make</th>
-          <td mat-cell *matCellDef="let vehicle"> {{vehicle.make}} </td>
+          <td mat-cell *matCellDef="let res"> {{res.vehicle.make}} </td>
         </ng-container>
 
-        <ng-container matColumnDef="model">
+        <ng-container matColumnDef="modelC">
           <th mat-header-cell *matHeaderCellDef>Model</th>
-          <td mat-cell *matCellDef="let vehicle"> {{vehicle.model}} </td>
+          <td mat-cell *matCellDef="let res"> {{res.vehicle.model}} </td>
         </ng-container>
 
-        <ng-container matColumnDef="actions">
+        <ng-container matColumnDef="licensePlate">
+          <th mat-header-cell *matHeaderCellDef>License Plate</th>
+          <td mat-cell *matCellDef="let res"> {{res.vehicle.license}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="firstName">
+          <th mat-header-cell *matHeaderCellDef>First Name</th>
+          <td mat-cell *matCellDef="let res"> {{res.client.firstName}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="lastName">
+          <th mat-header-cell *matHeaderCellDef>Last Name</th>
+          <td mat-cell *matCellDef="let res"> {{res.client.lastName}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="driverLicense">
+          <th mat-header-cell *matHeaderCellDef>Driver License</th>
+          <td mat-cell *matCellDef="let res"> {{res.client.driverLicense}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="startDate">
+          <th mat-header-cell *matHeaderCellDef>Start Date</th>
+          <td mat-cell *matCellDef="let res"> {{res.startDate}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="dueDate">
+          <th mat-header-cell *matHeaderCellDef>Due Date</th>
+          <td mat-cell *matCellDef="let res"> {{res.dueDate}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actionsC">
           <th mat-header-cell *matHeaderCellDef>Actions</th>
-          <td mat-cell *matCellDef="let vehicle">
-            <button mat-icon-button (click)="viewVehicleDetails(vehicle)">
-              <mat-icon>search</mat-icon>
+          <td mat-cell *matCellDef="let res">
+            <button mat-icon-button (click)="cancelReservation(res)">
+              <mat-icon>delete_forever</mat-icon>
             </button>
-            <button mat-stroked-button color="primary" (click)="reserveVehicle(vehicle)">Select</button>
           </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let vehicle; columns: displayedColumns;"></tr>
+        <tr mat-header-row *matHeaderRowDef="cancelReservationDisplayedColumns"></tr>
+        <tr mat-row *matRowDef="let res; columns: cancelReservationDisplayedColumns;"></tr>
       </mat-table>
     </div>
+  </mat-tab>
 
-    <div *ngIf="isVehicleSelected">
-      Reservation successfully registered.
-    </div>
+</mat-tab-group>
 
-    <div style="margin-top: 1vh">
-      <button mat-flat-button color="accent" matStepperPrevious style="margin-right: 1vw">Back</button>
-      <button mat-flat-button color="accent" (click)="reset(stepper)">New Rental</button>
-    </div>
-  </mat-step>
-</mat-vertical-stepper>
+

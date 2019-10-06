@@ -34,6 +34,7 @@ import {MatRadioModule} from "@angular/material/radio";
 import {FormsModule} from "@angular/forms";
 import { DialogVehicleDetailsComponent } from './vehicle-catalog/dialog-vehicle-details/dialog-vehicle-details.component';
 import {MatStepperModule} from "@angular/material/stepper";
+import {MatTabsModule} from "@angular/material/tabs";
 
 
 @NgModule({
@@ -75,7 +76,8 @@ import {MatStepperModule} from "@angular/material/stepper";
     MatExpansionModule,
     MatRadioModule,
     FormsModule,
-    MatStepperModule
+    MatStepperModule,
+    MatTabsModule
   ],
   entryComponents: [
     RootComponent,
