@@ -1,0 +1,12 @@
+.container {
+  width: 100%;
+}
+
+.vehicle-form {
+  display: flex;
+  flex-direction: column;
+}
+
+::ng-deep .mat-input-element:disabled {
+  color: black !important;
+}

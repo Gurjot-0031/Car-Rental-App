@@ -1,0 +1,94 @@
+<div class="container">
+  <div *ngIf="isNewClient">
+    <h1>Create New Client Record</h1>
+  </div>
+  <div *ngIf="!isNewClient">
+    <h1>Edit Client Record</h1>
+  </div>
+
+  <form [formGroup]="clientForm">
+
+    <div class="client-form">
+      <mat-form-field>
+        <label>
+          <input type="text"
+                 matInput
+                 placeholder="First Name"
+                 formControlName="firstName">
+        </label>
+        <mat-error *ngIf="firstName.errors && firstName.errors['required']">
+          This field is required.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <label>
+          <input type="text"
+                 matInput
+                 placeholder="Last Name"
+                 formControlName="lastName"
+                 data-auto="user-last-name">
+        </label>
+        <mat-error *ngIf="lastName.errors && lastName.errors['required']">
+          This field is required.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <label>
+          <input type="text"
+                 matInput
+                 placeholder="Phone Number"
+                 formControlName="phoneNumber">
+        </label>
+        <mat-error *ngIf="phoneNumber.errors && phoneNumber.errors['required']">
+          This field is required.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <label>
+          <input type="text"
+                 matInput
+                 placeholder="Driver License"
+                 formControlName="driverLicense">
+        </label>
+        <mat-error *ngIf="driverLicense.errors && driverLicense.errors['required']">
+          This field is required.
+        </mat-error>
+        <mat-error *ngIf="driverLicense.errors && clientForm.controls.driverLicense.errors.invalidMsg">
+          The Driver License format is A-1234-123456-12.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <label>
+          <input type="text"
+                 matInput
+                 placeholder="Expiration Date"
+                 formControlName="expirationDate">
+        </label>
+        <mat-error *ngIf="expirationDate.errors && expirationDate.errors['required']">
+          This field is required.
+        </mat-error>
+      </mat-form-field>
+
+    </div>
+
+  </form>
+
+  <div mat-dialog-actions style="margin-top: 12px;">
+    <div style="margin-left: auto;">
+      <button mat-raised-button
+              color="primary"
+              type="submit"
+              (click)="onSubmitClicked()"
+              data-auto="save-user-button">
+        <span>Submit</span>
+      </button>
+      <button color="primary" mat-raised-button
+              (click)="onCancelClicked()">Cancel</button>
+    </div>
+  </div>
+</div>
+

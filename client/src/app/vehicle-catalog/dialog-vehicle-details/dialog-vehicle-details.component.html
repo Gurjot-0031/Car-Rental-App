@@ -1,0 +1,101 @@
+<div class="container">
+
+  <h1>Vehicle Details</h1>
+
+  <h4>Status: {{getVehicleStatus()}}</h4>
+
+  <form [formGroup]="vehicleForm">
+
+    <div class="vehicle-form">
+      <mat-form-field>
+        <label>
+          <input type="text"
+                 matInput
+                 placeholder="Type"
+                 formControlName="type">
+        </label>
+        <mat-error *ngIf="type.errors && type.errors['required']">
+          This field is required.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <label>
+          <input type="text"
+                 matInput
+                 placeholder="Make"
+                 formControlName="make">
+        </label>
+        <mat-error *ngIf="make.errors && make.errors['required']">
+          This field is required.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <label>
+          <input type="text"
+                 matInput
+                 placeholder="Model"
+                 formControlName="model">
+        </label>
+        <mat-error *ngIf="model.errors && model.errors['required']">
+          This field is required.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <label>
+          <input type="text"
+                 matInput
+                 placeholder="Year"
+                 formControlName="year">
+        </label>
+        <mat-error *ngIf="year.errors && year.errors['required']">
+          This field is required.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <label>
+          <input type="text"
+                 matInput
+                 placeholder="Color"
+                 formControlName="color">
+        </label>
+        <mat-error *ngIf="color.errors && color.errors['required']">
+          This field is required.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <label>
+          <input type="text"
+                 matInput
+                 placeholder="License Plate"
+                 formControlName="license">
+        </label>
+        <mat-error *ngIf="license.errors && license.errors['required']">
+          This field is required.
+        </mat-error>
+      </mat-form-field>
+
+    </div>
+
+  </form>
+
+  <div mat-dialog-actions style="margin-top: 12px;">
+    <div style="margin-left: auto;">
+      <button color="primary" mat-raised-button
+              (click)="onCancelClicked()">Close</button>
+    </div>
+    <div style="margin-left: auto;">
+      <button color="primary" mat-raised-button
+              (click)="onPreviousClicked()">Previous</button>
+    </div>
+    <div style="margin-left: auto;">
+      <button color="primary" mat-raised-button
+              (click)="onNextClicked()">Next</button>
+    </div>
+  </div>
+</div>
+
