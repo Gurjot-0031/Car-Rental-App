@@ -8,10 +8,13 @@ import {Router} from "@angular/router";
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
+  public static role :string;
 
   constructor(
     private loginService: LogInService,
-    private router: Router) { }
+    private router: Router) {
+    HomeComponent.role = this.loginService.role ? this.loginService.role : "No Role";
+  }
 
   ngOnInit() {
     //TODO reimplement this when we care about concurrency
@@ -25,7 +28,7 @@ export class HomeComponent implements OnInit {
   }
 
   getRole() {
-    return this.loginService.role ? this.loginService.role : "No Role";
+    return HomeComponent.role;
   }
   logout() {
     this.loginService.logout();
