@@ -1,7 +1,7 @@
 INSERT INTO user (username, password, role) VALUES
 ("clerk1", "clerk1", "clerk");
 
-INSERT INTO vehicle (type,make,model,color,license,year) VALUES
+INSERT INTO Vehicle (type,make,model,color,license,year) VALUES
 ("SUV","Honda","CR-V","white","ABC 338",2018),
 ("SUV","Honda","CR-V","blue","VCA 801",2018),
 ("Luxury","Mercedes","S 550","red","HDT 914",2014),
