@@ -143,7 +143,7 @@ export class ReservationsComponent implements OnInit {
   cancelReservation(res: Reservation) {
     this.transactionApiService.cancelReservation(res);
     this.isCancelTabIsLoading = true;
-    this.dataSourceCancelReservation.data = this.transactionApiService.getReservations();
+    this.dataSourceCancelReservation.data = this.transactionApiService.getReservations().filter(r => !r.cancelDate);
     this.isCancelTabIsLoading = false;
   }
 }
