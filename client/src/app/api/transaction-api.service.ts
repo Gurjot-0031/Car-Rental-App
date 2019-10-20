@@ -12,14 +12,16 @@ import {map, switchMap} from "rxjs/operators";
 })
 export class TransactionApiService {
 
+  // These fields simulate pkid for when we have databases
+  private rentalId = 1;
+  private reservationId = 1;
+
   private rentals: Rental[];
   private reservations: Reservation[];
-  private returns: Return[];
 
   constructor(private vehicleApiService: VehicleApiService) {
     this.rentals = [];
     this.reservations = [];
-    this.returns = [];
   }
 
   // https://stackoverflow.com/questions/325933/determine-whether-two-date-ranges-overlap
@@ -27,17 +29,18 @@ export class TransactionApiService {
   getAvailableVehicleForDates(start: Moment, end: Moment): Observable<Vehicle[]> {
     let rentedVehicles: Vehicle[] =
       this.rentals
-        .filter(r => !r.returned)
+        .filter(r => !r.returnDate)
         .filter(r => start.isSameOrBefore(_moment(r.dueDate)) && end.isSameOrAfter(_moment(r.startDate)))
         .map(r => r.vehicle);
 
     let reservedVehicles: Vehicle[] =
       this.reservations
-        .filter(r => !r.returned)
+        .filter(r => !r.returnDate)
+        .filter(r => !r.cancelDate)
         .filter(r => start.isSameOrBefore(_moment(r.dueDate)) && end.isSameOrAfter(_moment(r.startDate)))
         .map(r => r.vehicle);
 
-    // get all vehicle, removes the one that are in the rented vehicles
+    // get all vehicle, removes the one that are in the unavailable vehicles
     return this.vehicleApiService.getAllVehicles()
       .pipe(
         map(vehicles => {
@@ -51,13 +54,14 @@ export class TransactionApiService {
   isVehicleAvailableForDates(vehicle: Vehicle, start: Moment, end: Moment) {
     let isRented = this.rentals
       .filter(r => r.vehicle.pkid === vehicle.pkid) // Only consider the passed vehicle
-      .filter(r => !r.returned) // Only consider rentals that aren't returned
+      .filter(r => !r.returnDate) // Only consider rentals that aren't returned
       .filter(r => start.isSameOrBefore(_moment(r.dueDate)) && end.isSameOrAfter(_moment(r.startDate)))
       .length > 0;
 
     let isReserved = this.reservations
       .filter(r => r.vehicle.pkid === vehicle.pkid)
-      .filter(r => !r.returned)
+      .filter(r => !r.returnDate)
+      .filter(r => !r.cancelDate)
       .filter(r => start.isSameOrBefore(_moment(r.dueDate)) && end.isSameOrAfter(_moment(r.startDate)))
       .length > 0;
 
@@ -71,10 +75,22 @@ export class TransactionApiService {
     rental.timestamp = now.format('YYYY-MM-DD');
     rental.startDate = now.format('YYYY-MM-DD');
     rental.dueDate = dueDate.format('YYYY-MM-DD');
-    rental.returned = false;
+    rental.pkid = this.rentalId++;
 
     this.rentals.push(rental);
     //TODO return successful add
+  }
+
+  makeReservation(client: Client, vehicle: Vehicle, start: Moment, dueDate: Moment) {
+    const reservation = new Reservation();
+    reservation.vehicle = vehicle;
+    reservation.client = client;
+    reservation.timestamp = _moment().format('YYYY-MM-DD');
+    reservation.startDate = start.format('YYYY-MM-DD');
+    reservation.dueDate = dueDate.format('YYYY-MM-DD');
+    reservation.pkid = this.reservationId++;
+
+    this.reservations.push(reservation);
   }
 
   getRentals(): Rental[] {
@@ -85,51 +101,38 @@ export class TransactionApiService {
     return this.reservations;
   }
 
-  makeReservation(client: Client, vehicle: Vehicle, start: Moment, dueDate: Moment) {
-    const reservation = new Reservation();
-    reservation.vehicle = vehicle;
-    reservation.client = client;
-    reservation.timestamp = _moment().format('YYYY-MM-DD');
-    reservation.startDate = start.format('YYYY-MM-DD');
-    reservation.dueDate = dueDate.format('YYYY-MM-DD');
-    reservation.returned = false;
-
-    this.reservations.push(reservation);
-  }
-
   cancelReservation(reservation: Reservation) {
-    this.reservations = this.reservations.filter(r => r !== reservation)
+    this.reservations.filter(r => r.pkid == reservation.pkid)[0].cancelDate = this.getTimestampNow();
   }
 
   returnTransaction(transaction: Transaction) {
-    if (transaction instanceof Rental) {
-      this.rentals = this.rentals.filter(r => r !== transaction);
-    } else if (transaction instanceof Reservation) {
-      this.reservations = this.reservations.filter(r => r !== transaction);
+    if (transaction instanceof Reservation) {
+      this.reservations.filter(r => r.pkid == transaction.pkid)[0].returnDate = this.getTimestampNow();
+    } else if (transaction instanceof Rental) {
+      this.rentals.filter(r => r.pkid == transaction.pkid)[0].returnDate = this.getTimestampNow();
     }
   }
+
+  getTimestampNow(): string {
+    return _moment().format('YYYY-MM-DD');
+  }
+
 }
 
 // All these dates should be expressed as YYYY-MM-DD
 export class Transaction {
+  pkid: number;
   timestamp: string;
   client: Client;
   vehicle: Vehicle;
-  returned: boolean;
   startDate: string;
+  dueDate: string;
+  returnDate: string = null;
 }
 
-
 export class Rental extends Transaction {
-  dueDate: string;
 }
 
 export class Reservation extends Transaction {
-  dueDate: string;
-}
-
-export class Return {
-  timestamp: string;
-  client: Client;
-  vehicle: Vehicle;
+  cancelDate: string = null;
 }
