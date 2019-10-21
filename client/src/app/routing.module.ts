@@ -8,6 +8,7 @@ import {ReturnsComponent} from "./returns/returns.component";
 import {ReservationsComponent} from "./reservations/reservations.component";
 import {RentalsComponent} from "./rentals/rentals.component";
 import {ClientRecordsComponent} from "./client-records/client-records.component";
+import { TransactionsComponent } from './transactions/transactions.component';
 
 const routes: Routes = [
   {
@@ -43,12 +44,15 @@ const routes: Routes = [
       {
         path: 'reservations',
         component: ReservationsComponent
-      }
-      ,
+      },
       {
         path: 'returns',
         component: ReturnsComponent
-      }
+      },
+      {
+        path: 'transactions',
+        component: TransactionsComponent
+      },
     ]
   }
 
