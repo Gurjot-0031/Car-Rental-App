@@ -7,6 +7,12 @@
     </button>
   </div>
 
+  <span *ngIf=isAdmin()>
+    <button mat-raised-button color="primary" (click)="addNewVehicle()">
+      <span>Add New Vehicle</span>
+    </button>
+  </span>
+
   <div style="margin-bottom: 24px">
     <mat-accordion>
       <mat-expansion-panel>
@@ -150,7 +156,6 @@
             </button>
           </td>
         </ng-container>
-
 
 
         <ng-container *ngIf=isAdmin() matColumnDef="delete">

@@ -227,4 +227,16 @@ export class VehicleCatalogComponent implements OnInit {
       }
     });
   }
+
+  addNewVehicle() {
+    this.dialog.open(DialogVehicleDetailsComponent, {
+      disableClose: true,
+      autoFocus: false,
+      width: '40vw',
+      data: {
+        resultSetVehicles: this.dataSource.data,
+        action: `new`
+      }
+    });
+  }
 }
