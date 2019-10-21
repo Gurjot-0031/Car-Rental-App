@@ -1,0 +1,80 @@
+.centered {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  /* bring your own prefixes */
+  transform: translate(-50%, -50%);
+}
+
+.random-order {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 24px;
+}
+
+.filters {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 24px;
+  justify-content: space-between;
+}
+
+table {
+  width: 100%;
+}
+
+.search-filter-spacing {
+  margin-right: 10px;
+  max-width: 36vh;
+}
+
+.mat-header-cell {
+  padding-top: 16px;
+}
+
+.mat-cell {
+  padding-top: 16px;
+}
+
+/* Column Widths */
+.mat-column-licensePlate {
+  width: 20vw;
+}
+
+.mat-column-driverLicense {
+  width: 20vw;
+}
+
+.mat-column-type {
+  width: 20vw;
+}
+
+.mat-column-startDate {
+  width: 12vw;
+}
+
+.mat-column-dueDate {
+  width: 12vw;
+}
+
+.mat-column-returnDate {
+  width: 16vw;
+}
+
+.example-month-picker .mat-calendar-period-button {
+  pointer-events: none;
+}
+
+.example-month-picker .mat-calendar-arrow {
+  display: none;
+}
+
+.sort-radio-group {
+  display: flex;
+  flex-direction: row;
+  margin-right: 12px;
+}
+
+.sort-radio-button {
+  margin: 5px;
+}
