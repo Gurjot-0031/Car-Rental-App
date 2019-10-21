@@ -8,12 +8,10 @@ import {Router} from "@angular/router";
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  public static role :string;
 
   constructor(
     private loginService: LogInService,
     private router: Router) {
-    HomeComponent.role = this.loginService.role ? this.loginService.role : "No Role";
   }
 
   ngOnInit() {
@@ -28,7 +26,7 @@ export class HomeComponent implements OnInit {
   }
 
   getRole() {
-    return HomeComponent.role;
+    return this.loginService.role ? this.loginService.role : "No Role";
   }
   logout() {
     this.loginService.logout();
