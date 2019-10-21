@@ -10,15 +10,17 @@ import { MatTableDataSource } from '@angular/material/table';
 })
 export class TransactionsComponent implements OnInit {
 
-  displayedColumns: string[] = ['licensePlate', 'driverLicense', 'type', 'startDate', 'dueDate', 'returnDate', 'cancelDate'];
+  displayedColumns: string[] = ['licensePlate', 'driverLicense', 'type', 'timestamp', 'startDate', 'dueDate', 'returnDate', 'cancelDate'];
 
   licensePlate = new FormControl();
   driverLicense = new FormControl();
   type = new FormControl();
+   timestamp = new FormControl();
   startDate = new FormControl();
   dueDate = new FormControl();
   returnDate = new FormControl();
   cancelDate = new FormControl();
+ 
 
   dataSource: MatTableDataSource<Transaction>;
 
@@ -31,6 +33,18 @@ export class TransactionsComponent implements OnInit {
     this.dataSource = new MatTableDataSource<Transaction>();
     rentals.forEach(r => this.dataSource.data.push(r));
     reservations.forEach(r => this.dataSource.data.push(r));
+  }
+
+  getTransactionType(transaction: Transaction) {
+      if (transaction.returnDate) {
+        return 'Return';
+      }
+      if (transaction instanceof Rental) {
+        return 'Rental';
+      }
+      if (transaction instanceof Reservation) {
+        return 'Reservation'
+      }
   }
 
 }

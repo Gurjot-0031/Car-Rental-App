@@ -38,7 +38,7 @@ table {
 
 /* Column Widths */
 .mat-column-licensePlate {
-  width: 20vw;
+  width: 10vw;
 }
 
 .mat-column-driverLicense {
@@ -46,7 +46,11 @@ table {
 }
 
 .mat-column-type {
-  width: 20vw;
+  width: 10vw;
+}
+
+.mat-column-timestamp {
+  width: 12vw;
 }
 
 .mat-column-startDate {
@@ -58,7 +62,11 @@ table {
 }
 
 .mat-column-returnDate {
-  width: 16vw;
+  width: 12vw;
+}
+
+.mat-column-cancelDate {
+  width: 12vw;
 }
 
 .example-month-picker .mat-calendar-period-button {
