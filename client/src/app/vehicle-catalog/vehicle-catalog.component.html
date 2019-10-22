@@ -60,7 +60,7 @@
               <input matInput [matDatepicker]="dp" placeholder="Min Year" [formControl]="minYear">
               <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
               <mat-datepicker #dp startView="multi-year" (yearSelected)="setMinYear($event, dp)"
-                panelClass="example-month-picker">
+                              panelClass="example-month-picker">
               </mat-datepicker>
             </mat-form-field>
           </div>
@@ -69,7 +69,7 @@
               <input matInput [matDatepicker]="dpmax" placeholder="Max Year" [formControl]="maxYear">
               <mat-datepicker-toggle matSuffix [for]="dpmax"></mat-datepicker-toggle>
               <mat-datepicker #dpmax startView="multi-year" (yearSelected)="setMaxYear($event, dpmax)"
-                panelClass="example-month-picker">
+                              panelClass="example-month-picker">
               </mat-datepicker>
             </mat-form-field>
           </div>
@@ -88,7 +88,8 @@
         <strong>Sort Direction</strong>
         <div class="filters">
           <mat-radio-group [(ngModel)]="sortDirection" class="sort-radio-group">
-            <mat-radio-button class="sort-radio-button" *ngFor="let direction of sortDirectionOptions" [value]="direction">
+            <mat-radio-button class="sort-radio-button" *ngFor="let direction of sortDirectionOptions"
+                              [value]="direction">
               {{direction}}
             </mat-radio-button>
           </mat-radio-group>
@@ -107,7 +108,6 @@
 
   <div *ngIf="!isLoading && this.resultVehicles">
     <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-
       <ng-container matColumnDef="type">
         <th mat-header-cell *matHeaderCellDef>Type</th>
         <td mat-cell *matCellDef="let vehicle"> {{vehicle.type}} </td>
@@ -133,44 +133,23 @@
         <td mat-cell *matCellDef="let vehicle"> {{vehicle.color}} </td>
       </ng-container>
 
-      <ng-container *ngIf=isAdmin() matColumnDef="licence">
-        <th mat-header-cell *matHeaderCellDef>Licence plate #</th>
-        <td mat-cell *matCellDef="let vehicle"> {{vehicle.license}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="view">
-        <th mat-header-cell *matHeaderCellDef>View Details</th>
+      <ng-container *ngIf='isAdmin()' matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
         <td mat-cell *matCellDef="let vehicle">
           <button mat-icon-button (click)="viewVehicleDetails(vehicle)">
             <mat-icon>search</mat-icon>
           </button>
+          <button mat-icon-button (click)="modifyVehicleDetails(vehicle)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="deleteVehicle(vehicle)">
+            <mat-icon>delete</mat-icon>
+          </button>
         </td>
       </ng-container>
 
-
-        <ng-container *ngIf=isAdmin() matColumnDef="modify">
-          <th mat-header-cell *matHeaderCellDef>Modify</th>
-          <td mat-cell *matCellDef="let vehicle">
-            <button mat-icon-button (click)="modifyVehicleDetails(vehicle)">
-              <mat-icon>border_color</mat-icon>
-            </button>
-          </td>
-        </ng-container>
-
-
-        <ng-container *ngIf=isAdmin() matColumnDef="delete">
-          <th mat-header-cell *matHeaderCellDef>Delete</th>
-          <td mat-cell *matCellDef="let vehicle">
-            <button mat-icon-button (click)="deleteVehicle(vehicle)">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </td>
-        </ng-container>
-
-
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let vehicle; columns: displayedColumns;"></tr>
     </mat-table>
   </div>
-
 </div>

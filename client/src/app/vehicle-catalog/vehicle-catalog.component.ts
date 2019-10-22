@@ -67,7 +67,7 @@ export class VehicleCatalogComponent implements OnInit {
   ngOnInit() {
     this.dataSource = new MatTableDataSource<Vehicle>();
     if(this.loginService.getRole() === 'admin')
-      this.displayedColumns = ['licence','type', 'make', 'model', 'year', 'color', 'view','modify','delete'];
+      this.displayedColumns = ['type', 'make', 'model', 'year', 'color', 'actions'];
     else
       this.displayedColumns = ['type', 'make', 'model', 'year', 'color', 'view'];
   }
