@@ -18,17 +18,25 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.isLoading = true;
-    if (!this.loginService.username) {
+    if (!this.loginService.getUsername()) {
       this.loginService.signIn('dev','only').subscribe(() => this.isLoading = false);
     }
   }
 
   getUsername() {
-    return this.loginService.username ? this.loginService.username : "No User";
+    return this.loginService.getUsername() ? this.loginService.getUsername() : "No User";
   }
 
   getRole() {
-    return this.loginService.role ? this.loginService.role : "No Role";
+    const roles = this.loginService.getRoles();
+    if (!roles) {
+      return "No Role";
+    }
+    if (roles.length > 1) {
+      return "Dev Mode"
+    }  else {
+      return roles[0]
+    }
   }
 
   logout() {
@@ -36,7 +44,11 @@ export class HomeComponent implements OnInit {
   }
 
   isAdmin() {
-    return this.getRole() === 'admin';
+    return this.loginService.getRoles().includes('admin');
+  }
+
+  isClerk() {
+    return this.loginService.getRoles().includes('clerk');
   }
 
 }
