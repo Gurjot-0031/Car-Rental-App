@@ -5,10 +5,10 @@ import { FormControl } from '@angular/forms';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepicker } from '@angular/material/datepicker';
-
 import * as _moment from 'moment';
 import {MatDialog} from "@angular/material/dialog";
 import {DialogVehicleDetailsComponent} from "./dialog-vehicle-details/dialog-vehicle-details.component";
+import {LogInService} from "../api/login-in.service";
 
 const moment = _moment;
 
@@ -45,7 +45,7 @@ export class VehicleCatalogComponent implements OnInit {
   resultVehicles: Vehicle[];
   dataSource: MatTableDataSource<Vehicle>;
 
-  displayedColumns: string[] = ['type', 'make', 'model', 'year', 'color', 'actions'];
+  displayedColumns : string[];
 
   make = new FormControl();
   model = new FormControl();
@@ -60,11 +60,16 @@ export class VehicleCatalogComponent implements OnInit {
   sortDirectionOptions = ['Ascending', 'Descending'];
 
   constructor(
+    private loginService: LogInService,
     private vehicleApiService: VehicleApiService,
     public dialog: MatDialog) { }
 
   ngOnInit() {
     this.dataSource = new MatTableDataSource<Vehicle>();
+    if(this.loginService.getRole() === 'admin')
+      this.displayedColumns = ['licence','type', 'make', 'model', 'year', 'color', 'view','modify','delete'];
+    else
+      this.displayedColumns = ['type', 'make', 'model', 'year', 'color', 'view'];
   }
 
   listVehiclesInRandomOrder() {
@@ -190,7 +195,47 @@ export class VehicleCatalogComponent implements OnInit {
       width: '40vw',
       data: {
         vehicle: vehicle,
-        resultSetVehicles: this.dataSource.data
+        resultSetVehicles: this.dataSource.data,
+        action: 'view'
+      }
+    });
+  }
+
+  deleteVehicle(vehicle: any) {
+    if(confirm("Confirm delete.."))
+    {
+      let index:number = this.dataSource.data.findIndex(d => d === vehicle);
+      this.dataSource.data.splice(index,1);
+      this.dataSource = new MatTableDataSource<Vehicle>(this.dataSource.data);
+    }
+  }
+
+
+  isAdmin() {
+    return this.loginService.getRole() === 'admin';
+  }
+
+  modifyVehicleDetails(vehicle: any) {
+    this.dialog.open(DialogVehicleDetailsComponent, {
+      disableClose: true,
+      autoFocus: false,
+      width: '40vw',
+      data: {
+        vehicle: vehicle,
+        resultSetVehicles: this.dataSource.data,
+        action: `modify`
+      }
+    });
+  }
+
+  addNewVehicle() {
+    this.dialog.open(DialogVehicleDetailsComponent, {
+      disableClose: true,
+      autoFocus: false,
+      width: '40vw',
+      data: {
+        resultSetVehicles: this.dataSource.data,
+        action: `new`
       }
     });
   }

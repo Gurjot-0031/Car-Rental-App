@@ -7,6 +7,12 @@
     </button>
   </div>
 
+  <span *ngIf=isAdmin()>
+    <button mat-raised-button color="primary" (click)="addNewVehicle()">
+      <span>Add New Vehicle</span>
+    </button>
+  </span>
+
   <div style="margin-bottom: 24px">
     <mat-accordion>
       <mat-expansion-panel>
@@ -127,8 +133,13 @@
         <td mat-cell *matCellDef="let vehicle"> {{vehicle.color}} </td>
       </ng-container>
 
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <ng-container *ngIf=isAdmin() matColumnDef="licence">
+        <th mat-header-cell *matHeaderCellDef>Licence plate #</th>
+        <td mat-cell *matCellDef="let vehicle"> {{vehicle.license}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="view">
+        <th mat-header-cell *matHeaderCellDef>View Details</th>
         <td mat-cell *matCellDef="let vehicle">
           <button mat-icon-button (click)="viewVehicleDetails(vehicle)">
             <mat-icon>search</mat-icon>
@@ -136,7 +147,28 @@
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+        <ng-container *ngIf=isAdmin() matColumnDef="modify">
+          <th mat-header-cell *matHeaderCellDef>Modify</th>
+          <td mat-cell *matCellDef="let vehicle">
+            <button mat-icon-button (click)="modifyVehicleDetails(vehicle)">
+              <mat-icon>border_color</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+
+        <ng-container *ngIf=isAdmin() matColumnDef="delete">
+          <th mat-header-cell *matHeaderCellDef>Delete</th>
+          <td mat-cell *matCellDef="let vehicle">
+            <button mat-icon-button (click)="deleteVehicle(vehicle)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let vehicle; columns: displayedColumns;"></tr>
     </mat-table>
   </div>

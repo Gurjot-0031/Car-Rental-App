@@ -11,7 +11,8 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private loginService: LogInService,
-    private router: Router) { }
+    private router: Router) {
+  }
 
   ngOnInit() {
     //TODO reimplement this when we care about concurrency

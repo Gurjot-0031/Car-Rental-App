@@ -1,8 +1,10 @@
 <div class="container">
 
-  <h1>Vehicle Details</h1>
+  <h1 *ngIf = " this.data['action'] == 'view' ? true : false " >Vehicle Details</h1>
+  <h1 *ngIf = " this.data['action'] == 'modify' ? true : false " >Update Vehicle Details</h1>
+  <h1 *ngIf = " this.data['action'] == 'new' ? true : false " >Add New Vehicle</h1>
 
-  <h4>Status: {{getVehicleStatus()}}</h4>
+  <h4 *ngIf = " this.data['action'] != 'new' ? true : false " >Status: {{getVehicleStatus()}}</h4>
 
   <form [formGroup]="vehicleForm">
 
@@ -11,6 +13,7 @@
         <label>
           <input type="text"
                  matInput
+                 placeholder="Type"
                  placeholder="Type"
                  formControlName="type">
         </label>
@@ -88,13 +91,23 @@
       <button color="primary" mat-raised-button
               (click)="onCancelClicked()">Close</button>
     </div>
-    <div style="margin-left: auto;">
+    <div *ngIf = " this.data['action'] == 'view' ? true : false " style="margin-left: auto;">
       <button color="primary" mat-raised-button
               (click)="onPreviousClicked()">Previous</button>
     </div>
-    <div style="margin-left: auto;">
+    <div *ngIf = " this.data['action'] == 'view' ? true : false " style="margin-left: auto;">
       <button color="primary" mat-raised-button
               (click)="onNextClicked()">Next</button>
+    </div>
+
+    <div *ngIf = " this.data['action'] == 'modify' ? true : false " style="margin-left: auto;">
+      <button color="primary" mat-raised-button
+              (click)="onModifyClicked()">Modify</button>
+    </div>
+
+    <div *ngIf = " this.data['action'] == 'new' ? true : false " style="margin-left: auto;">
+      <button color="primary" mat-raised-button
+              (click)="onAddClicked()">Add</button>
     </div>
   </div>
 </div>
