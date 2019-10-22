@@ -29,7 +29,10 @@ export class LogInService {
               this.role = response.role;
               return of(true)
             } else {
-              return of(false);
+              // TODO FOR DEVELOPMENT ONLY!!!
+              this.username = 'FORCED ADMIN';
+              this.role = 'admin';
+              return of(true);
             }
           }
         )
@@ -38,7 +41,7 @@ export class LogInService {
 
   logout(){
     this.username =null;
-    this.role = null; 
+    this.role = null;
   }
 
   getUsername() {

@@ -9,16 +9,18 @@ import {Router} from "@angular/router";
 })
 export class HomeComponent implements OnInit {
 
+  isLoading: boolean;
+
   constructor(
     private loginService: LogInService,
     private router: Router) {
   }
 
   ngOnInit() {
-    //TODO reimplement this when we care about concurrency
-    // if (!this.loginService.username) {
-    //   this.router.navigate(['']);
-    // }
+    this.isLoading = true;
+    if (!this.loginService.username) {
+      this.loginService.signIn('dev','only').subscribe(() => this.isLoading = false);
+    }
   }
 
   getUsername() {
