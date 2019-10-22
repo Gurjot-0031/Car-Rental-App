@@ -30,7 +30,13 @@ export class HomeComponent implements OnInit {
   getRole() {
     return this.loginService.role ? this.loginService.role : "No Role";
   }
+
   logout() {
     this.loginService.logout();
   }
+
+  isAdmin() {
+    return this.getRole() === 'admin';
+  }
+
 }

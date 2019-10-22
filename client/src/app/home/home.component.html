@@ -38,7 +38,7 @@
             Transactions
           </button>
         </a>
-        <a mat-list-item [routerLink]="['rentals']">
+        <a *ngIf="!isAdmin()" mat-list-item [routerLink]="['rentals']">
           <button
             mat-raised-button
             class="list-button"
@@ -46,7 +46,7 @@
             Rentals
           </button>
         </a>
-        <a mat-list-item [routerLink]="['reservations']">
+        <a *ngIf="!isAdmin()" mat-list-item [routerLink]="['reservations']">
           <button
             mat-raised-button
             class="list-button"
@@ -54,7 +54,7 @@
             Reservations
           </button>
         </a>
-        <a mat-list-item [routerLink]="['returns']">
+        <a *ngIf="!isAdmin()" mat-list-item [routerLink]="['returns']">
           <button
             mat-raised-button
             class="list-button"
