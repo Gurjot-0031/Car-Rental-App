@@ -4,6 +4,10 @@ import {TransactionApiService, Transaction, Rental, Reservation} from '../api/tr
 import {MatTableDataSource} from '@angular/material/table';
 import {Observable} from "rxjs";
 import {map, startWith} from "rxjs/operators";
+import * as _moment from "moment";
+import {Moment} from "moment";
+
+const moment = _moment;
 
 @Component({
   selector: 'app-transactions',
@@ -25,6 +29,8 @@ export class TransactionsComponent implements OnInit {
 
 
   dataSource: MatTableDataSource<Transaction>;
+
+  dueDateFilter: Moment;
 
   clientFilter = new FormControl();
   clientOptions: string[];
@@ -92,6 +98,8 @@ export class TransactionsComponent implements OnInit {
     this.transactionApiService.setupTransactions().subscribe(() => {
       this.dataSource = null;
 
+      console.log(this.dueDateFilter);
+
       const rentals: Rental[] = this.transactionApiService.getRentals();
       const reservations: Reservation[] = this.transactionApiService.getReservations();
       this.dataSource = new MatTableDataSource<Transaction>();
@@ -102,7 +110,8 @@ export class TransactionsComponent implements OnInit {
         .filter(t => (this.clientFilter.value && this.clientFilter.value.length > 0) ?
           t.client.driverLicense === this.clientFilter.value : true)
         .filter(t => (this.vehicleFilter.value && this.vehicleFilter.value.length > 0) ?
-          t.vehicle.license === this.vehicleFilter.value : true);
+          t.vehicle.license === this.vehicleFilter.value : true)
+        .filter(t => this.dueDateFilter ? t.dueDate === this.dueDateFilter.format('YYYY-MM-DD') : true)
     })
   }
 }
