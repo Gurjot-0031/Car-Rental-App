@@ -36,6 +36,7 @@ import { DialogVehicleDetailsComponent } from './vehicle-catalog/dialog-vehicle-
 import {MatStepperModule} from "@angular/material/stepper";
 import {MatTabsModule} from "@angular/material/tabs";
 import { TransactionsComponent } from './transactions/transactions.component';
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
 
 
 @NgModule({
@@ -79,7 +80,8 @@ import { TransactionsComponent } from './transactions/transactions.component';
     MatRadioModule,
     FormsModule,
     MatStepperModule,
-    MatTabsModule
+    MatTabsModule,
+    MatAutocompleteModule
   ],
   entryComponents: [
     RootComponent,

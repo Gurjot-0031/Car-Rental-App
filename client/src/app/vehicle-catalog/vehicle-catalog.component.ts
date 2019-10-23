@@ -208,7 +208,7 @@ export class VehicleCatalogComponent implements OnInit {
 
 
   isAdmin() {
-    return this.loginService.getRoles() === 'admin';
+    return this.loginService.getRoles().includes('admin');
   }
 
   modifyVehicleDetails(vehicle: any) {

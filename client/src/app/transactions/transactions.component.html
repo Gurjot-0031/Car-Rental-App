@@ -1,156 +1,106 @@
-<div class="table-container">
-  <h1>Transaction</h1>
-
-  <!--
-  <div class="random-order">
-    <button mat-raised-button color="primary" (click)="listVehiclesInRandomOrder()">
-      <span>Show</span>
-    </button>
-  </div>
-
-	<div style="margin-bottom: 24px">
-    <mat-accordion>
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            Search Filters
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-        <strong>Filters</strong>
-        <div class="filters">
-          <div>
-            <mat-form-field class="search-filter-spacing">
-              <mat-label>Type</mat-label>
-              <mat-select [formControl]="type" multiple>
-                <mat-option *ngFor="let type of getTypeList()" [value]="type">{{type}}</mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-          <div>
-            <mat-form-field class="search-filter-spacing">
-              <mat-label>Make</mat-label>
-              <mat-select [formControl]="make" multiple>
-                <mat-option *ngFor="let make of getMakeList()" [value]="make">{{make}}</mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-          <div>
-            <mat-form-field class="search-filter-spacing">
-              <mat-label>Model</mat-label>
-              <mat-select [formControl]="model" multiple>
-                <mat-option *ngFor="let model of getModelList()" [value]="model">{{model}}</mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-          <div>
-            <mat-form-field class="search-filter-spacing">
-              <mat-label>Color</mat-label>
-              <mat-select [formControl]="color" multiple>
-                <mat-option *ngFor="let color of getColorList()" [value]="color">{{color}}</mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-          <div>
-            <mat-form-field class="search-filter-spacing">
-              <input matInput [matDatepicker]="dp" placeholder="Min Year" [formControl]="minYear">
-              <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
-              <mat-datepicker #dp startView="multi-year" (yearSelected)="setMinYear($event, dp)"
-                panelClass="example-month-picker">
-              </mat-datepicker>
-            </mat-form-field>
-          </div>
-          <div>
-            <mat-form-field class="search-filter-spacing">
-              <input matInput [matDatepicker]="dpmax" placeholder="Max Year" [formControl]="maxYear">
-              <mat-datepicker-toggle matSuffix [for]="dpmax"></mat-datepicker-toggle>
-              <mat-datepicker #dpmax startView="multi-year" (yearSelected)="setMaxYear($event, dpmax)"
-                panelClass="example-month-picker">
-              </mat-datepicker>
-            </mat-form-field>
-          </div>
-        </div>
-        <strong>Sort Column</strong>
-        <div class="filters">
-          <mat-radio-group
-            aria-labelledby="example-radio-group-label"
-            class="sort-radio-group"
-            [(ngModel)]="sortColumn">
-            <mat-radio-button class="sort-radio-button" *ngFor="let col of sortColumnsOptions" [value]="col">
-              {{col}}
-            </mat-radio-button>
-          </mat-radio-group>
-        </div>
-        <strong>Sort Direction</strong>
-        <div class="filters">
-          <mat-radio-group [(ngModel)]="sortDirection" class="sort-radio-group">
-            <mat-radio-button class="sort-radio-button" *ngFor="let direction of sortDirectionOptions" [value]="direction">
-              {{direction}}
-            </mat-radio-button>
-          </mat-radio-group>
-        </div>
-        <button mat-raised-button color="primary" (click)="searchWithFilters()">
-          <span>Search</span>
-        </button>
-      </mat-expansion-panel>
-    </mat-accordion>
-  </div>
-
-
-  <div class="centered" *ngIf="isLoading">
-    <mat-spinner></mat-spinner>
-  </div>
-
--->
-  <div>
-    <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-
-      <ng-container matColumnDef="licensePlate">
-        <th mat-header-cell *matHeaderCellDef>License Plate</th>
-        <td mat-cell *matCellDef="let transaction"> {{transaction.vehicle.license}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="driverLicense">
-        <th mat-header-cell *matHeaderCellDef>Driver License</th>
-        <td mat-cell *matCellDef="let transaction"> {{transaction.client.driverLicense}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="type">
-        <th mat-header-cell *matHeaderCellDef>Type</th>
-        <td mat-cell *matCellDef="let transaction"> {{getTransactionType(transaction)}} </td>
-	  </ng-container>
-	  
-	   <ng-container matColumnDef="timestamp">
-        <th mat-header-cell *matHeaderCellDef>Timestamp</th>
-        <td mat-cell *matCellDef="let transaction"> {{transaction.timestamp}} </td>
-	  </ng-container>
-
-      <ng-container matColumnDef="startDate">
-        <th mat-header-cell *matHeaderCellDef>StartDate</th>
-        <td mat-cell *matCellDef="let transaction"> {{transaction.startDate}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="dueDate">
-        <th mat-header-cell *matHeaderCellDef>DueDate</th>
-        <td mat-cell *matCellDef="let transaction"> {{transaction.dueDate}} </td>
-      </ng-container>
-
-	   <ng-container matColumnDef="returnDate">
-        <th mat-header-cell *matHeaderCellDef>ReturnDate</th>
-        <td mat-cell *matCellDef="let transaction"> {{transaction.returnDate}} </td>
-	  </ng-container>
-	  
-	   <ng-container matColumnDef="cancelDate">
-        <th mat-header-cell *matHeaderCellDef>CancelDate</th>
-        <td mat-cell *matCellDef="let transaction"> {{transaction.cancelDate}} </td>
-	  </ng-container>
-	  
-	 
-
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let transaction; columns: displayedColumns;"></tr>
-    </mat-table>
-  </div>
-
+<div *ngIf="isLoading">
+  <mat-spinner></mat-spinner>
 </div>
 
+<div *ngIf="!isLoading">
+  <div class="table-container">
+    <h1>Transaction</h1>
+
+    <div style="margin-bottom: 24px">
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Search Filters
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="filters">
+
+            <mat-form-field class="filter-form-field">
+              <input type="text"
+                     class="filter-input"
+                     placeholder="Client Driver License"
+                     aria-label="Number"
+                     matInput [formControl]="clientFilter"
+                     [matAutocomplete]="client">
+              <mat-autocomplete #client="matAutocomplete">
+                <mat-option *ngFor="let option of clientLicensesFilteredOptions | async" [value]="option">
+                  {{option}}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+
+            <mat-form-field class="filter-form-field">
+              <input type="text"
+                     class="filter-input"
+                     placeholder="Vehicle License Plate"
+                     aria-label="Number"
+                     matInput [formControl]="vehicleFilter"
+                     [matAutocomplete]="vehicle">
+              <mat-autocomplete #vehicle="matAutocomplete">
+                <mat-option *ngFor="let option of vehiclePlatesFilteredOptions | async" [value]="option">
+                  {{option}}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+
+          <button mat-raised-button color="primary" (click)="applyFilters()">
+            <span>Filter</span>
+          </button>
+
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+
+    <div>
+      <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+        <ng-container matColumnDef="licensePlate">
+          <th mat-header-cell *matHeaderCellDef>License Plate</th>
+          <td mat-cell *matCellDef="let transaction"> {{transaction.vehicle.license}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="driverLicense">
+          <th mat-header-cell *matHeaderCellDef>Driver License</th>
+          <td mat-cell *matCellDef="let transaction"> {{transaction.client.driverLicense}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef>Type</th>
+          <td mat-cell *matCellDef="let transaction"> {{getTransactionType(transaction)}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="timestamp">
+          <th mat-header-cell *matHeaderCellDef>Timestamp</th>
+          <td mat-cell *matCellDef="let transaction"> {{transaction.timestamp}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="startDate">
+          <th mat-header-cell *matHeaderCellDef>StartDate</th>
+          <td mat-cell *matCellDef="let transaction"> {{transaction.startDate}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="dueDate">
+          <th mat-header-cell *matHeaderCellDef>DueDate</th>
+          <td mat-cell *matCellDef="let transaction"> {{transaction.dueDate}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="returnDate">
+          <th mat-header-cell *matHeaderCellDef>ReturnDate</th>
+          <td mat-cell *matCellDef="let transaction"> {{transaction.returnDate}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="cancelDate">
+          <th mat-header-cell *matHeaderCellDef>CancelDate</th>
+          <td mat-cell *matCellDef="let transaction"> {{transaction.cancelDate}} </td>
+        </ng-container>
+
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let transaction; columns: displayedColumns;"></tr>
+      </mat-table>
+    </div>
+
+  </div>
+</div>
