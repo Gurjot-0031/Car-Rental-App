@@ -108,7 +108,6 @@ export class RentalsComponent implements OnInit {
     // TODO add confirmation
     this.transactionApiService.makeRental(this.client, vehicle, _moment(), this.dueDate.value);
     this.isVehicleSelected = true;
-    console.log(this.transactionApiService.getRentals());
   }
 
   reset(stepper: MatVerticalStepper) {

@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 export class ClientApiService {
 
   // Because we don't have a database yet
-  clientRecords: Client[];
+  private clientRecords: Client[];
 
   constructor() {
     this.createStubClientRecords();

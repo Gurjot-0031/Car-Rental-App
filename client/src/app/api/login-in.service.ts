@@ -33,7 +33,6 @@ export class LogInService {
               this.username = 'FORCED ADMIN';
               this.roles.push('admin');
               this.roles.push('clerk');
-              console.log(this.roles)
               return of(true);
             }
           }
