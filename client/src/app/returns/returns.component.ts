@@ -25,9 +25,14 @@ export class ReturnsComponent implements OnInit {
   }
 
   loadAllNotReturnedTransactions() {
-    let activeReservations = this.transactionApiService.getReservations().filter(r => !r.returned);
-    let activeRentals = this.transactionApiService.getRentals().filter(r => !r.returned);
-    this.dataSource.data = activeReservations.concat(activeRentals);
+    let activeReservations = this.transactionApiService.getReservations().filter(r => !r.returnDate);
+    let activeRentals = this.transactionApiService.getRentals().filter(r => !r.returnDate);
+
+    this.dataSource = new MatTableDataSource<Transaction>();
+
+    activeReservations.forEach(x => this.dataSource.data.push(x));
+    activeRentals.forEach(x => this.dataSource.data.push(x));
+
     this.isLoading = false;
   }
 

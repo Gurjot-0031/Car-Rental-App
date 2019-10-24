@@ -35,6 +35,8 @@ import {FormsModule} from "@angular/forms";
 import { DialogVehicleDetailsComponent } from './vehicle-catalog/dialog-vehicle-details/dialog-vehicle-details.component';
 import {MatStepperModule} from "@angular/material/stepper";
 import {MatTabsModule} from "@angular/material/tabs";
+import { TransactionsComponent } from './transactions/transactions.component';
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
 
 
 @NgModule({
@@ -48,7 +50,8 @@ import {MatTabsModule} from "@angular/material/tabs";
     ReservationsComponent,
     ReturnsComponent,
     DialogClientRecordComponent,
-    DialogVehicleDetailsComponent
+    DialogVehicleDetailsComponent,
+    TransactionsComponent
   ],
   imports: [
     BrowserModule,
@@ -77,7 +80,8 @@ import {MatTabsModule} from "@angular/material/tabs";
     MatRadioModule,
     FormsModule,
     MatStepperModule,
-    MatTabsModule
+    MatTabsModule,
+    MatAutocompleteModule
   ],
   entryComponents: [
     RootComponent,

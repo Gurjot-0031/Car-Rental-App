@@ -8,8 +8,8 @@ import {map, switchMap, tap} from "rxjs/operators";
 })
 export class LogInService {
 
-  username: string;
-  role: string;
+  private username: string;
+  private roles: string[] = [];
 
   constructor(private http: HttpClient) {
   }
@@ -26,10 +26,14 @@ export class LogInService {
         switchMap((response: LogInResponse) => {
             if (response.isSuccess) {
               this.username = response.username;
-              this.role = response.role;
+              this.roles.push(response.role);
               return of(true)
             } else {
-              return of(false);
+              // TODO FOR DEVELOPMENT ONLY!!!
+              this.username = 'FORCED ADMIN';
+              this.roles.push('admin');
+              this.roles.push('clerk');
+              return of(true);
             }
           }
         )
@@ -38,7 +42,7 @@ export class LogInService {
 
   logout(){
     this.username =null;
-    this.role = null; 
+    this.roles = [];
   }
 
   getUsername() {
@@ -47,9 +51,9 @@ export class LogInService {
     }
   }
 
-  getRole() {
-    if (this.role) {
-      return this.role;
+  getRoles() {
+    if (this.roles) {
+      return this.roles;
     }
   }
 }

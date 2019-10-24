@@ -9,25 +9,46 @@ import {Router} from "@angular/router";
 })
 export class HomeComponent implements OnInit {
 
+  isLoading: boolean;
+
   constructor(
     private loginService: LogInService,
-    private router: Router) { }
+    private router: Router) {
+  }
 
   ngOnInit() {
-    //TODO reimplement this when we care about concurrency
-    // if (!this.loginService.username) {
-    //   this.router.navigate(['']);
-    // }
+    this.isLoading = true;
+    if (!this.loginService.getUsername()) {
+      this.loginService.signIn('dev','only').subscribe(() => this.isLoading = false);
+    }
   }
 
   getUsername() {
-    return this.loginService.username ? this.loginService.username : "No User";
+    return this.loginService.getUsername() ? this.loginService.getUsername() : "No User";
   }
 
   getRole() {
-    return this.loginService.role ? this.loginService.role : "No Role";
+    const roles = this.loginService.getRoles();
+    if (!roles) {
+      return "No Role";
+    }
+    if (roles.length > 1) {
+      return "Dev Mode"
+    }  else {
+      return roles[0]
+    }
   }
+
   logout() {
     this.loginService.logout();
   }
+
+  isAdmin() {
+    return this.loginService.getRoles().includes('admin');
+  }
+
+  isClerk() {
+    return this.loginService.getRoles().includes('clerk');
+  }
+
 }
