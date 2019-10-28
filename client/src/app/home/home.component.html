@@ -38,7 +38,7 @@
             Transactions
           </button>
         </a>
-        <a *ngIf="isAdmin()" mat-list-item [routerLink]="['rentals']">
+        <a *ngIf="isClerk()" mat-list-item [routerLink]="['rentals']">
           <button
             mat-raised-button
             class="list-button"

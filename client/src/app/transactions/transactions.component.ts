@@ -98,8 +98,6 @@ export class TransactionsComponent implements OnInit {
     this.transactionApiService.setupTransactions().subscribe(() => {
       this.dataSource = null;
 
-      console.log(this.dueDateFilter);
-
       const rentals: Rental[] = this.transactionApiService.getRentals();
       const reservations: Reservation[] = this.transactionApiService.getReservations();
       this.dataSource = new MatTableDataSource<Transaction>();

@@ -20,6 +20,8 @@ export class HomeComponent implements OnInit {
     this.isLoading = true;
     if (!this.loginService.getUsername()) {
       this.loginService.signIn('dev','only').subscribe(() => this.isLoading = false);
+    } else {
+      this.isLoading = false;
     }
   }
 
