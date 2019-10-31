@@ -9,7 +9,7 @@ CREATE TABLE user (
     CONSTRAINT UC_username UNIQUE (username)
 );
 
-CREATE TABLE Vehicle (
+CREATE TABLE vehicle (
     pkid INT(11) NOT NULL auto_increment,
     type VARCHAR(255) NOT NULL,
     make VARCHAR(255) NOT NULL,

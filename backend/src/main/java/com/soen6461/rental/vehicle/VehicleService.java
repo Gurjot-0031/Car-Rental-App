@@ -20,7 +20,7 @@ public class VehicleService {
     public List<Vehicle> getAllVehicles() {
         return getJdbcTemplate()
             .query(
-                "SELECT * FROM Vehicle",
+                "SELECT * FROM vehicle",
                 (rs, rowNum) -> mapResultSetToVehicle(rs)
             );
     }
