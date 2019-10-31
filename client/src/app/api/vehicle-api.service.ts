@@ -13,6 +13,10 @@ export class VehicleApiService {
     return this.http.get<Vehicle[]>('/api/vehicles');
   }
 
+  createVehicle(vehicle: Vehicle) {
+    return this.http.post('/api/vehicle', vehicle);
+  }
+
 }
 
 export class Vehicle {

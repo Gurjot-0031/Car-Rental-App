@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {Vehicle} from "../../api/vehicle-api.service";
+import {Vehicle, VehicleApiService} from "../../api/vehicle-api.service";
 import {FormControl, FormGroup} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {TransactionApiService} from "../../api/transaction-api.service";
@@ -41,6 +41,7 @@ export class DialogVehicleDetailsComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data,
     public dialogRef: MatDialogRef<DialogVehicleDetailsComponent>,
     private transactionApiService: TransactionApiService,
+    private vehicleApiService: VehicleApiService,
   ) {
     this.vehicle = data['vehicle'];
     this.resultSetVehicles = data['resultSetVehicles'];
@@ -52,6 +53,7 @@ export class DialogVehicleDetailsComponent implements OnInit {
       this.setFormValues(this.vehicle);
       this.vehicleForm.disable();
     }
+
     //modify
     else if(this.vehicle && this.data['action'] === 'modify') {
       this.isNewVehicle = false;
