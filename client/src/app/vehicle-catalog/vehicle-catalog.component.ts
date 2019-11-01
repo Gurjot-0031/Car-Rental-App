@@ -76,7 +76,7 @@ export class VehicleCatalogComponent implements OnInit {
     this.vehicleApiService.getAllVehicles().subscribe(
       result => {
         this.resultVehicles = result.filter(v => v.active === 1);
-        this.refreshDropDownMenus(this.resultVehicles);
+        this.refreshDropDownMenus(result);
         this.isLoading = false;
       });
   }
@@ -87,7 +87,7 @@ export class VehicleCatalogComponent implements OnInit {
       result => {
         this.resultVehicles = result.filter(v => v.active === 1);
         this.dataSource.data = this.randomizeArray(this.resultVehicles);
-        this.refreshDropDownMenus(this.dataSource.data);
+        this.refreshDropDownMenus(result);
         this.isLoading = false;
       }
     );
@@ -100,7 +100,7 @@ export class VehicleCatalogComponent implements OnInit {
         this.resultVehicles = result.filter(v => v.active === 1);
         let filtered = this.applyFilters(this.resultVehicles);
         this.dataSource.data = this.applySorting(filtered);
-        this.refreshDropDownMenus(this.dataSource.data);
+        this.refreshDropDownMenus(result);
         this.isLoading = false;
       }
     );
