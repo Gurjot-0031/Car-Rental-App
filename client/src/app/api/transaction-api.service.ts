@@ -35,42 +35,42 @@ export class TransactionApiService {
         tap(vehicles => {
           const clients = this.clientApiService.getAllClientRecords();
 
-          // 5 Currently rented vehicles
-          for (let i = 0; i < 5; i++) {
-            const rental = new Rental();
-            rental.client = clients[i];
-            rental.vehicle = vehicles[i + 20];
-            rental.pkid = i;
-            rental.timestamp = _moment().format('YYYY-MM-DD');
-            rental.startDate = _moment().format('YYYY-MM-DD');
-            rental.dueDate = _moment().add(i, 'days').format('YYYY-MM-DD');
-            this.rentals.push(rental);
-          }
-
-          // 5 Previously returned vehicles
-          for (let i = 5; i < 10; i++) {
-            const rental = new Rental();
-            rental.client = clients[i];
-            rental.vehicle = vehicles[i + 40];
-            rental.pkid = i;
-            rental.timestamp = _moment().subtract(10, 'days').format('YYYY-MM-DD');
-            rental.startDate = _moment().subtract(10, 'days').format('YYYY-MM-DD');
-            rental.dueDate = _moment().subtract(7, 'days').format('YYYY-MM-DD');
-            rental.returnDate = _moment().subtract(7, 'days').format('YYYY-MM-DD')
-            this.rentals.push(rental);
-          }
-
-          // 10 Future reservations
-          for (let i = 0; i < 10; i++) {
-            const reservation = new Reservation();
-            reservation.client = clients[i];
-            reservation.vehicle = vehicles[i];
-            reservation.pkid = i;
-            reservation.timestamp = _moment().format('YYYY-MM-DD');
-            reservation.startDate = _moment().add(2, 'days').format('YYYY-MM-DD');
-            reservation.dueDate = _moment().add(12, 'days').format('YYYY-MM-DD');
-            this.reservations.push(reservation);
-          }
+          // // 5 Currently rented vehicles
+          // for (let i = 0; i < 5; i++) {
+          //   const rental = new Rental();
+          //   rental.client = clients[i];
+          //   rental.vehicle = vehicles[i + 20];
+          //   rental.pkid = i;
+          //   rental.timestamp = _moment().format('YYYY-MM-DD');
+          //   rental.startDate = _moment().format('YYYY-MM-DD');
+          //   rental.dueDate = _moment().add(i, 'days').format('YYYY-MM-DD');
+          //   this.rentals.push(rental);
+          // }
+          //
+          // // 5 Previously returned vehicles
+          // for (let i = 5; i < 10; i++) {
+          //   const rental = new Rental();
+          //   rental.client = clients[i];
+          //   rental.vehicle = vehicles[i + 40];
+          //   rental.pkid = i;
+          //   rental.timestamp = _moment().subtract(10, 'days').format('YYYY-MM-DD');
+          //   rental.startDate = _moment().subtract(10, 'days').format('YYYY-MM-DD');
+          //   rental.dueDate = _moment().subtract(7, 'days').format('YYYY-MM-DD');
+          //   rental.returnDate = _moment().subtract(7, 'days').format('YYYY-MM-DD')
+          //   this.rentals.push(rental);
+          // }
+          //
+          // // 10 Future reservations
+          // for (let i = 0; i < 10; i++) {
+          //   const reservation = new Reservation();
+          //   reservation.client = clients[i];
+          //   reservation.vehicle = vehicles[i];
+          //   reservation.pkid = i;
+          //   reservation.timestamp = _moment().format('YYYY-MM-DD');
+          //   reservation.startDate = _moment().add(2, 'days').format('YYYY-MM-DD');
+          //   reservation.dueDate = _moment().add(12, 'days').format('YYYY-MM-DD');
+          //   this.reservations.push(reservation);
+          // }
         }),
         map(() => true)
       )
@@ -105,7 +105,7 @@ export class TransactionApiService {
       );
   }
 
-isVehicleAvailableForDates(vehicle: Vehicle, start: Moment, end: Moment) {
+  isVehicleAvailableForDates(vehicle: Vehicle, start: Moment, end: Moment) {
     if (vehicle.active === 0) {
       return false;
     }

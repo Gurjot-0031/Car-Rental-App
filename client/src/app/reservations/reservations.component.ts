@@ -96,7 +96,7 @@ export class ReservationsComponent implements OnInit {
       this.transactionApiService
         .getAvailableVehicleForDates(now, dueDate)
         .subscribe(vehicles => {
-          this.dataSourceMakeReservation.data = vehicles;
+          this.dataSourceMakeReservation.data = vehicles.filter(v => v.active === 1);
           this.isVehicleFound = vehicles.length > 0;
         });
     }

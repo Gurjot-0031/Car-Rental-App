@@ -187,10 +187,12 @@ export class VehicleCatalogComponent implements OnInit {
   }
 
   deleteVehicle(vehicle: Vehicle) {
+    this.isLoading = true;
     this.vehicleApiService.deleteVehicle(vehicle).subscribe(() => {
       let index: number = this.dataSource.data.findIndex(d => d === vehicle);
       this.dataSource.data.splice(index, 1);
       this.dataSource = new MatTableDataSource<Vehicle>(this.dataSource.data);
+      this.isLoading = false;
     });
   }
 
@@ -221,6 +223,7 @@ export class VehicleCatalogComponent implements OnInit {
         resultSetVehicles: this.dataSource.data,
         action: `new`
       }
-    });
+    }).afterClosed().subscribe(() =>
+      this.dataSource.data = this.applySorting(this.applyFilters(this.dataSource.data)));
   }
 }

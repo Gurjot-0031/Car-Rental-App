@@ -86,7 +86,7 @@ export class RentalsComponent implements OnInit {
       this.transactionApiService
         .getAvailableVehicleForDates(now, dueDate)
         .subscribe(vehicles => {
-          this.dataSource.data = vehicles;
+          this.dataSource.data = vehicles.filter(v => v.active === 1);
           this.isVehicleFound = vehicles.length > 0;
         });
     }
