@@ -59,7 +59,7 @@ public class VehicleService {
 
     void deleteVehicle(Integer pkid) {
         //language = SQL
-        String sql = "DELETE FROM vehicle WHERE pkid=" + pkid;
+        String sql = "UPDATE vehicle SET active=0 WHERE pkid="+pkid;
 
         getJdbcTemplate().execute(sql);
     }
@@ -74,6 +74,7 @@ public class VehicleService {
         vehicle.setModel(rs.getString("model"));
         vehicle.setType(rs.getString("type"));
         vehicle.setYear(rs.getInt("year"));
+        vehicle.setActive(rs.getInt("active"));
         return vehicle;
     }
 

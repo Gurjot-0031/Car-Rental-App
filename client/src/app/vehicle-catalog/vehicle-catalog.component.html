@@ -21,7 +21,7 @@
             <mat-form-field class="search-filter-spacing">
               <mat-label>Type</mat-label>
               <mat-select [formControl]="type" multiple>
-                <mat-option *ngFor="let type of getTypeList()" [value]="type">{{type}}</mat-option>
+                <mat-option *ngFor="let type of typeList" [value]="type">{{type}}</mat-option>
               </mat-select>
             </mat-form-field>
           </div>
@@ -29,7 +29,7 @@
             <mat-form-field class="search-filter-spacing">
               <mat-label>Make</mat-label>
               <mat-select [formControl]="make" multiple>
-                <mat-option *ngFor="let make of getMakeList()" [value]="make">{{make}}</mat-option>
+                <mat-option *ngFor="let make of makeList" [value]="make">{{make}}</mat-option>
               </mat-select>
             </mat-form-field>
           </div>
@@ -37,7 +37,7 @@
             <mat-form-field class="search-filter-spacing">
               <mat-label>Model</mat-label>
               <mat-select [formControl]="model" multiple>
-                <mat-option *ngFor="let model of getModelList()" [value]="model">{{model}}</mat-option>
+                <mat-option *ngFor="let model of modelList" [value]="model">{{model}}</mat-option>
               </mat-select>
             </mat-form-field>
           </div>
@@ -45,7 +45,7 @@
             <mat-form-field class="search-filter-spacing">
               <mat-label>Color</mat-label>
               <mat-select [formControl]="color" multiple>
-                <mat-option *ngFor="let color of getColorList()" [value]="color">{{color}}</mat-option>
+                <mat-option *ngFor="let color of colorList" [value]="color">{{color}}</mat-option>
               </mat-select>
             </mat-form-field>
           </div>

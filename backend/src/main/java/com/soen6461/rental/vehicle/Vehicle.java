@@ -9,6 +9,7 @@ public class Vehicle {
     private Integer year;
     private String color;
     private String license;
+    private Integer active;
 
     public Integer getPkid() {
         return pkid;
@@ -38,6 +39,10 @@ public class Vehicle {
         return license;
     }
 
+    public Integer getActive() {
+        return active;
+    }
+
     public void setPkid(Integer pkid) {
         this.pkid = pkid;
     }
@@ -65,6 +70,8 @@ public class Vehicle {
     public void setLicense(String license) {
         this.license = license;
     }
+
+    public void setActive(Integer active) { this.active = active;}
 
     @Override
     public String toString() {

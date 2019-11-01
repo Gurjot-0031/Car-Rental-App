@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { Vehicle, VehicleApiService } from "../api/vehicle-api.service";
-import { MatTableDataSource } from "@angular/material/table";
-import { FormControl } from '@angular/forms';
-import { MomentDateAdapter } from '@angular/material-moment-adapter';
-import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
-import { MatDatepicker } from '@angular/material/datepicker';
+import {Component, OnInit} from '@angular/core';
+import {Vehicle, VehicleApiService} from "../api/vehicle-api.service";
+import {MatTableDataSource} from "@angular/material/table";
+import {FormControl} from '@angular/forms';
+import {MomentDateAdapter} from '@angular/material-moment-adapter';
+import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
+import {MatDatepicker} from '@angular/material/datepicker';
 import * as _moment from 'moment';
 import {MatDialog} from "@angular/material/dialog";
 import {DialogVehicleDetailsComponent} from "./dialog-vehicle-details/dialog-vehicle-details.component";
@@ -47,6 +47,11 @@ export class VehicleCatalogComponent implements OnInit {
 
   displayedColumns = ['type', 'make', 'model', 'year', 'color', 'actions'];
 
+  makeList: Set<string>;
+  modelList: Set<string>;
+  typeList: Set<string>;
+  colorList: Set<string>;
+
   make = new FormControl();
   model = new FormControl();
   type = new FormControl();
@@ -62,44 +67,43 @@ export class VehicleCatalogComponent implements OnInit {
   constructor(
     private loginService: LogInService,
     private vehicleApiService: VehicleApiService,
-    public dialog: MatDialog) { }
+    public dialog: MatDialog) {
+  }
 
   ngOnInit() {
+    this.isLoading = true;
     this.dataSource = new MatTableDataSource<Vehicle>();
+    this.vehicleApiService.getAllVehicles().subscribe(
+      result => {
+        this.resultVehicles = result.filter(v => v.active === 1);
+        this.refreshDropDownMenus(this.resultVehicles);
+        this.isLoading = false;
+      });
   }
 
   listVehiclesInRandomOrder() {
     this.isLoading = true;
-    if (!this.resultVehicles) {
-      this.vehicleApiService.getAllVehicles().subscribe(
-        result => {
-          this.resultVehicles = result;
-          this.dataSource.data = this.randomizeArray(this.resultVehicles);
-          this.isLoading = false;
-        }
-      );
-    } else {
-      this.dataSource.data = this.randomizeArray(this.resultVehicles);
-      this.isLoading = false;
-    }
+    this.vehicleApiService.getAllVehicles().subscribe(
+      result => {
+        this.resultVehicles = result.filter(v => v.active === 1);
+        this.dataSource.data = this.randomizeArray(this.resultVehicles);
+        this.refreshDropDownMenus(this.dataSource.data);
+        this.isLoading = false;
+      }
+    );
   }
 
   searchWithFilters() {
     this.isLoading = true;
-    if (!this.resultVehicles) {
-      this.vehicleApiService.getAllVehicles().subscribe(
-        result => {
-          this.resultVehicles = result;
-          let filtered = this.applyFilters(this.resultVehicles);
-          this.dataSource.data = this.applySorting(filtered);
-          this.isLoading = false;
-        }
-      );
-    } else {
-      this.isLoading = false;
-      let filtered = this.applyFilters(this.resultVehicles);
-      this.dataSource.data = this.applySorting(filtered);
-    }
+    this.vehicleApiService.getAllVehicles().subscribe(
+      result => {
+        this.resultVehicles = result.filter(v => v.active === 1);
+        let filtered = this.applyFilters(this.resultVehicles);
+        this.dataSource.data = this.applySorting(filtered);
+        this.refreshDropDownMenus(this.dataSource.data);
+        this.isLoading = false;
+      }
+    );
   }
 
   private applyFilters(vehicles: Vehicle[]): Vehicle[] {
@@ -120,6 +124,7 @@ export class VehicleCatalogComponent implements OnInit {
     }
 
   }
+
   // https://stackoverflow.com/questions/8537602/any-way-to-extend-javascripts-array-sort-method-to-accept-another-parameter
   propertyComparator = (property) => {
     if (!this.sortDirection || this.sortDirection === 'Ascending') {
@@ -138,27 +143,11 @@ export class VehicleCatalogComponent implements OnInit {
     }
   }
 
-  getMakeList() {
-    return [
-      'BMW', 'Honda', 'KIA', 'Mercedes', 'Jeep', 'Toyota', 'Volkswagen', 'Hyundai', 'Porsche',
-      'Nissan', 'Ferrari'
-    ]
-  }
-
-  getTypeList() {
-    return ['Luxury', 'Van', 'SUV', 'Sedan', 'Hatchback'];
-  }
-
-  getModelList() {
-    return [
-      'Compass', 'S 550', 'Sedona', 'Rogue', 'X1', 'CR-V', 'Accent', '335i', 'Sienna', 'Golf',
-      'Yaris', 'X6', 'Odyssey', 'Enzo', 'Accord', 'M5', 'Wrangler', 'Rio', 'Civic', '911', 'Forte5',
-      'Grand Cherokee', 'Sorento'
-    ]
-  }
-
-  getColorList() {
-    return ['red', 'black', 'white', 'blue']
+  refreshDropDownMenus(vehicleList: Vehicle[]) {
+    this.makeList = new Set(vehicleList.map(v => v.make));
+    this.typeList = new Set(vehicleList.map(v => v.type));
+    this.colorList = new Set(vehicleList.map(v => v.color));
+    this.modelList = new Set(vehicleList.map(v => v.model));
   }
 
   setMinYear(normalizedYear, datepicker: MatDatepicker<any>) {
@@ -199,8 +188,8 @@ export class VehicleCatalogComponent implements OnInit {
 
   deleteVehicle(vehicle: Vehicle) {
     this.vehicleApiService.deleteVehicle(vehicle).subscribe(() => {
-      let index:number = this.dataSource.data.findIndex(d => d === vehicle);
-      this.dataSource.data.splice(index,1);
+      let index: number = this.dataSource.data.findIndex(d => d === vehicle);
+      this.dataSource.data.splice(index, 1);
       this.dataSource = new MatTableDataSource<Vehicle>(this.dataSource.data);
     });
   }
