@@ -81,15 +81,17 @@ export class TransactionApiService {
   getAvailableVehicleForDates(start: Moment, end: Moment): Observable<Vehicle[]> {
     let rentedVehicles: Vehicle[] =
       this.rentals
+        .filter(r => r.vehicle.active === 1)
         .filter(r => !r.returnDate)
-        .filter(r => start.isSameOrBefore(_moment(r.dueDate)) && end.isSameOrAfter(_moment(r.startDate)))
+        .filter(r => !(start.isBefore(_moment(r.dueDate)) && end.isAfter(_moment(r.startDate))))
         .map(r => r.vehicle);
 
     let reservedVehicles: Vehicle[] =
       this.reservations
+        .filter(r => r.vehicle.active === 1)
         .filter(r => !r.returnDate)
         .filter(r => !r.cancelDate)
-        .filter(r => start.isSameOrBefore(_moment(r.dueDate)) && end.isSameOrAfter(_moment(r.startDate)))
+        .filter(r => !(start.isBefore(_moment(r.dueDate)) && end.isAfter(_moment(r.startDate))))
         .map(r => r.vehicle);
 
     // get all vehicle, removes the one that are in the unavailable vehicles
@@ -103,18 +105,21 @@ export class TransactionApiService {
       );
   }
 
-  isVehicleAvailableForDates(vehicle: Vehicle, start: Moment, end: Moment) {
+isVehicleAvailableForDates(vehicle: Vehicle, start: Moment, end: Moment) {
+    if (vehicle.active === 0) {
+      return false;
+    }
     let isRented = this.rentals
       .filter(r => r.vehicle.pkid === vehicle.pkid) // Only consider the passed vehicle
       .filter(r => !r.returnDate) // Only consider rentals that aren't returned
-      .filter(r => start.isSameOrBefore(_moment(r.dueDate)) && end.isSameOrAfter(_moment(r.startDate)))
+      .filter(r => !(start.isBefore(_moment(r.dueDate)) && end.isAfter(_moment(r.startDate))))
       .length > 0;
 
     let isReserved = this.reservations
       .filter(r => r.vehicle.pkid === vehicle.pkid)
       .filter(r => !r.returnDate)
       .filter(r => !r.cancelDate)
-      .filter(r => start.isSameOrBefore(_moment(r.dueDate)) && end.isSameOrAfter(_moment(r.startDate)))
+      .filter(r => !(start.isBefore(_moment(r.dueDate)) && end.isAfter(_moment(r.startDate))))
       .length > 0;
 
     return !isRented && !isReserved;
