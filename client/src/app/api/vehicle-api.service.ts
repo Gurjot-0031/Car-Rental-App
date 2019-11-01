@@ -10,13 +10,21 @@ export class VehicleApiService {
   constructor(private http: HttpClient) { }
 
   getAllVehicles(): Observable<Vehicle[]> {
-    return this.http.get<Vehicle[]>('/api/vehicles');
+    return this.http.get<Vehicle[]>('/api/vehicle');
   }
 
   createVehicle(vehicle: Vehicle) {
     return this.http.post('/api/vehicle', vehicle);
   }
 
+  updateVehicle(vehicle: Vehicle) {
+    return this.http.put('/api/vehicle', vehicle);
+  }
+
+  // https://github.com/angular/angular/issues/19438
+  deleteVehicle(vehicle: Vehicle) {
+    return this.http.request('delete', '/api/vehicle/' + encodeURIComponent(vehicle.pkid));
+  }
 }
 
 export class Vehicle {

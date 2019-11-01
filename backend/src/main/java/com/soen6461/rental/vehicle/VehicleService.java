@@ -21,7 +21,7 @@ public class VehicleService {
         this.dataSource = dataSource;
     }
 
-    public List<Vehicle> getAllVehicles() {
+    List<Vehicle> getAllVehicles() {
         return getJdbcTemplate()
             .query(
                 "SELECT * FROM vehicle",
@@ -29,25 +29,39 @@ public class VehicleService {
             );
     }
 
+    void createVehicle(Vehicle vehicle) {
+        //language = SQL
+        String sql = "INSERT INTO vehicle (type, make, model, color, license, year) \n" +
+            "VALUES ('" +
+            vehicle.getType() + "', \'" +
+            vehicle.getMake() + "', \'" +
+            vehicle.getModel() + "', \'" +
+            vehicle.getColor() + "', \'" +
+            vehicle.getLicense() + "'," +
+            vehicle.getYear() + ");";
 
-    public void createVehicle(Vehicle vehicle) {
-        //language=SQL
-        String sql = "INSERT INTO Vehicle (type, make, model, color, license, year) \n" +
-            "VALUES (:type, :make, :model, :color, :license, :year);";
+        getJdbcTemplate().execute(sql);
+    }
 
-        new NamedParameterJdbcTemplate(dataSource)
-            .query(
-                sql,
-                (SqlParameterSource) ImmutableMap.builder()
-                    .put("type", vehicle.getType())
-                    .put("make", vehicle.getMake())
-                    .put("model", vehicle.getModel())
-                    .put("color", vehicle.getColor())
-                    .put("license", vehicle.getLicense())
-                    .put("year", vehicle.getYear())
-                    .build(),
-                (rs, rowNum) -> mapResultSetToVehicle(rs)
-            );
+    void updateVehicle(Vehicle vehicle) {
+        //language = SQL
+        String sql = "UPDATE vehicle SET " +
+            "type='"+vehicle.getType() + "'," +
+            "make='"+vehicle.getMake() + "'," +
+            "model='"+vehicle.getModel() + "'," +
+            "color='"+vehicle.getColor() + "'," +
+            "license='"+vehicle.getLicense() + "'," +
+            "year="+vehicle.getYear() +
+            " WHERE pkid="+vehicle.getPkid();
+
+        getJdbcTemplate().execute(sql);
+    }
+
+    void deleteVehicle(Integer pkid) {
+        //language = SQL
+        String sql = "DELETE FROM vehicle WHERE pkid=" + pkid;
+
+        getJdbcTemplate().execute(sql);
     }
 
 
@@ -67,6 +81,5 @@ public class VehicleService {
     private JdbcTemplate getJdbcTemplate() {
         return new JdbcTemplate(dataSource);
     }
-
 
 }

@@ -184,7 +184,7 @@ export class VehicleCatalogComponent implements OnInit {
     return arr;
   }
 
-  viewVehicleDetails(vehicle: any) {
+  viewVehicleDetails(vehicle: Vehicle) {
     this.dialog.open(DialogVehicleDetailsComponent, {
       disableClose: true,
       autoFocus: false,
@@ -197,13 +197,12 @@ export class VehicleCatalogComponent implements OnInit {
     });
   }
 
-  deleteVehicle(vehicle: any) {
-    if(confirm("Confirm delete.."))
-    {
+  deleteVehicle(vehicle: Vehicle) {
+    this.vehicleApiService.deleteVehicle(vehicle).subscribe(() => {
       let index:number = this.dataSource.data.findIndex(d => d === vehicle);
       this.dataSource.data.splice(index,1);
       this.dataSource = new MatTableDataSource<Vehicle>(this.dataSource.data);
-    }
+    });
   }
 
 

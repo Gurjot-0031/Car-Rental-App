@@ -116,19 +116,25 @@ export class DialogVehicleDetailsComponent implements OnInit {
     this.resultSetVehicles[index].year = this.vehicleForm.getRawValue()['year'];
     this.resultSetVehicles[index].color = this.vehicleForm.getRawValue()['color'];
     this.resultSetVehicles[index].license = this.vehicleForm.getRawValue()['license'];
-    this.dialogRef.close();
+
+    this.vehicleApiService.updateVehicle(this.resultSetVehicles[index]).subscribe(() => {
+      this.dialogRef.close();
+    });
   }
 
   onAddClicked() {
-    let temp = new Vehicle();
-    temp.type = this.vehicleForm.getRawValue()['type'];
-    temp.make = this.vehicleForm.getRawValue()['make'];
-    temp.model = this.vehicleForm.getRawValue()['model'];
-    temp.year = this.vehicleForm.getRawValue()['year'];
-    temp.color = this.vehicleForm.getRawValue()['color'];
-    temp.license = this.vehicleForm.getRawValue()['license'];
+    let vehicle = new Vehicle();
+    vehicle.type = this.vehicleForm.getRawValue()['type'];
+    vehicle.make = this.vehicleForm.getRawValue()['make'];
+    vehicle.model = this.vehicleForm.getRawValue()['model'];
+    vehicle.year = this.vehicleForm.getRawValue()['year'];
+    vehicle.color = this.vehicleForm.getRawValue()['color'];
+    vehicle.license = this.vehicleForm.getRawValue()['license'];
 
-    this.resultSetVehicles.push(temp);
-    this.dialogRef.close();
+    this.vehicleApiService.createVehicle(vehicle).subscribe(() => {
+      // TODO this probably needs to change for concurrency
+      this.resultSetVehicles.push(vehicle);
+      this.dialogRef.close();
+  });
   }
 }
