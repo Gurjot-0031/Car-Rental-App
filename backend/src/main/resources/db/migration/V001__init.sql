@@ -17,6 +17,7 @@ CREATE TABLE vehicle (
     year YEAR NOT NULL,
     color VARCHAR(255) NOT NULL,
     license VARCHAR(7) NOT NULL,
+    active TINYINT(1) NOT NULL DEFAULT 1,
     PRIMARY KEY (pkid),
     CONSTRAINT VC_license UNIQUE (license)
 );
@@ -28,6 +29,7 @@ CREATE TABLE client (
     driver_license VARCHAR(16) NOT NULL,
     expiration_date DATE NOT NULL,
     phone_number VARCHAR(255) NOT NULL,
+    active TINYINT(1) NOT NULL DEFAULT 1,
     PRIMARY KEY (pkid),
     CONSTRAINT CC_driver_license UNIQUE (driver_license)
 );
