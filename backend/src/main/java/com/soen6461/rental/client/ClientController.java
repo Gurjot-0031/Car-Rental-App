@@ -1,6 +1,5 @@
 package com.soen6461.rental.client;
 
-import com.soen6461.rental.vehicle.Vehicle;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,7 +15,7 @@ public class ClientController {
 
     @GetMapping("/api/client")
     public List<Client> getAllClients() {
-        return clientService.getAllVehicles();
+        return clientService.getAllClients();
     }
 
     @GetMapping("/api/client/{pkid}")

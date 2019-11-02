@@ -25,9 +25,8 @@ export class ClientApiService {
     return this.http.put('/api/client', client);
   }
 
-  // https://github.com/angular/angular/issues/19438
   deleteClient(client: Client) {
-    return this.http.request('delete', '/api/client/' + encodeURIComponent(client.pkid));
+    return this.http.delete('/api/client/' + encodeURIComponent(client.pkid));
   }
 }
 

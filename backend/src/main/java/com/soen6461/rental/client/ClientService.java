@@ -17,10 +17,10 @@ public class ClientService {
         this.dataSource = dataSource;
     }
 
-    public List<Client> getAllVehicles() {
+    public List<Client> getAllClients() {
         return getJdbcTemplate()
             .query(
-                "SELECT * FROM vehicle",
+                "SELECT * FROM client",
                 (rs, rowNum) -> mapResultSetToClient(rs)
             );
     }
@@ -28,7 +28,7 @@ public class ClientService {
     public Client getClient(Integer pkid) {
         return getJdbcTemplate()
             .query(
-                "SELECT * FROM vehicle WHERE pkid=" + pkid,
+                "SELECT * FROM client WHERE pkid=" + pkid,
                 (rs, rowNum) -> mapResultSetToClient(rs)
             ).get(0);
 
@@ -49,7 +49,7 @@ public class ClientService {
 
     public void updateClient(Client client) {
         //language = SQL
-        String sql = "UPDATE vehicle SET " +
+        String sql = "UPDATE client SET " +
             "firstname='" + client.firstName + "'," +
             "lastname='" + client.lastName + "'," +
             "driver_license='" + client.driverLicense + "'," +
@@ -75,7 +75,7 @@ public class ClientService {
         client.driverLicense = rs.getString("driver_license");
         client.expirationDate = rs.getString("expiration_date");
         client.phoneNumber = rs.getString("phone_number");
-        client.active = rs.getInt("year");
+        client.active = rs.getInt("active");
         return client;
     }
 

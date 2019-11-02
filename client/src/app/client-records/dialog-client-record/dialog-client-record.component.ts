@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {FormControl, FormGroup, ValidatorFn, Validators} from "@angular/forms";
-import {Client} from "../../api/client-api.service";
+import {Client, ClientApiService} from "../../api/client-api.service";
 
 @Component({
   selector: 'app-dialog-client-record',
@@ -35,6 +35,7 @@ export class DialogClientRecordComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data,
     public dialogRef: MatDialogRef<DialogClientRecordComponent>,
+    private clientApiService: ClientApiService
   ) {
     this.client = data['client'];
 
@@ -76,17 +77,19 @@ export class DialogClientRecordComponent implements OnInit {
       clientRecord.expirationDate = this.expirationDate.value;
       clientRecord.phoneNumber = this.phoneNumber.value;
 
-      this.dialogRef.close({
-        isNewClient: this.isNewClient,
-        client: clientRecord
-      })
+      this.clientApiService.createClient(clientRecord).subscribe(() => {
+        this.dialogRef.close()
+      });
+
     } else {
       this.client.firstName = this.firstName.value;
       this.client.lastName = this.lastName.value;
       this.client.driverLicense = this.driverLicense.value;
       this.client.expirationDate = this.expirationDate.value;
       this.client.phoneNumber = this.phoneNumber.value;
-      this.dialogRef.close()
+      this.clientApiService.updateClient(this.client).subscribe(() => {
+        this.dialogRef.close()
+      });
     }
   }
 

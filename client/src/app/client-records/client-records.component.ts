@@ -21,10 +21,16 @@ export class ClientRecordsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.isLoading = true;
     this.dataSource = new MatTableDataSource<Client>();
-    this.dataSource.data = this.clientApiService.getAllClientRecords();
-    this.isLoading = false;
+    this.refreshClientList();
+  }
+
+  refreshClientList() {
+    this.isLoading = true;
+    this.clientApiService.getAllClients().subscribe(result => {
+      this.dataSource.data = result;
+      this.isLoading = false;
+    });
   }
 
 
@@ -34,21 +40,15 @@ export class ClientRecordsComponent implements OnInit {
       autoFocus: false,
       width: '40vw',
       data: {client: client}
-    }).afterClosed().subscribe(data => {
-        if (data) {
-          if (data['isNewClient']) {
-            this.clientApiService.addClient(data['client']);
-
-            // this should be replace by observable style pattern. The datasource should listen to record changes
-            this.dataSource.data = this.clientApiService.getAllClientRecords();
-          }
-        }
+    }).afterClosed().subscribe(() => {
+        this.refreshClientList();
       }
     )
   }
 
   deleteClientRecord(client: Client) {
-    this.clientApiService.deleteClient(client)
-    this.dataSource.data = this.clientApiService.getAllClientRecords();
+    this.clientApiService.deleteClient(client).subscribe(() => {
+      this.refreshClientList()
+    });
   }
 }
