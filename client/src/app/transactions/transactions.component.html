@@ -64,46 +64,46 @@
 
         <ng-container matColumnDef="licensePlate">
           <th mat-header-cell *matHeaderCellDef>License Plate</th>
-          <td mat-cell *matCellDef="let transaction"> {{transaction.vehicle.license}} </td>
+          <td mat-cell *matCellDef="let transactionDB"> {{transactionDB.vehicle.license}} </td>
         </ng-container>
 
         <ng-container matColumnDef="driverLicense">
           <th mat-header-cell *matHeaderCellDef>Driver License</th>
-          <td mat-cell *matCellDef="let transaction"> {{transaction.client.driverLicense}} </td>
+          <td mat-cell *matCellDef="let transactionDB"> {{transactionDB.client.driverLicense}} </td>
         </ng-container>
 
         <ng-container matColumnDef="type">
           <th mat-header-cell *matHeaderCellDef>Type</th>
-          <td mat-cell *matCellDef="let transaction"> {{getTransactionType(transaction)}} </td>
+          <td mat-cell *matCellDef="let transactionDB"> {{getTransactionType(transactionDB)}} </td>
         </ng-container>
 
         <ng-container matColumnDef="timestamp">
           <th mat-header-cell *matHeaderCellDef>Timestamp</th>
-          <td mat-cell *matCellDef="let transaction"> {{transaction.timestamp}} </td>
+          <td mat-cell *matCellDef="let transactionDB"> {{transactionDB.timestamp}} </td>
         </ng-container>
 
         <ng-container matColumnDef="startDate">
           <th mat-header-cell *matHeaderCellDef>StartDate</th>
-          <td mat-cell *matCellDef="let transaction"> {{transaction.startDate}} </td>
+          <td mat-cell *matCellDef="let transactionDB"> {{transactionDB.startDate}} </td>
         </ng-container>
 
         <ng-container matColumnDef="dueDate">
           <th mat-header-cell *matHeaderCellDef>DueDate</th>
-          <td mat-cell *matCellDef="let transaction"> {{transaction.dueDate}} </td>
+          <td mat-cell *matCellDef="let transactionDB"> {{transactionDB.dueDate}} </td>
         </ng-container>
 
         <ng-container matColumnDef="returnDate">
           <th mat-header-cell *matHeaderCellDef>ReturnDate</th>
-          <td mat-cell *matCellDef="let transaction"> {{transaction.returnDate}} </td>
+          <td mat-cell *matCellDef="let transactionDB"> {{transactionDB.returnDate}} </td>
         </ng-container>
 
         <ng-container matColumnDef="cancelDate">
           <th mat-header-cell *matHeaderCellDef>CancelDate</th>
-          <td mat-cell *matCellDef="let transaction"> {{transaction.cancelDate}} </td>
+          <td mat-cell *matCellDef="let transactionDB"> {{transactionDB.cancelDate}} </td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let transaction; columns: displayedColumns;"></tr>
+        <tr mat-row *matRowDef="let transactionDB; columns: displayedColumns;"></tr>
       </mat-table>
     </div>
 

@@ -18,6 +18,11 @@ public class VehicleController {
         return vehicleService.getAllVehicles();
     }
 
+    @GetMapping("/api//{pkid}")
+    public Vehicle getVehicle(@PathVariable Integer pkid){
+        return vehicleService.getVehicle(pkid);
+    }
+
     @PostMapping("/api/vehicle")
     public void createVehicle(@RequestBody Vehicle vehicle) {
         vehicleService.createVehicle(vehicle);

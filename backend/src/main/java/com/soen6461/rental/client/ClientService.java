@@ -31,7 +31,6 @@ public class ClientService {
                 "SELECT * FROM client WHERE pkid=" + pkid,
                 (rs, rowNum) -> mapResultSetToClient(rs)
             ).get(0);
-
     }
 
     public void createClient(Client client) {

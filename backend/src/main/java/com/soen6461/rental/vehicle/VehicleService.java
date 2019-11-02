@@ -29,6 +29,15 @@ public class VehicleService {
             );
     }
 
+
+    public Vehicle getVehicle(Integer pkid) {
+        return getJdbcTemplate()
+            .query(
+                "SELECT * FROM vehicle WHERE pkid=" + pkid,
+                (rs, rowNum) -> mapResultSetToVehicle(rs)
+            ).get(0);
+    }
+
     void createVehicle(Vehicle vehicle) {
         //language = SQL
         String sql = "INSERT INTO vehicle (type, make, model, color, license, year) \n" +

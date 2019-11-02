@@ -28,7 +28,7 @@ export class ClientRecordsComponent implements OnInit {
   refreshClientList() {
     this.isLoading = true;
     this.clientApiService.getAllClients().subscribe(result => {
-      this.dataSource.data = result;
+      this.dataSource.data = result.filter(c => c.active === 1);
       this.isLoading = false;
     });
   }

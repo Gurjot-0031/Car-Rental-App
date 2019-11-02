@@ -37,4 +37,5 @@ export class Client {
   driverLicense: string;
   expirationDate: string;
   phoneNumber: string;
+  active: number;
 }

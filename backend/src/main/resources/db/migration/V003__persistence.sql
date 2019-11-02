@@ -1,4 +1,4 @@
-CREATE TABLE transaction (
+CREATE TABLE transactionDB (
     pkid INT(11) NOT NULL auto_increment,
     vehicle_id INT NOT NULL,
     client_id INT NOT NULL,
@@ -26,7 +26,7 @@ INSERT INTO client (firstname, lastname, driver_license, expiration_date, phone_
 ("Janice", "Joplin", "J-2222-111111-00", "2022-05-18", "514-444-1111"),
 ("Kevin", "Klein", "K-3333-111111-33", "2027-08-13", "514-444-2222");
 
-INSERT INTO transaction
+INSERT INTO transactionDB
 (vehicle_id, client_id, type, timestamp, start_date, due_date, return_date, cancel_date)
 VALUES
 (1, 1, "rental", '2019-10-20', '2019-10-20', '2019-10-30', '2019-10-30', null),
