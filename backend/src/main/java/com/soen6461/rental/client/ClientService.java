@@ -12,11 +12,9 @@ import java.util.List;
 public class ClientService {
 
     private final DataSource dataSource;
-    private final Object monitor;
 
     public ClientService(DataSource dataSource) {
         this.dataSource = dataSource;
-        this.monitor = new Object();
     }
 
     public List<Client> getAllVehicles() {
@@ -28,13 +26,12 @@ public class ClientService {
     }
 
     public Client getClient(Integer pkid) {
-        synchronized (monitor) {
-            return getJdbcTemplate()
-                .query(
-                    "SELECT * FROM vehicle WHERE pkid=" + pkid,
-                    (rs, rowNum) -> mapResultSetToClient(rs)
-                ).get(0);
-        }
+        return getJdbcTemplate()
+            .query(
+                "SELECT * FROM vehicle WHERE pkid=" + pkid,
+                (rs, rowNum) -> mapResultSetToClient(rs)
+            ).get(0);
+
     }
 
     public void createClient(Client client) {
@@ -53,19 +50,19 @@ public class ClientService {
     public void updateClient(Client client) {
         //language = SQL
         String sql = "UPDATE vehicle SET " +
-            "firstname='"+client.firstName + "'," +
-            "lastname='"+client.lastName + "'," +
-            "driver_license='"+client.driverLicense + "'," +
-            "expiration_date='"+client.expirationDate+ "'," +
-            "phone_number='"+client.phoneNumber + "'," +
-            " WHERE pkid="+client.pkid;
+            "firstname='" + client.firstName + "'," +
+            "lastname='" + client.lastName + "'," +
+            "driver_license='" + client.driverLicense + "'," +
+            "expiration_date='" + client.expirationDate + "'," +
+            "phone_number='" + client.phoneNumber + "'," +
+            " WHERE pkid=" + client.pkid;
 
         getJdbcTemplate().execute(sql);
     }
 
     public void deleteClient(Integer pkid) {
         //language = SQL
-        String sql = "UPDATE client SET active=0 WHERE pkid="+pkid;
+        String sql = "UPDATE client SET active=0 WHERE pkid=" + pkid;
 
         getJdbcTemplate().execute(sql);
     }
