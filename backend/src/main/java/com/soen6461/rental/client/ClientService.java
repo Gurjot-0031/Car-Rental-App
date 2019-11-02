@@ -54,7 +54,7 @@ public class ClientService {
             "lastname='" + client.lastName + "'," +
             "driver_license='" + client.driverLicense + "'," +
             "expiration_date='" + client.expirationDate + "'," +
-            "phone_number='" + client.phoneNumber + "'," +
+            "phone_number='" + client.phoneNumber + "'" +
             " WHERE pkid=" + client.pkid;
 
         getJdbcTemplate().execute(sql);
