@@ -81,7 +81,15 @@ export class VehicleCatalogComponent implements OnInit {
       });
   }
 
-  listVehiclesInRandomOrder() {
+  viewCatalog(order) {
+    if (order === 'random') {
+      this.listVehiclesInRandomOrder();
+    } else {
+      this.searchWithFilters();
+    }
+  }
+
+  private listVehiclesInRandomOrder() {
     this.isLoading = true;
     this.vehicleApiService.getAllVehicles().subscribe(
       result => {
@@ -93,7 +101,7 @@ export class VehicleCatalogComponent implements OnInit {
     );
   }
 
-  searchWithFilters() {
+  private searchWithFilters() {
     this.isLoading = true;
     this.vehicleApiService.getAllVehicles().subscribe(
       result => {
@@ -135,7 +143,6 @@ export class VehicleCatalogComponent implements OnInit {
         a[property] < b[property] ? 1 : -1;
     }
   };
-
 
   private propertySort(property) {
     if (!this.sortDirection || this.sortDirection === 'Ascending') {
