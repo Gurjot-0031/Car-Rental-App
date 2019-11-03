@@ -142,21 +142,23 @@ export class ReservationsComponent implements OnInit {
 
   onTabChange($event: MatTabChangeEvent) {
     if ($event.index === 1) {
-      this.isCancelTabIsLoading = true;
-       this.transactionApiService.getAllReservations().subscribe(result => {
-         this.dataSourceCancelReservation.data = result;
-         this.isCancelTabIsLoading = false;
-      });
-
+      this.refreshReservationDataSource();
     }
+  }
+
+  refreshReservationDataSource() {
+    this.isCancelTabIsLoading = true;
+    this.transactionApiService.getAllReservations().subscribe(result => {
+      this.dataSourceCancelReservation.data = result.filter(t => !t.cancelDate);
+      this.isCancelTabIsLoading = false;
+    });
   }
 
   cancelReservation(transaction: Transaction) {
     this.isCancelTabIsLoading = true;
     this.transactionApiService.cancelTransaction(transaction).subscribe(() => {
-      //TODO refresh list
-      //     this.dataSourceCancelReservation.data = this.transactionApiService.getReservations().filter(r => !r.cancelDate);
       this.isCancelTabIsLoading = false;
+      this.refreshReservationDataSource();
     });
   }
 }

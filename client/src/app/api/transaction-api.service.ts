@@ -24,7 +24,7 @@ export class TransactionApiService {
   }
 
   getAllReservations(): Observable<Transaction[]> {
-    return this.http.get<Transaction[]>('/api/reservations');
+    return this.http.get<Transaction[]>('/api/reservation');
   }
 
   getTransaction(transaction: Transaction): Observable<Transaction> {
