@@ -33,6 +33,14 @@ public class ClientService {
             ).get(0);
     }
 
+    public Client getClientByDriverLicense(Integer driverLicense) {
+        return getJdbcTemplate()
+            .query(
+                "SELECT * FROM client WHERE driver_license=" + driverLicense,
+                (rs, rowNum) -> mapResultSetToClient(rs)
+            ).get(0);
+    }
+
     public void createClient(Client client) {
         //language = SQL
         String sql = "INSERT INTO client (firstname, lastname, driver_license, expiration_date, phone_number) \n" +
@@ -81,4 +89,5 @@ public class ClientService {
     private JdbcTemplate getJdbcTemplate() {
         return new JdbcTemplate(dataSource);
     }
+
 }

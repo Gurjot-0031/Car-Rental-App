@@ -28,13 +28,13 @@ public class TransactionController {
         transactionService.createTransaction(transactionDB);
     }
 
-    @PutMapping("/api/transaction/{pkid}/return")
-    public void returnTransaction(@PathVariable Integer pkid) {
-        transactionService.returnTransaction(pkid);
+    @PutMapping("/api/transaction//return")
+    public void returnTransaction(@RequestBody Transaction transaction) {
+        transactionService.returnTransaction(transaction.pkid);
     }
 
-    @PutMapping("/api/transaction/{pkid}/cancel")
-    public void cancelReservation(@PathVariable Integer pkid) {
-        transactionService.cancelReservation(pkid);
+    @PutMapping("/api/transaction/cancel")
+    public void cancelTransaction(@RequestBody Transaction transaction) {
+        transactionService.cancelReservation(transaction.pkid);
     }
 }

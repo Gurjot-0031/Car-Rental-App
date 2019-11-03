@@ -23,6 +23,11 @@ public class ClientController {
         return clientService.getClient(pkid);
     }
 
+    @GetMapping("/api/client/driver-license/{driverLicense}")
+    public Client getClientByDriverLicense(@PathVariable Integer driverLicense) {
+        return clientService.getClientByDriverLicense(driverLicense);
+    }
+
     @PostMapping("/api/client")
     public void createClient(@RequestBody Client client) {
         clientService.createClient(client);

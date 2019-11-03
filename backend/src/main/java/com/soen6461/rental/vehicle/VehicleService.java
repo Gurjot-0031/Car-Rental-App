@@ -73,6 +73,20 @@ public class VehicleService {
         getJdbcTemplate().execute(sql);
     }
 
+    public boolean isVehicleAvailableForDates(Integer pkid, AvailabilityDates dates) {
+        //language = SQL
+        String sql = "SELECT count(*) as restrictions FROM transaction" +
+            "WHERE vehicle_id =" + pkid + " AND " +
+            "(start_date < '" + dates.dueDate + "\' AND " +
+            "due_date > '" + dates.startDate + "\')";
+
+        return getJdbcTemplate()
+            .query(
+                sql,
+                (rs, rowNum) -> rs.getBoolean("restrictions")
+            ).get(0);
+    }
+
 
     private Vehicle mapResultSetToVehicle(ResultSet rs) throws SQLException {
         Vehicle vehicle = new Vehicle();

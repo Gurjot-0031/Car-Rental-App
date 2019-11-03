@@ -37,7 +37,7 @@ export class ReturnsComponent implements OnInit {
   }
 
   returnTransaction(transaction: Transaction) {
-    this.transactionApiService.returnTransaction(transaction);
+    this.transactionApiService.returnTransaction2(transaction);
     this.loadAllNotReturnedTransactions();
   }
 }

@@ -28,6 +28,10 @@ export class ClientApiService {
   deleteClient(client: Client) {
     return this.http.delete('/api/client/' + encodeURIComponent(client.pkid));
   }
+
+  getClientByDriverLicense(driverLicense: string) {
+    return this.http.get<Client>('/api/client/driver-license/' + encodeURIComponent(driverLicense));
+  }
 }
 
 export class Client {

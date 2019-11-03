@@ -37,5 +37,10 @@ public class VehicleController {
     public void deleteVehicle(@PathVariable Integer pkid) {
         vehicleService.deleteVehicle(pkid);
     }
+
+    @PostMapping("/api/vehicle/{pkid}/available")
+    public boolean getAvailableVehicles(@PathVariable Integer pkid, @RequestBody AvailabilityDates dates) {
+        return vehicleService.isVehicleAvailableForDates(pkid, dates);
+    }
 }
 

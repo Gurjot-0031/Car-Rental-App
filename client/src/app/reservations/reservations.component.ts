@@ -1,15 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
 import {Vehicle} from "../api/vehicle-api.service";
 import {FormControl, FormGroup, ValidatorFn, Validators} from "@angular/forms";
 import {Client, ClientApiService} from "../api/client-api.service";
-import {Reservation, TransactionApiService} from "../api/transaction-api.service";
+import {Transaction, TransactionApiService} from "../api/transaction-api.service";
 import {MatDialog} from "@angular/material/dialog";
 import {StepperSelectionEvent} from "@angular/cdk/stepper";
 import * as _moment from "moment";
 import {DialogVehicleDetailsComponent} from "../vehicle-catalog/dialog-vehicle-details/dialog-vehicle-details.component";
 import {MatVerticalStepper} from "@angular/material/stepper";
 import {MatTabChangeEvent} from "@angular/material/tabs";
+import {TransactionAvailabilityService} from "../transaction-availability.service";
 
 @Component({
   selector: 'app-reservations',
@@ -18,7 +19,7 @@ import {MatTabChangeEvent} from "@angular/material/tabs";
 })
 export class ReservationsComponent implements OnInit {
 
-  dataSourceCancelReservation: MatTableDataSource<Reservation>;
+  dataSourceCancelReservation: MatTableDataSource<Transaction>;
   dataSourceMakeReservation: MatTableDataSource<Vehicle>;
   driverLicense = new FormControl('', [
       Validators.required,
@@ -49,9 +50,11 @@ export class ReservationsComponent implements OnInit {
 
   constructor(
     private transactionApiService: TransactionApiService,
+    private transactionAvailabilityService: TransactionAvailabilityService,
     private clientApiService: ClientApiService,
     public dialog: MatDialog
-  ) { }
+  ) {
+  }
 
   ngOnInit() {
     this.isClientFound = false;
@@ -59,7 +62,7 @@ export class ReservationsComponent implements OnInit {
     this.isVehicleSelected = false;
     this.isCancelTabIsLoading = false;
     this.dataSourceMakeReservation = new MatTableDataSource<Vehicle>();
-    this.dataSourceCancelReservation = new MatTableDataSource<Reservation>();
+    this.dataSourceCancelReservation = new MatTableDataSource<Transaction>();
   }
 
   // This is now duplicate code. Should extract
@@ -77,13 +80,12 @@ export class ReservationsComponent implements OnInit {
   }
 
   searchForClient() {
-    let client = this.clientApiService.getClientByDriverLicense(this.driverLicense.value);
-    if (client) {
-      this.isClientFound = true;
-      this.client = client;
-    } else {
-      // TODO display message saying client was not found
-    }
+    this.clientApiService.getClientByDriverLicense(this.driverLicense.value).subscribe(value => {
+      if (value) {
+        this.isClientFound = true;
+        this.client = value;
+      }
+    })
   }
 
   selectionChange($event: StepperSelectionEvent) {
@@ -93,7 +95,7 @@ export class ReservationsComponent implements OnInit {
       let now = _moment();
       let dueDate = this.dueDate.value;
 
-      this.transactionApiService
+      this.transactionAvailabilityService
         .getAvailableVehicleForDates(now, dueDate)
         .subscribe(vehicles => {
           this.dataSourceMakeReservation.data = vehicles.filter(v => v.active === 1);
@@ -115,9 +117,16 @@ export class ReservationsComponent implements OnInit {
   }
 
   reserveVehicle(vehicle: Vehicle) {
-    // TODO add confirmation
-    this.transactionApiService.makeReservation(this.client, vehicle, this.startDate.value, this.dueDate.value);
-    this.isVehicleSelected = true;
+    const transaction = new Transaction();
+    transaction.vehicleId = vehicle.pkid;
+    transaction.clientId = this.client.pkid;
+    transaction.timestamp = _moment().format('YYYY-MM-DD');
+    transaction.startDate = this.startDate.value;
+    transaction.dueDate = this.dueDate.value;
+
+    this.transactionApiService.createTransaction(transaction).subscribe(() => {
+      this.isVehicleSelected = true;
+    });
   }
 
   reset(stepper: MatVerticalStepper) {
@@ -134,16 +143,20 @@ export class ReservationsComponent implements OnInit {
   onTabChange($event: MatTabChangeEvent) {
     if ($event.index === 1) {
       this.isCancelTabIsLoading = true;
-      this.dataSourceCancelReservation.data = this.transactionApiService.getReservations();
-      this.isCancelTabIsLoading = false;
-    }
+       this.transactionApiService.getAllTransactions().subscribe(result => {
+         this.dataSourceCancelReservation.data = result;
+         this.isCancelTabIsLoading = false;
+      });
 
+    }
   }
 
-  cancelReservation(res: Reservation) {
-    this.transactionApiService.cancelReservation(res);
+  cancelReservation(transaction: Transaction) {
     this.isCancelTabIsLoading = true;
-    this.dataSourceCancelReservation.data = this.transactionApiService.getReservations().filter(r => !r.cancelDate);
-    this.isCancelTabIsLoading = false;
+    this.transactionApiService.cancelTransaction(transaction).subscribe(() => {
+      //TODO refresh list
+      //     this.dataSourceCancelReservation.data = this.transactionApiService.getReservations().filter(r => !r.cancelDate);
+      this.isCancelTabIsLoading = false;
+    });
   }
 }

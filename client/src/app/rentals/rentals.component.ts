@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, ValidatorFn, Validators} from "@angular/forms";
-import {TransactionApiService} from "../api/transaction-api.service";
+import {Transaction, TransactionApiService} from "../api/transaction-api.service";
 import {Client, ClientApiService} from "../api/client-api.service";
 
 import * as _moment from 'moment';
@@ -10,6 +10,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {MatTableDataSource} from "@angular/material/table";
 import {Vehicle} from "../api/vehicle-api.service";
 import {MatVerticalStepper} from "@angular/material/stepper";
+import {TransactionAvailabilityService} from "../transaction-availability.service";
 
 @Component({
   selector: 'app-rentals',
@@ -42,6 +43,7 @@ export class RentalsComponent implements OnInit {
 
   constructor(
     private transactionApiService: TransactionApiService,
+    private transactionAvailabilityService: TransactionAvailabilityService,
     private clientApiService: ClientApiService,
     public dialog: MatDialog
   ) { }
@@ -68,13 +70,12 @@ export class RentalsComponent implements OnInit {
   }
 
   searchForClient() {
-    let client = this.clientApiService.getClientByDriverLicense(this.driverLicense.value);
-    if (client) {
-      this.isClientFound = true;
-      this.client = client;
-    } else {
-      // TODO display message saying client was not found
-    }
+    this.clientApiService.getClientByDriverLicense(this.driverLicense.value).subscribe(result => {
+      if (result) {
+        this.isClientFound = true;
+        this.client = result;
+      }
+    });
   }
 
   selectionChange($event: StepperSelectionEvent) {
@@ -83,7 +84,7 @@ export class RentalsComponent implements OnInit {
       let now = _moment();
       let dueDate = this.dueDate.value;
 
-      this.transactionApiService
+      this.transactionAvailabilityService
         .getAvailableVehicleForDates(now, dueDate)
         .subscribe(vehicles => {
           this.dataSource.data = vehicles.filter(v => v.active === 1);
@@ -105,9 +106,16 @@ export class RentalsComponent implements OnInit {
   }
 
   rentVehicle(vehicle: Vehicle) {
-    // TODO add confirmation
-    this.transactionApiService.makeRental(this.client, vehicle, _moment(), this.dueDate.value);
-    this.isVehicleSelected = true;
+    const transaction = new Transaction();
+    transaction.vehicle = vehicle;
+    transaction.client = this.client;
+    transaction.type = 'rental';
+    transaction.startDate = _moment().format('YYYY-MM-DD');
+    transaction.dueDate = this.dueDate.value;
+    this.transactionApiService.cancelTransaction(transaction).subscribe(() => {
+      this.isVehicleSelected = true;
+    });
+
   }
 
   reset(stepper: MatVerticalStepper) {

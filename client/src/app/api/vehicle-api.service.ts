@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
+import {Moment} from "moment";
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +26,13 @@ export class VehicleApiService {
   deleteVehicle(vehicle: Vehicle) {
     return this.http.request('delete', '/api/vehicle/' + encodeURIComponent(vehicle.pkid));
   }
+
+  isVehicleAvailableForDates(vehicle: Vehicle, start: string, end: string): Observable<boolean> {
+    const dates = new AvailableDates();
+    dates.start = start;
+    dates.end = end;
+    return this.http.post<boolean>('/api/vehicle/' + encodeURIComponent(vehicle.pkid) + '/available', dates)
+  }
 }
 
 export class Vehicle {
@@ -36,4 +44,9 @@ export class Vehicle {
   color: string;
   license: string;
   active: number
+}
+
+export class AvailableDates {
+  start: string;
+  end: string;
 }
