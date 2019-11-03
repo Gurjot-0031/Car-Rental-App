@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
-import {Vehicle} from "../api/vehicle-api.service";
+import {Vehicle, VehicleApiService} from "../api/vehicle-api.service";
 import {FormControl, FormGroup, ValidatorFn, Validators} from "@angular/forms";
 import {Client, ClientApiService} from "../api/client-api.service";
 import {Transaction, TransactionApiService} from "../api/transaction-api.service";
@@ -10,7 +10,7 @@ import * as _moment from "moment";
 import {DialogVehicleDetailsComponent} from "../vehicle-catalog/dialog-vehicle-details/dialog-vehicle-details.component";
 import {MatVerticalStepper} from "@angular/material/stepper";
 import {MatTabChangeEvent} from "@angular/material/tabs";
-import {TransactionAvailabilityService} from "../transaction-availability.service";
+import {VehicleAvailabilityService} from "../vehicle-availability.service";
 
 @Component({
   selector: 'app-reservations',
@@ -50,7 +50,7 @@ export class ReservationsComponent implements OnInit {
 
   constructor(
     private transactionApiService: TransactionApiService,
-    private transactionAvailabilityService: TransactionAvailabilityService,
+    private vehicleApiService: VehicleApiService,
     private clientApiService: ClientApiService,
     public dialog: MatDialog
   ) {
@@ -91,12 +91,11 @@ export class ReservationsComponent implements OnInit {
   selectionChange($event: StepperSelectionEvent) {
     // index 2 = vehicle selection
     if ($event.selectedIndex === 2) {
-      let pargol = 2;
-      let now = _moment();
-      let dueDate = this.dueDate.value;
+      let now = _moment().format('YYYY-MM-DD');
+      let dueDate = this.dueDate.value.format('YYYY-MM-DD');
 
-      this.transactionAvailabilityService
-        .getAvailableVehicleForDates(now, dueDate)
+      this.vehicleApiService
+        .getAllAvailableVehicles(now, dueDate)
         .subscribe(vehicles => {
           this.dataSourceMakeReservation.data = vehicles.filter(v => v.active === 1);
           this.isVehicleFound = vehicles.length > 0;
@@ -120,9 +119,10 @@ export class ReservationsComponent implements OnInit {
     const transaction = new Transaction();
     transaction.vehicleId = vehicle.pkid;
     transaction.clientId = this.client.pkid;
+    transaction.type = 'reservation';
     transaction.timestamp = _moment().format('YYYY-MM-DD');
-    transaction.startDate = this.startDate.value;
-    transaction.dueDate = this.dueDate.value;
+    transaction.startDate = this.startDate.value.format('YYYY-MM-DD');
+    transaction.dueDate = this.dueDate.value.format('YYYY-MM-DD');
 
     this.transactionApiService.createTransaction(transaction).subscribe(() => {
       this.isVehicleSelected = true;
@@ -143,7 +143,7 @@ export class ReservationsComponent implements OnInit {
   onTabChange($event: MatTabChangeEvent) {
     if ($event.index === 1) {
       this.isCancelTabIsLoading = true;
-       this.transactionApiService.getAllTransactions().subscribe(result => {
+       this.transactionApiService.getAllReservations().subscribe(result => {
          this.dataSourceCancelReservation.data = result;
          this.isCancelTabIsLoading = false;
       });

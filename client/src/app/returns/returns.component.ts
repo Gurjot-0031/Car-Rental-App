@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {Transaction, TransactionApiService} from "../api/transaction-api.service";
 import {MatTableDataSource} from "@angular/material/table";
-import {Vehicle} from "../api/vehicle-api.service";
 
 @Component({
   selector: 'app-returns',
@@ -15,29 +14,24 @@ export class ReturnsComponent implements OnInit {
     ['makeC', 'modelC', 'licensePlate', 'firstName', 'lastName', 'driverLicense', 'startDate', 'dueDate', 'actionsC'];
 
   constructor(
-    private transactionApiService: TransactionApiService) { }
-
+    private transactionApiService: TransactionApiService) {
+    this.dataSource = new MatTableDataSource<Transaction>();
+  }
   ngOnInit() {
     this.isLoading = true;
     this.dataSource = new MatTableDataSource<Transaction>();
-
     this.loadAllNotReturnedTransactions();
   }
 
   loadAllNotReturnedTransactions() {
-    let activeReservations = this.transactionApiService.getReservations().filter(r => !r.returnDate);
-    let activeRentals = this.transactionApiService.getRentals().filter(r => !r.returnDate);
-
-    this.dataSource = new MatTableDataSource<Transaction>();
-
-    activeReservations.forEach(x => this.dataSource.data.push(x));
-    activeRentals.forEach(x => this.dataSource.data.push(x));
-
-    this.isLoading = false;
+    this.transactionApiService.getAllTransactions().subscribe(transactions => {
+      this.dataSource.data = transactions.filter(t => !t.returnDate);
+      this.isLoading = false;
+    });
   }
 
   returnTransaction(transaction: Transaction) {
-    this.transactionApiService.returnTransaction2(transaction);
+    this.transactionApiService.returnTransaction(transaction);
     this.loadAllNotReturnedTransactions();
   }
 }

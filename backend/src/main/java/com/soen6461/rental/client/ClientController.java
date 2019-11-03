@@ -24,7 +24,7 @@ public class ClientController {
     }
 
     @GetMapping("/api/client/driver-license/{driverLicense}")
-    public Client getClientByDriverLicense(@PathVariable Integer driverLicense) {
+    public Client getClientByDriverLicense(@PathVariable String driverLicense) {
         return clientService.getClientByDriverLicense(driverLicense);
     }
 

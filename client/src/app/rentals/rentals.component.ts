@@ -8,9 +8,9 @@ import {StepperSelectionEvent} from "@angular/cdk/stepper";
 import {DialogVehicleDetailsComponent} from "../vehicle-catalog/dialog-vehicle-details/dialog-vehicle-details.component";
 import {MatDialog} from "@angular/material/dialog";
 import {MatTableDataSource} from "@angular/material/table";
-import {Vehicle} from "../api/vehicle-api.service";
+import {Vehicle, VehicleApiService} from "../api/vehicle-api.service";
 import {MatVerticalStepper} from "@angular/material/stepper";
-import {TransactionAvailabilityService} from "../transaction-availability.service";
+import {VehicleAvailabilityService} from "../vehicle-availability.service";
 
 @Component({
   selector: 'app-rentals',
@@ -43,7 +43,7 @@ export class RentalsComponent implements OnInit {
 
   constructor(
     private transactionApiService: TransactionApiService,
-    private transactionAvailabilityService: TransactionAvailabilityService,
+    private vehicleApiService: VehicleApiService,
     private clientApiService: ClientApiService,
     public dialog: MatDialog
   ) { }
@@ -81,11 +81,11 @@ export class RentalsComponent implements OnInit {
   selectionChange($event: StepperSelectionEvent) {
     // index 2 = vehicle selection
     if ($event.selectedIndex === 2) {
-      let now = _moment();
-      let dueDate = this.dueDate.value;
+      let now = _moment().format('YYYY-MM-DD');
+      let dueDate = this.dueDate.value.format('YYYY-MM-DD');
 
-      this.transactionAvailabilityService
-        .getAvailableVehicleForDates(now, dueDate)
+      this.vehicleApiService
+        .getAllAvailableVehicles(now, dueDate)
         .subscribe(vehicles => {
           this.dataSource.data = vehicles.filter(v => v.active === 1);
           this.isVehicleFound = vehicles.length > 0;
@@ -108,11 +108,14 @@ export class RentalsComponent implements OnInit {
   rentVehicle(vehicle: Vehicle) {
     const transaction = new Transaction();
     transaction.vehicle = vehicle;
+    transaction.vehicleId = vehicle.pkid;
+    transaction.clientId = this.client.pkid;
     transaction.client = this.client;
     transaction.type = 'rental';
+    transaction.timestamp = _moment().format('YYYY-MM-DD');
     transaction.startDate = _moment().format('YYYY-MM-DD');
-    transaction.dueDate = this.dueDate.value;
-    this.transactionApiService.cancelTransaction(transaction).subscribe(() => {
+    transaction.dueDate = this.dueDate.value.format('YYYY-MM-DD');
+    this.transactionApiService.createTransaction(transaction).subscribe(() => {
       this.isVehicleSelected = true;
     });
 

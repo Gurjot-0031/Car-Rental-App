@@ -14,6 +14,14 @@ export class VehicleApiService {
     return this.http.get<Vehicle[]>('/api/vehicle');
   }
 
+  getAllAvailableVehicles(start: string, end: string): Observable<Vehicle[]> {
+    const dates = new AvailableDates();
+    dates.start = start;
+    dates.end = end;
+    console.log(dates);
+    return this.http.post<Vehicle[]>("/api/vehicle/available", dates);
+  }
+
   createVehicle(vehicle: Vehicle) {
     return this.http.post('/api/vehicle', vehicle);
   }
@@ -31,7 +39,7 @@ export class VehicleApiService {
     const dates = new AvailableDates();
     dates.start = start;
     dates.end = end;
-    return this.http.post<boolean>('/api/vehicle/' + encodeURIComponent(vehicle.pkid) + '/available', dates)
+    return this.http.post<boolean>('/api/vehicle/' + encodeURIComponent(vehicle.pkid) + '/available', dates);
   }
 }
 

@@ -37,8 +37,38 @@ public class TransactionService {
 
         //TODO this is pretty gross ...
         for(Transaction t: transactions) {
-            t.vehicle = vehicleService.getVehicle(t.vehicle_id);
-            t.client = clientService.getClient(t.client_id);
+            t.vehicle = vehicleService.getVehicle(t.vehicleId);
+            t.client = clientService.getClient(t.clientId);
+        }
+        return transactions;
+    }
+
+    public List<Transaction> getAllReservations() {
+        List<Transaction> transactions = getJdbcTemplate()
+            .query(
+                "SELECT * FROM transaction WHERE type='reservation'",
+                (rs, rowNum) -> mapResultSetToTransaction(rs)
+            );
+
+        //TODO this is pretty gross ...
+        for(Transaction t: transactions) {
+            t.vehicle = vehicleService.getVehicle(t.vehicleId);
+            t.client = clientService.getClient(t.clientId);
+        }
+        return transactions;
+    }
+
+    public List<Transaction> getAllRentals() {
+        List<Transaction> transactions = getJdbcTemplate()
+            .query(
+                "SELECT * FROM transaction WHERE type='rental'",
+                (rs, rowNum) -> mapResultSetToTransaction(rs)
+            );
+
+        //TODO this is pretty gross ...
+        for(Transaction t: transactions) {
+            t.vehicle = vehicleService.getVehicle(t.vehicleId);
+            t.client = clientService.getClient(t.clientId);
         }
         return transactions;
     }
@@ -50,31 +80,29 @@ public class TransactionService {
                 (rs, rowNum) -> mapResultSetToTransaction(rs)
             ).get(0);
 
-        transaction.vehicle = vehicleService.getVehicle(transaction.vehicle_id);
-        transaction.client = clientService.getClient(transaction.client_id);
+        transaction.vehicle = vehicleService.getVehicle(transaction.vehicleId);
+        transaction.client = clientService.getClient(transaction.clientId);
 
         return transaction;
     }
 
-    public void createTransaction(Transaction transactionDB) {
+    public void createTransaction(Transaction transaction) {
         //language = SQL
-        String sql = "INSERT INTO client (vehicle_id, client_id, type, timestamp, start_date, due_date, return_date, cancel_date) \n" +
+        String sql = "INSERT INTO transaction (vehicle_id, client_id, type, timestamp, start_date, due_date) \n" +
             "VALUES ('" +
-            transactionDB.vehicle_id + "', \'" +
-            transactionDB.client_id + "', \'" +
-            transactionDB.type + "', \'" +
-            transactionDB.timestamp + "', \'" +
-            transactionDB.startDate + "', \'" +
-            transactionDB.dueDate + "', \'" +
-            transactionDB.returnDate + "', \'" +
-            transactionDB.cancelDate + "');";
+            transaction.vehicleId + "', \'" +
+            transaction.clientId + "', \'" +
+            transaction.type + "', \'" +
+            transaction.timestamp + "', \'" +
+            transaction.startDate + "', \'" +
+            transaction.dueDate + "');";
 
         getJdbcTemplate().execute(sql);
     }
 
     public void returnTransaction(Integer pkid) {
         //language = SQL
-        String sql = "UPDATE client SET " +
+        String sql = "UPDATE transaction SET " +
             "return_date='" + getDateNow() + "'" +
             " WHERE pkid=" + pkid;
 
@@ -83,7 +111,7 @@ public class TransactionService {
 
     public void cancelReservation(Integer pkid) {
         //language = SQL
-        String sql = "UPDATE client SET " +
+        String sql = "UPDATE transaction SET " +
             "cancel_date='" + getDateNow() + "'" +
             " WHERE pkid=" + pkid;
 
@@ -93,8 +121,8 @@ public class TransactionService {
     private Transaction mapResultSetToTransaction(ResultSet rs) throws SQLException {
         Transaction transaction = new Transaction();
         transaction.pkid = rs.getInt("pkid");
-        transaction.vehicle_id = rs.getInt("vehicle_id");
-        transaction.client_id = rs.getInt("client_id");
+        transaction.vehicleId = rs.getInt("vehicle_id");
+        transaction.clientId = rs.getInt("client_id");
         transaction.type = rs.getString("type");
         transaction.startDate = rs.getString("start_date");
         transaction.dueDate = rs.getString("due_date");

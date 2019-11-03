@@ -1,10 +1,6 @@
 package com.soen6461.rental.vehicle;
 
-import com.google.common.collect.ImmutableMap;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
@@ -73,18 +69,36 @@ public class VehicleService {
         getJdbcTemplate().execute(sql);
     }
 
-    public boolean isVehicleAvailableForDates(Integer pkid, AvailabilityDates dates) {
+    public boolean isVehicleAvailableForDates(Integer pkid, AvailableDates dates) {
         //language = SQL
-        String sql = "SELECT count(*) as restrictions FROM transaction" +
+        String sql = "SELECT count(*) as restrictions FROM transaction " +
             "WHERE vehicle_id =" + pkid + " AND " +
-            "(start_date < '" + dates.dueDate + "\' AND " +
-            "due_date > '" + dates.startDate + "\')";
+            "(start_date <= '" + dates.end + "\' AND " +
+            "due_date >= '" + dates.start + "\')";
 
         return getJdbcTemplate()
             .query(
                 sql,
-                (rs, rowNum) -> rs.getBoolean("restrictions")
-            ).get(0);
+                (rs, rowNum) -> rs.getInt("restrictions")
+            ).get(0) == 0;
+    }
+
+    public List<Vehicle> getVehicleAvailableForDates(AvailableDates dates) {
+        //language = SQL
+        String sql = "SELECT * " +
+            "FROM vehicle " +
+            "WHERE vehicle.pkid NOT IN ( " +
+            "SELECT vehicle_id FROM transaction " +
+            "join vehicle on vehicle.pkid = transaction.vehicle_id " +
+            "WHERE start_date < '" + dates.end + "' AND " +
+            "due_date > '" + dates.start +"' " +
+            "AND return_date is null)";
+
+        return getJdbcTemplate()
+            .query(
+                sql,
+                (rs, rowNum) -> mapResultSetToVehicle(rs)
+            );
     }
 
 
@@ -105,5 +119,4 @@ public class VehicleService {
     private JdbcTemplate getJdbcTemplate() {
         return new JdbcTemplate(dataSource);
     }
-
 }

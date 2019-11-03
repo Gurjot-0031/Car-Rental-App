@@ -33,10 +33,13 @@ public class ClientService {
             ).get(0);
     }
 
-    public Client getClientByDriverLicense(Integer driverLicense) {
+    public Client getClientByDriverLicense(String driverLicense) {
+        //language = SQL
+        String sql = "SELECT * FROM client WHERE driver_license='" + driverLicense + "'";
+
         return getJdbcTemplate()
             .query(
-                "SELECT * FROM client WHERE driver_license=" + driverLicense,
+                sql,
                 (rs, rowNum) -> mapResultSetToClient(rs)
             ).get(0);
     }

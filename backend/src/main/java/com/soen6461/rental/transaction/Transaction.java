@@ -5,9 +5,9 @@ import com.soen6461.rental.vehicle.Vehicle;
 
 public class Transaction {
     public Integer pkid;
-    public Integer vehicle_id;
+    public Integer vehicleId;
     public Vehicle vehicle;
-    public Integer client_id;
+    public Integer clientId;
     public Client client;
     public String type;
     public String timestamp;

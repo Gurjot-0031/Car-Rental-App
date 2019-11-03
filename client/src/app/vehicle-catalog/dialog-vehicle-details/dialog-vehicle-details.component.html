@@ -3,7 +3,7 @@
   <h1 *ngIf = "this.data['action'] == 'view'" >Vehicle Details</h1>
   <h1 *ngIf = "this.data['action'] == 'modify'">Update Vehicle Details</h1>
   <h1 *ngIf = "this.data['action'] == 'new'">Add New Vehicle</h1>
-  <h4 *ngIf = "this.data['action'] != 'new'">Status: {{getVehicleStatus()}}</h4>
+  <h4 *ngIf = "this.data['action'] != 'new'">Status: {{vehicleStatus}}</h4>
 
   <form [formGroup]="vehicleForm">
 

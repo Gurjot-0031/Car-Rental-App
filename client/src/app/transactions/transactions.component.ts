@@ -1,13 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {TransactionApiService, Transaction, Rental, Reservation} from '../api/transaction-api.service';
+import {TransactionApiService, Transaction} from '../api/transaction-api.service';
 import {MatTableDataSource} from '@angular/material/table';
 import {Observable} from "rxjs";
 import {map, startWith} from "rxjs/operators";
-import * as _moment from "moment";
 import {Moment} from "moment";
-
-const moment = _moment;
 
 @Component({
   selector: 'app-transactions',
@@ -41,23 +38,17 @@ export class TransactionsComponent implements OnInit {
   vehiclePlatesFilteredOptions: Observable<string[]>;
 
   constructor(private transactionApiService: TransactionApiService) {
+    this.dataSource = new MatTableDataSource<Transaction>();
   }
 
   ngOnInit() {
     this.isLoading = true;
-    this.transactionApiService.setupTransactions().subscribe(() => {
-      const rentals: Rental[] = this.transactionApiService.getRentals();
-      const reservations: Reservation[] = this.transactionApiService.getReservations();
-
-      this.dataSource = new MatTableDataSource<Transaction>();
-      rentals.forEach(r => this.dataSource.data.push(r));
-      reservations.forEach(r => this.dataSource.data.push(r));
-
+    this.transactionApiService.getAllTransactions().subscribe(transactions => {
+      this.dataSource.data = transactions;
       this.clientOptions = [...new Set(this.dataSource.data.map(t => t.client.driverLicense))];
       this.vehicleOptions = [...new Set(this.dataSource.data.map(t => t.vehicle.license))];
       this.isLoading = false;
     });
-
     this.clientLicensesFilteredOptions = this.clientFilter.valueChanges
       .pipe(
         startWith(''),
@@ -82,27 +73,13 @@ export class TransactionsComponent implements OnInit {
     return this.vehicleOptions.filter(option => option.toLowerCase().includes(filterValue));
   }
 
-  getTransactionType(transaction: Transaction) {
-    if (transaction.returnDate) {
-      return 'Return';
-    }
-    if (transaction instanceof Rental) {
-      return 'Rental';
-    }
-    if (transaction instanceof Reservation) {
-      return 'Reservation'
-    }
-  }
-
   applyFilters() {
-    this.transactionApiService.setupTransactions().subscribe(() => {
-      this.dataSource = null;
-
-      const rentals: Rental[] = this.transactionApiService.getRentals();
-      const reservations: Reservation[] = this.transactionApiService.getReservations();
-      this.dataSource = new MatTableDataSource<Transaction>();
-      rentals.forEach(r => this.dataSource.data.push(r));
-      reservations.forEach(r => this.dataSource.data.push(r));
+    this.isLoading = true;
+    this.transactionApiService.getAllTransactions().subscribe(transactions => {
+      this.dataSource.data = transactions;
+      this.clientOptions = [...new Set(this.dataSource.data.map(t => t.client.driverLicense))];
+      this.vehicleOptions = [...new Set(this.dataSource.data.map(t => t.vehicle.license))];
+      this.isLoading = false;
 
       this.dataSource.data = this.dataSource.data
         .filter(t => (this.clientFilter.value && this.clientFilter.value.length > 0) ?
@@ -110,6 +87,6 @@ export class TransactionsComponent implements OnInit {
         .filter(t => (this.vehicleFilter.value && this.vehicleFilter.value.length > 0) ?
           t.vehicle.license === this.vehicleFilter.value : true)
         .filter(t => this.dueDateFilter ? t.dueDate === this.dueDateFilter.format('YYYY-MM-DD') : true)
-    })
+    });
   }
 }

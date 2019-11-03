@@ -3,9 +3,8 @@ import {Vehicle, VehicleApiService} from "../../api/vehicle-api.service";
 import {FormControl, FormGroup} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {TransactionApiService} from "../../api/transaction-api.service";
-import {VehicleCatalogComponent} from "../vehicle-catalog.component";
 import * as _moment from 'moment';
-import {MatTableDataSource} from "@angular/material/table";
+import {VehicleAvailabilityService} from "../../vehicle-availability.service";
 
 @Component({
   selector: 'app-dialog-vehicle-details',
@@ -14,6 +13,7 @@ import {MatTableDataSource} from "@angular/material/table";
 })
 export class DialogVehicleDetailsComponent implements OnInit {
 
+  isLoading: boolean;
   isNewVehicle: boolean;
   vehicle: Vehicle;
   resultSetVehicles: Vehicle[];
@@ -35,17 +35,20 @@ export class DialogVehicleDetailsComponent implements OnInit {
     }
   );
 
-  isAvailable: boolean;
+  vehicleStatus: string;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data,
     public dialogRef: MatDialogRef<DialogVehicleDetailsComponent>,
     private transactionApiService: TransactionApiService,
     private vehicleApiService: VehicleApiService,
+    private vehicleAvailabilityService: VehicleAvailabilityService
   ) {
     this.vehicle = data['vehicle'];
     this.resultSetVehicles = data['resultSetVehicles'];
-    this.isAvailable = true;
+    if (this.vehicle) {
+      this.getVehicleStatus();
+    }
 
     //user clicks view
     if (this.vehicle && this.data['action'] === 'view') {
@@ -55,7 +58,7 @@ export class DialogVehicleDetailsComponent implements OnInit {
     }
 
     //modify
-    else if(this.vehicle && this.data['action'] === 'modify') {
+    else if (this.vehicle && this.data['action'] === 'modify') {
       this.isNewVehicle = false;
       this.setFormValues(this.vehicle);
       this.vehicleForm.enable();
@@ -68,6 +71,10 @@ export class DialogVehicleDetailsComponent implements OnInit {
     }
   }
 
+  ngOnInit() {
+  }
+
+
   setFormValues(vehicle) {
     this.type.setValue(vehicle.type);
     this.make.setValue(vehicle.make);
@@ -77,16 +84,16 @@ export class DialogVehicleDetailsComponent implements OnInit {
     this.license.setValue(vehicle.license)
   }
 
-  ngOnInit() {
-  }
-
   onCancelClicked() {
     this.dialogRef.close();
   }
 
   getVehicleStatus() {
-    return this.transactionApiService.isVehicleAvailableForDates(this.vehicle, _moment(), _moment()) ?
-      'Available' : 'Unavailable';
+    this.isLoading = true;
+    const now = _moment().format('YYYY-MM-DD');
+    this.vehicleApiService.isVehicleAvailableForDates(this.vehicle, now, now).subscribe(result => {
+      this.vehicleStatus = result ? "Available" : "Unavailable";
+    });
   }
 
   onPreviousClicked() {
@@ -98,6 +105,7 @@ export class DialogVehicleDetailsComponent implements OnInit {
       previousIndex = --index % this.resultSetVehicles.length;
     }
     this.vehicle = this.resultSetVehicles[previousIndex];
+    this.getVehicleStatus();
     this.setFormValues(this.vehicle);
   }
 
@@ -105,6 +113,7 @@ export class DialogVehicleDetailsComponent implements OnInit {
     let index = this.resultSetVehicles.indexOf(this.vehicle);
     let nextIndex = ++index % this.resultSetVehicles.length;
     this.vehicle = this.resultSetVehicles[nextIndex];
+    this.getVehicleStatus();
     this.setFormValues(this.vehicle);
   }
 
@@ -135,6 +144,6 @@ export class DialogVehicleDetailsComponent implements OnInit {
       // TODO this probably needs to change for concurrency
       this.resultSetVehicles.push(vehicle);
       this.dialogRef.close();
-  });
+    });
   }
 }

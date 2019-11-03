@@ -19,6 +19,14 @@ export class TransactionApiService {
     return this.http.get<Transaction[]>('/api/transaction');
   }
 
+  getAllRentals(): Observable<Transaction[]> {
+    return this.http.get<Transaction[]>('/api/rental');
+  }
+
+  getAllReservations(): Observable<Transaction[]> {
+    return this.http.get<Transaction[]>('/api/reservations');
+  }
+
   getTransaction(transaction: Transaction): Observable<Transaction> {
     return this.http.get<Transaction>('/api/transaction/' + encodeURIComponent(transaction.pkid));
   }

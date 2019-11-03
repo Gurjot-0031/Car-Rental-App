@@ -19,7 +19,7 @@ public class VehicleController {
     }
 
     @GetMapping("/api//{pkid}")
-    public Vehicle getVehicle(@PathVariable Integer pkid){
+    public Vehicle getVehicle(@PathVariable Integer pkid) {
         return vehicleService.getVehicle(pkid);
     }
 
@@ -39,8 +39,15 @@ public class VehicleController {
     }
 
     @PostMapping("/api/vehicle/{pkid}/available")
-    public boolean getAvailableVehicles(@PathVariable Integer pkid, @RequestBody AvailabilityDates dates) {
+    public boolean getAvailableVehicles(@PathVariable Integer pkid, @RequestBody AvailableDates dates) {
         return vehicleService.isVehicleAvailableForDates(pkid, dates);
     }
+
+    @PostMapping("/api/vehicle/available")
+    public List<Vehicle> getAvailableVehicles(@RequestBody AvailableDates dates) {
+        return vehicleService.getVehicleAvailableForDates(dates);
+    }
+
+
 }
 
