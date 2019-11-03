@@ -62,6 +62,10 @@ export class TransactionsComponent implements OnInit {
       );
   }
 
+  getTransactionType(transaction: Transaction): string {
+    return transaction.returnDate ? 'return' : transaction.type;
+  }
+
 
   private _filterClients(value: string): string[] {
     const filterValue = value.toLowerCase();
