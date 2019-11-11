@@ -3,7 +3,7 @@ package com.soen6461.rental.user;
 import com.google.common.collect.ImmutableMap;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
-
+import com.soen6461.rental.RentalApplication;
 import javax.sql.DataSource;
 import java.util.List;
 
@@ -11,7 +11,6 @@ import java.util.List;
 public class UserService {
 
     private final DataSource dataSource;
-    static boolean existingLoggedInAdmin ;
     public UserService(DataSource dataSource) {
         this.dataSource = dataSource;
     }
@@ -43,12 +42,13 @@ public class UserService {
         if (users.size() != 1) {
             logInResponse.isSuccess = false;
         } else {
-            if(users.get(0).role == "admin"){
+            if(users.get(0).role.equalsIgnoreCase("admin")){
                 //only one admin user can login at a time
-                if(!existingLoggedInAdmin){
+                if(RentalApplication.activeAdmins == 0){
                     logInResponse.isSuccess = true;
                     logInResponse.username = users.get(0).username;
                     logInResponse.role = users.get(0).role;
+                    RentalApplication.activeAdmins++;
                 }
                 else
                     logInResponse.isSuccess = false;
