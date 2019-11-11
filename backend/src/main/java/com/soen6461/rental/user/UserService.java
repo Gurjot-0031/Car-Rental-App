@@ -11,7 +11,7 @@ import java.util.List;
 public class UserService {
 
     private final DataSource dataSource;
-
+    static boolean existingLoggedInAdmin ;
     public UserService(DataSource dataSource) {
         this.dataSource = dataSource;
     }
@@ -43,9 +43,22 @@ public class UserService {
         if (users.size() != 1) {
             logInResponse.isSuccess = false;
         } else {
-            logInResponse.isSuccess = true;
-            logInResponse.username = users.get(0).username;
-            logInResponse.role = users.get(0).role;
+            if(users.get(0).role == "admin"){
+                //only one admin user can login at a time
+                if(!existingLoggedInAdmin){
+                    logInResponse.isSuccess = true;
+                    logInResponse.username = users.get(0).username;
+                    logInResponse.role = users.get(0).role;
+                }
+                else
+                    logInResponse.isSuccess = false;
+            }
+            //there can be multiple clients logged in simuntaneously
+            else{
+                logInResponse.isSuccess = true;
+                logInResponse.username = users.get(0).username;
+                logInResponse.role = users.get(0).role;
+            }
         }
         return logInResponse;
     }
