@@ -13,7 +13,7 @@ import javax.sql.DataSource;
 
 @SpringBootApplication
 public class RentalApplication implements WebMvcConfigurer {
-
+    public static int activeAdmins=0;
 	public static void main(String[] args) {
 		SpringApplication.run(RentalApplication.class, args);
 	}
