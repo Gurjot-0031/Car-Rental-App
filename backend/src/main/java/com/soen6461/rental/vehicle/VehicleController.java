@@ -53,6 +53,15 @@ public class VehicleController {
         return vehicleService.isAvailable(pkid);
     }
 
+    @PostMapping("/api/vehicle/{pkid}/start-modify")
+    public void setStartModify(@PathVariable Integer pkid, @RequestBody Vehicle vehicle) {
+        vehicleService.setStartModify(vehicle);
+    }
+
+    @PostMapping("/api/vehicle/{pkid}/stop-modify")
+    public void setStopModify(@PathVariable Integer pkid, @RequestBody Vehicle vehicle) {
+        vehicleService.setStopModify(vehicle);
+    }
 
 }
 

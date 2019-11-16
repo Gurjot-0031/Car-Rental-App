@@ -61,9 +61,11 @@ export class DialogVehicleDetailsComponent implements OnInit {
 
         //modify
         else if (this.vehicle && this.data['action'] === 'modify') {
-          this.isNewVehicle = false;
-          this.setFormValues(this.vehicle);
-          this.vehicleForm.enable();
+          this.vehicleApiService.setStartModify(this.vehicle).subscribe(() => {
+            this.isNewVehicle = false;
+            this.setFormValues(this.vehicle);
+            this.vehicleForm.enable();
+          });
         }
 
         //new
@@ -76,13 +78,11 @@ export class DialogVehicleDetailsComponent implements OnInit {
         this.isResourceAvailable = false;
       }
     })
-
-
-
   }
 
   ngOnInit() {
     this.isLoading = true;
+    this.isResourceAvailable = true;
   }
 
 
@@ -96,6 +96,9 @@ export class DialogVehicleDetailsComponent implements OnInit {
   }
 
   onCancelClicked() {
+    if (this.vehicle) {
+      this.vehicleApiService.setStopModify(this.vehicle).subscribe();
+    }
     this.dialogRef.close();
   }
 

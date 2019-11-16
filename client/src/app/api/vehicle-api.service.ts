@@ -45,6 +45,14 @@ export class VehicleApiService {
   isResourceAvailable(vehicle: Vehicle): Observable<boolean> {
     return this.http.get<boolean>('/api/vehicle/' + encodeURIComponent(vehicle.pkid) + '/is-available');
   }
+
+  setStartModify(vehicle: Vehicle) {
+    return this.http.post('/api/vehicle/' + encodeURIComponent(vehicle.pkid) + '/start-modify', vehicle);
+  }
+
+  setStopModify(vehicle: Vehicle) {
+    return this.http.post('/api/vehicle/' + encodeURIComponent(vehicle.pkid) + '/stop-modify', vehicle);
+  }
 }
 
 export class Vehicle {

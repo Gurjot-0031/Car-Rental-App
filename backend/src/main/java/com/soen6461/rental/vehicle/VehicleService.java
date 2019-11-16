@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -62,7 +63,7 @@ public class VehicleService {
         insertMap.put("version", 1);
         insertMap.put("active", 1);
 
-        SimpleJdbcInsert simpleJdbcInsert =  new SimpleJdbcInsert(dataSource);
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(dataSource);
         simpleJdbcInsert.setTableName("vehicle");
         simpleJdbcInsert.setGeneratedKeyName("pkid");
 
@@ -73,13 +74,13 @@ public class VehicleService {
     void updateVehicle(Vehicle vehicle) {
         //language = SQL
         String sql = "UPDATE vehicle SET " +
-            "type='"+vehicle.getType() + "'," +
-            "make='"+vehicle.getMake() + "'," +
-            "model='"+vehicle.getModel() + "'," +
-            "color='"+vehicle.getColor() + "'," +
-            "license='"+vehicle.getLicense() + "'," +
-            "year="+vehicle.getYear() +
-            " WHERE pkid="+vehicle.getPkid();
+            "type='" + vehicle.getType() + "'," +
+            "make='" + vehicle.getMake() + "'," +
+            "model='" + vehicle.getModel() + "'," +
+            "color='" + vehicle.getColor() + "'," +
+            "license='" + vehicle.getLicense() + "'," +
+            "year=" + vehicle.getYear() +
+            " WHERE pkid=" + vehicle.getPkid();
 
         getJdbcTemplate().execute(sql);
 
@@ -88,7 +89,7 @@ public class VehicleService {
 
     void deleteVehicle(Integer pkid) {
         //language = SQL
-        String sql = "UPDATE vehicle SET active=0 WHERE pkid="+pkid;
+        String sql = "UPDATE vehicle SET active=0 WHERE pkid=" + pkid;
 
         getJdbcTemplate().execute(sql);
 
@@ -124,7 +125,7 @@ public class VehicleService {
             "SELECT vehicle_id FROM transaction " +
             "join vehicle on vehicle.pkid = transaction.vehicle_id " +
             "WHERE start_date < '" + dates.end + "' AND " +
-            "due_date > '" + dates.start +"' " +
+            "due_date > '" + dates.start + "' " +
             "AND return_date is null)";
 
         return getJdbcTemplate()
@@ -160,5 +161,23 @@ public class VehicleService {
 
     private boolean hasDecimal(BigDecimal version) {
         return version.remainder(BigDecimal.ONE).compareTo(new BigDecimal("0")) == 0;
+    }
+
+    public void setStartModify(Vehicle vehicle) {
+        Vehicle currentVehicle = vehicleIdentityMap.get(vehicle.getPkid());
+        currentVehicle.setVersion(currentVehicle.getVersion().add(new BigDecimal(0.1)));
+    }
+
+    private void incrementVersion(Vehicle vehicle) {
+        Vehicle currentVehicle = vehicleIdentityMap.get(vehicle.getPkid());
+        currentVehicle.setVersion(currentVehicle.getVersion()
+                .setScale(0, RoundingMode.DOWN)
+                .add(new BigDecimal(0.1)));
+    }
+
+    public void setStopModify(Vehicle vehicle) {
+        Vehicle currentVehicle = vehicleIdentityMap.get(vehicle.getPkid());
+        currentVehicle.setVersion(currentVehicle.getVersion()
+            .setScale(0, RoundingMode.DOWN));
     }
 }
