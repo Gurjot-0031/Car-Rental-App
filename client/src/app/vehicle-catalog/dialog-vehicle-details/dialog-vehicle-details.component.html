@@ -1,112 +1,133 @@
 <div class="container">
 
-  <h1 *ngIf = "this.data['action'] == 'view'" >Vehicle Details</h1>
-  <h1 *ngIf = "this.data['action'] == 'modify'">Update Vehicle Details</h1>
-  <h1 *ngIf = "this.data['action'] == 'new'">Add New Vehicle</h1>
-  <h4 *ngIf = "this.data['action'] != 'new'">Status: {{vehicleStatus}}</h4>
-
-  <form [formGroup]="vehicleForm">
-
-    <div class="vehicle-form">
-      <mat-form-field>
-        <label>
-          <input type="text"
-                 matInput
-                 placeholder="Type"
-                 placeholder="Type"
-                 formControlName="type">
-        </label>
-        <mat-error *ngIf="type.errors && type.errors['required']">
-          This field is required.
-        </mat-error>
-      </mat-form-field>
-
-      <mat-form-field>
-        <label>
-          <input type="text"
-                 matInput
-                 placeholder="Make"
-                 formControlName="make">
-        </label>
-        <mat-error *ngIf="make.errors && make.errors['required']">
-          This field is required.
-        </mat-error>
-      </mat-form-field>
-
-      <mat-form-field>
-        <label>
-          <input type="text"
-                 matInput
-                 placeholder="Model"
-                 formControlName="model">
-        </label>
-        <mat-error *ngIf="model.errors && model.errors['required']">
-          This field is required.
-        </mat-error>
-      </mat-form-field>
-
-      <mat-form-field>
-        <label>
-          <input type="text"
-                 matInput
-                 placeholder="Year"
-                 formControlName="year">
-        </label>
-        <mat-error *ngIf="year.errors && year.errors['required']">
-          This field is required.
-        </mat-error>
-      </mat-form-field>
-
-      <mat-form-field>
-        <label>
-          <input type="text"
-                 matInput
-                 placeholder="Color"
-                 formControlName="color">
-        </label>
-        <mat-error *ngIf="color.errors && color.errors['required']">
-          This field is required.
-        </mat-error>
-      </mat-form-field>
-
-      <mat-form-field>
-        <label>
-          <input type="text"
-                 matInput
-                 placeholder="License Plate"
-                 formControlName="license">
-        </label>
-        <mat-error *ngIf="license.errors && license.errors['required']">
-          This field is required.
-        </mat-error>
-      </mat-form-field>
-
+  <div *ngIf="isLoading">
+    <mat-spinner></mat-spinner>
+    <div>
+      <h2> Resource unavailable. Please wait or try again later ...</h2>
     </div>
-
-  </form>
-
-  <div mat-dialog-actions style="margin-top: 12px;">
-    <div style="margin-left: auto;">
-      <button color="primary" mat-raised-button
-              (click)="onCancelClicked()">Close</button>
+    <div mat-dialog-actions style="margin-top: 12px;">
+      <div style="margin-left: auto;">
+        <button color="primary" mat-raised-button
+                (click)="onCancelClicked()">Close
+        </button>
+      </div>
     </div>
-    <div *ngIf = " this.data['action'] == 'view' ? true : false " style="margin-left: auto;">
-      <button color="primary" mat-raised-button
-              (click)="onPreviousClicked()">Previous</button>
-    </div>
-    <div *ngIf = " this.data['action'] == 'view' ? true : false " style="margin-left: auto;">
-      <button color="primary" mat-raised-button
-              (click)="onNextClicked()">Next</button>
-    </div>
+  </div>
+  <div *ngIf="!isLoading">
 
-    <div *ngIf = " this.data['action'] == 'modify' ? true : false " style="margin-left: auto;">
-      <button color="primary" mat-raised-button
-              (click)="onModifyClicked()">Modify</button>
-    </div>
+    <h1 *ngIf="this.data['action'] == 'view'">Vehicle Details</h1>
+    <h1 *ngIf="this.data['action'] == 'modify'">Update Vehicle Details</h1>
+    <h1 *ngIf="this.data['action'] == 'new'">Add New Vehicle</h1>
+    <h4 *ngIf="this.data['action'] != 'new'">Status: {{vehicleStatus}}</h4>
 
-    <div *ngIf = " this.data['action'] == 'new' ? true : false " style="margin-left: auto;">
-      <button color="primary" mat-raised-button
-              (click)="onAddClicked()">Add</button>
+    <form [formGroup]="vehicleForm">
+
+      <div class="vehicle-form">
+        <mat-form-field>
+          <label>
+            <input type="text"
+                   matInput
+                   placeholder="Type"
+                   placeholder="Type"
+                   formControlName="type">
+          </label>
+          <mat-error *ngIf="type.errors && type.errors['required']">
+            This field is required.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <label>
+            <input type="text"
+                   matInput
+                   placeholder="Make"
+                   formControlName="make">
+          </label>
+          <mat-error *ngIf="make.errors && make.errors['required']">
+            This field is required.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <label>
+            <input type="text"
+                   matInput
+                   placeholder="Model"
+                   formControlName="model">
+          </label>
+          <mat-error *ngIf="model.errors && model.errors['required']">
+            This field is required.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <label>
+            <input type="text"
+                   matInput
+                   placeholder="Year"
+                   formControlName="year">
+          </label>
+          <mat-error *ngIf="year.errors && year.errors['required']">
+            This field is required.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <label>
+            <input type="text"
+                   matInput
+                   placeholder="Color"
+                   formControlName="color">
+          </label>
+          <mat-error *ngIf="color.errors && color.errors['required']">
+            This field is required.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <label>
+            <input type="text"
+                   matInput
+                   placeholder="License Plate"
+                   formControlName="license">
+          </label>
+          <mat-error *ngIf="license.errors && license.errors['required']">
+            This field is required.
+          </mat-error>
+        </mat-form-field>
+
+      </div>
+
+    </form>
+
+    <div mat-dialog-actions style="margin-top: 12px;">
+      <div style="margin-left: auto;">
+        <button color="primary" mat-raised-button
+                (click)="onCancelClicked()">Close
+        </button>
+      </div>
+      <div *ngIf=" this.data['action'] == 'view' ? true : false " style="margin-left: auto;">
+        <button color="primary" mat-raised-button
+                (click)="onPreviousClicked()">Previous
+        </button>
+      </div>
+      <div *ngIf=" this.data['action'] == 'view' ? true : false " style="margin-left: auto;">
+        <button color="primary" mat-raised-button
+                (click)="onNextClicked()">Next
+        </button>
+      </div>
+
+      <div *ngIf=" this.data['action'] == 'modify' ? true : false " style="margin-left: auto;">
+        <button color="primary" mat-raised-button
+                (click)="onModifyClicked()">Modify
+        </button>
+      </div>
+
+      <div *ngIf=" this.data['action'] == 'new' ? true : false " style="margin-left: auto;">
+        <button color="primary" mat-raised-button
+                (click)="onAddClicked()">Add
+        </button>
+      </div>
     </div>
   </div>
 </div>

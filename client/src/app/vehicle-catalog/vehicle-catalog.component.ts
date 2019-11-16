@@ -209,7 +209,7 @@ export class VehicleCatalogComponent implements OnInit {
     return this.loginService.getRoles().includes('admin');
   }
 
-  modifyVehicleDetails(vehicle: any) {
+  modifyVehicleDetails(vehicle: Vehicle) {
     this.dialog.open(DialogVehicleDetailsComponent, {
       disableClose: true,
       autoFocus: false,

@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -144,11 +145,20 @@ public class VehicleService {
         vehicle.setType(rs.getString("type"));
         vehicle.setYear(rs.getInt("year"));
         vehicle.setActive(rs.getInt("active"));
+        vehicle.setVersion(new BigDecimal(rs.getFloat("version")));
         return vehicle;
     }
 
 
     private JdbcTemplate getJdbcTemplate() {
         return new JdbcTemplate(dataSource);
+    }
+
+    public boolean isAvailable(Integer pkid) {
+        return hasDecimal(vehicleIdentityMap.get(pkid).getVersion());
+    }
+
+    private boolean hasDecimal(BigDecimal version) {
+        return version.remainder(BigDecimal.ONE).compareTo(new BigDecimal("0")) == 0;
     }
 }

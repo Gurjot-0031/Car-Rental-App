@@ -19,7 +19,7 @@ export class VehicleApiService {
     dates.start = start;
     dates.end = end;
     console.log(dates);
-    return this.http.post<Vehicle[]>("/api/vehicle/available", dates);
+    return this.http.post<Vehicle[]>("/api/vehicle/available-for-dates", dates);
   }
 
   createVehicle(vehicle: Vehicle) {
@@ -39,7 +39,11 @@ export class VehicleApiService {
     const dates = new AvailableDates();
     dates.start = start;
     dates.end = end;
-    return this.http.post<boolean>('/api/vehicle/' + encodeURIComponent(vehicle.pkid) + '/available', dates);
+    return this.http.post<boolean>('/api/vehicle/' + encodeURIComponent(vehicle.pkid) + '/available-for-dates', dates);
+  }
+
+  isResourceAvailable(vehicle: Vehicle): Observable<boolean> {
+    return this.http.get<boolean>('/api/vehicle/' + encodeURIComponent(vehicle.pkid) + '/is-available');
   }
 }
 
@@ -51,7 +55,8 @@ export class Vehicle {
   year: number;
   color: string;
   license: string;
-  active: number
+  active: number;
+  version: number;
 }
 
 export class AvailableDates {

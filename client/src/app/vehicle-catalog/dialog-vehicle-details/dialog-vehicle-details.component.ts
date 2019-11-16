@@ -14,6 +14,7 @@ import {VehicleAvailabilityService} from "../../vehicle-availability.service";
 export class DialogVehicleDetailsComponent implements OnInit {
 
   isLoading: boolean;
+  isResourceAvailable: boolean;
   isNewVehicle: boolean;
   vehicle: Vehicle;
   resultSetVehicles: Vehicle[];
@@ -41,37 +42,47 @@ export class DialogVehicleDetailsComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data,
     public dialogRef: MatDialogRef<DialogVehicleDetailsComponent>,
     private transactionApiService: TransactionApiService,
-    private vehicleApiService: VehicleApiService,
-    private vehicleAvailabilityService: VehicleAvailabilityService
+    private vehicleApiService: VehicleApiService
   ) {
     this.vehicle = data['vehicle'];
     this.resultSetVehicles = data['resultSetVehicles'];
-    if (this.vehicle) {
-      this.getVehicleStatus();
-    }
+    this.vehicleApiService.isResourceAvailable(this.vehicle).subscribe(result => {
+      if (result) {
+        if (this.vehicle) {
+          this.getVehicleStatus();
+        }
 
-    //user clicks view
-    if (this.vehicle && this.data['action'] === 'view') {
-      this.isNewVehicle = false;
-      this.setFormValues(this.vehicle);
-      this.vehicleForm.disable();
-    }
+        //user clicks view
+        if (this.vehicle && this.data['action'] === 'view') {
+          this.isNewVehicle = false;
+          this.setFormValues(this.vehicle);
+          this.vehicleForm.disable();
+        }
 
-    //modify
-    else if (this.vehicle && this.data['action'] === 'modify') {
-      this.isNewVehicle = false;
-      this.setFormValues(this.vehicle);
-      this.vehicleForm.enable();
-    }
+        //modify
+        else if (this.vehicle && this.data['action'] === 'modify') {
+          this.isNewVehicle = false;
+          this.setFormValues(this.vehicle);
+          this.vehicleForm.enable();
+        }
 
-    //new
-    else {
-      this.isNewVehicle = true;
-      this.vehicleForm.enable();
-    }
+        //new
+        else {
+          this.isNewVehicle = true;
+          this.vehicleForm.enable();
+        }
+        this.isLoading = false;
+      } else {
+        this.isResourceAvailable = false;
+      }
+    })
+
+
+
   }
 
   ngOnInit() {
+    this.isLoading = true;
   }
 
 
