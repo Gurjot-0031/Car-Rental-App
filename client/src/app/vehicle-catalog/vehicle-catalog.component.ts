@@ -56,7 +56,7 @@ export class VehicleCatalogComponent implements OnInit {
   model = new FormControl();
   type = new FormControl();
   color = new FormControl();
-  minYear = new FormControl(moment().subtract(20, 'years'));
+  minYear = new FormControl(moment().subtract(2019, 'years'));
   maxYear = new FormControl(moment());
 
   sortColumn: string;
@@ -107,6 +107,7 @@ export class VehicleCatalogComponent implements OnInit {
       result => {
         this.resultVehicles = result.filter(v => v.active === 1);
         let filtered = this.applyFilters(this.resultVehicles);
+        console.log(filtered);
         this.dataSource.data = this.applySorting(filtered);
         this.refreshDropDownMenus(result);
         this.isLoading = false;

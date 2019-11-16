@@ -1,6 +1,5 @@
 package com.soen6461.rental.vehicle;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -9,9 +8,7 @@ import org.springframework.stereotype.Component;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -54,16 +51,6 @@ public class VehicleService {
     }
 
     void createVehicle(Vehicle vehicle) {
-        //language = SQL
-//        String sql = "INSERT INTO vehicle (type, make, model, color, license, year) \n" +
-//            "VALUES ('" +
-//            vehicle.getType() + "', \'" +
-//            vehicle.getMake() + "', \'" +
-//            vehicle.getModel() + "', \'" +
-//            vehicle.getColor() + "', \'" +
-//            vehicle.getLicense() + "'," +
-//            vehicle.getYear() + ");";
-
         Map<String, Object> insertMap = Maps.newHashMap();
         insertMap.put("type", vehicle.getType());
         insertMap.put("make", vehicle.getMake());
@@ -71,8 +58,14 @@ public class VehicleService {
         insertMap.put("color", vehicle.getColor());
         insertMap.put("license", vehicle.getLicense());
         insertMap.put("year", vehicle.getYear());
+        insertMap.put("version", 1);
+        insertMap.put("active", 1);
 
-        Number pkid = new SimpleJdbcInsert(dataSource).executeAndReturnKey(insertMap);
+        SimpleJdbcInsert simpleJdbcInsert =  new SimpleJdbcInsert(dataSource);
+        simpleJdbcInsert.setTableName("vehicle");
+        simpleJdbcInsert.setGeneratedKeyName("pkid");
+
+        Number pkid = simpleJdbcInsert.executeAndReturnKey(insertMap);
         fetchVehicleAndAddToIdentityMap(pkid.intValue());
     }
 
@@ -88,6 +81,8 @@ public class VehicleService {
             " WHERE pkid="+vehicle.getPkid();
 
         getJdbcTemplate().execute(sql);
+
+        vehicleIdentityMap.put(vehicle.getPkid(), vehicle);
     }
 
     void deleteVehicle(Integer pkid) {
@@ -95,6 +90,8 @@ public class VehicleService {
         String sql = "UPDATE vehicle SET active=0 WHERE pkid="+pkid;
 
         getJdbcTemplate().execute(sql);
+
+        vehicleIdentityMap.remove(pkid);
     }
 
     private void fetchVehicleAndAddToIdentityMap(Integer pkid) {
