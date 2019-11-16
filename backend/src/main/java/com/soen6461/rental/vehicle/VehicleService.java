@@ -1,32 +1,51 @@
 package com.soen6461.rental.vehicle;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class VehicleService {
 
     private final DataSource dataSource;
+    private Map<Integer, Vehicle> vehicleIdentityMap;
 
     public VehicleService(DataSource dataSource) {
         this.dataSource = dataSource;
+        this.vehicleIdentityMap = null;
     }
 
     List<Vehicle> getAllVehicles() {
-        return getJdbcTemplate()
-            .query(
-                "SELECT * FROM vehicle",
-                (rs, rowNum) -> mapResultSetToVehicle(rs)
-            );
+        if (vehicleIdentityMap == null) {
+            List<Vehicle> result = getJdbcTemplate()
+                .query(
+                    "SELECT * FROM vehicle",
+                    (rs, rowNum) -> mapResultSetToVehicle(rs)
+                );
+            vehicleIdentityMap = result
+                .stream()
+                .collect(
+                    Collectors.toMap(Vehicle::getPkid, v -> v)
+                );
+        }
+        return new ArrayList<>(vehicleIdentityMap.values());
     }
 
 
     public Vehicle getVehicle(Integer pkid) {
+        if (vehicleIdentityMap.containsKey(pkid)) {
+            return vehicleIdentityMap.get(pkid);
+        }
         return getJdbcTemplate()
             .query(
                 "SELECT * FROM vehicle WHERE pkid=" + pkid,
@@ -36,16 +55,25 @@ public class VehicleService {
 
     void createVehicle(Vehicle vehicle) {
         //language = SQL
-        String sql = "INSERT INTO vehicle (type, make, model, color, license, year) \n" +
-            "VALUES ('" +
-            vehicle.getType() + "', \'" +
-            vehicle.getMake() + "', \'" +
-            vehicle.getModel() + "', \'" +
-            vehicle.getColor() + "', \'" +
-            vehicle.getLicense() + "'," +
-            vehicle.getYear() + ");";
+//        String sql = "INSERT INTO vehicle (type, make, model, color, license, year) \n" +
+//            "VALUES ('" +
+//            vehicle.getType() + "', \'" +
+//            vehicle.getMake() + "', \'" +
+//            vehicle.getModel() + "', \'" +
+//            vehicle.getColor() + "', \'" +
+//            vehicle.getLicense() + "'," +
+//            vehicle.getYear() + ");";
 
-        getJdbcTemplate().execute(sql);
+        Map<String, Object> insertMap = Maps.newHashMap();
+        insertMap.put("type", vehicle.getType());
+        insertMap.put("make", vehicle.getMake());
+        insertMap.put("model", vehicle.getModel());
+        insertMap.put("color", vehicle.getColor());
+        insertMap.put("license", vehicle.getLicense());
+        insertMap.put("year", vehicle.getYear());
+
+        Number pkid = new SimpleJdbcInsert(dataSource).executeAndReturnKey(insertMap);
+        fetchVehicleAndAddToIdentityMap(pkid.intValue());
     }
 
     void updateVehicle(Vehicle vehicle) {
@@ -67,6 +95,13 @@ public class VehicleService {
         String sql = "UPDATE vehicle SET active=0 WHERE pkid="+pkid;
 
         getJdbcTemplate().execute(sql);
+    }
+
+    private void fetchVehicleAndAddToIdentityMap(Integer pkid) {
+        if (vehicleIdentityMap == null) {
+            return;
+        }
+        vehicleIdentityMap.put(pkid, getVehicle(pkid));
     }
 
     public boolean isVehicleAvailableForDates(Integer pkid, AvailableDates dates) {
