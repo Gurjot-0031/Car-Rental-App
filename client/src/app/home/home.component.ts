@@ -42,7 +42,7 @@ export class HomeComponent implements OnInit {
   }
 
   logout() {
-    this.loginService.logout();
+    this.loginService.logout().subscribe();
   }
 
   isAdmin() {

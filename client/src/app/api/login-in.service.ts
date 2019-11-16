@@ -19,7 +19,7 @@ export class LogInService {
     2. If the login is successful, store values, and emit true
     3. If the login fails, emit false
    */
-  signIn(username: string, password: string): Observable<boolean> {
+  signIn(username: string, password: string): Observable<LogInResponse> {
     return this.http.post<LogInResponse>('/api/log-in',
       {username: username, password: password})
       .pipe(
@@ -27,22 +27,24 @@ export class LogInService {
             if (response.isSuccess) {
               this.username = response.username;
               this.roles.push(response.role);
-              return of(true)
+              return of(response)
             } else {
               // TODO FOR DEVELOPMENT ONLY!!!
               this.username = 'FORCED ADMIN';
               this.roles.push('admin');
               this.roles.push('clerk');
-              return of(true);
+              return of(response);
             }
           }
         )
       )
   }
 
-  logout(){
+  logout(): Observable<any> {
+    const response = this.http.post('/api/log-out', this.roles);
     this.username =null;
     this.roles = [];
+    return response;
   }
 
   getUsername() {

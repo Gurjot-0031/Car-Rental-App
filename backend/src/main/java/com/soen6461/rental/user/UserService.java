@@ -42,23 +42,9 @@ public class UserService {
         if (users.size() != 1) {
             logInResponse.isSuccess = false;
         } else {
-            if(users.get(0).role.equalsIgnoreCase("admin")){
-                //only one admin user can login at a time
-                if(RentalApplication.activeAdmins == 0){
-                    logInResponse.isSuccess = true;
-                    logInResponse.username = users.get(0).username;
-                    logInResponse.role = users.get(0).role;
-                    RentalApplication.activeAdmins++;
-                }
-                else
-                    logInResponse.isSuccess = false;
-            }
-            //there can be multiple clients logged in simuntaneously
-            else{
-                logInResponse.isSuccess = true;
-                logInResponse.username = users.get(0).username;
-                logInResponse.role = users.get(0).role;
-            }
+            logInResponse.isSuccess = true;
+            logInResponse.username = users.get(0).username;
+            logInResponse.role = users.get(0).role;
         }
         return logInResponse;
     }

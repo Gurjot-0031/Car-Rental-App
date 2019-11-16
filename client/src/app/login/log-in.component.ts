@@ -31,11 +31,15 @@ export class LogInComponent implements OnInit {
   onLoginClicked() {
     this.logInService
       .signIn(this.username.value, this.password.value)
-      .subscribe(success => {
-        if (success) {
+      .subscribe(response => {
+        if (response.isSuccess) {
           this.router.navigate(['/home']);
         } else {
-          this.snackBar.open('Invalid username and/or password', '', {duration: 5000});
+          if (response.role === "admin-refuse") {
+            this.snackBar.open('Admin already logged-in. Try again later', '', {duration: 5000});
+          } else {
+            this.snackBar.open('Invalid username and/or password', '', {duration: 5000});
+          }
         }
       })
   }
