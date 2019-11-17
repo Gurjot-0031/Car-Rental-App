@@ -43,4 +43,19 @@ public class ClientController {
         clientService.deleteClient(pkid);
     }
 
+    @GetMapping("/api/client/{pkid}/is-available")
+    public boolean isVehicleAvailable(@PathVariable Integer pkid) {
+        return clientService.isAvailable(pkid);
+    }
+
+    @PostMapping("/api/client/{pkid}/start-modify")
+    public void setStartModify(@PathVariable Integer pkid, @RequestBody Client client) {
+        clientService.setStartModify(client);
+    }
+
+    @PostMapping("/api/client/{pkid}/stop-modify")
+    public void setStopModify(@PathVariable Integer pkid, @RequestBody Client client) {
+        clientService.setStopModify(client);
+    }
+
 }
