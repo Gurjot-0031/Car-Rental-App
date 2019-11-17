@@ -11,6 +11,7 @@ import {MatTableDataSource} from "@angular/material/table";
 import {Vehicle, VehicleApiService} from "../api/vehicle-api.service";
 import {MatVerticalStepper} from "@angular/material/stepper";
 import {Subscription, timer} from "rxjs";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-rentals',
@@ -48,7 +49,8 @@ export class RentalsComponent implements OnInit, OnDestroy {
     private transactionApiService: TransactionApiService,
     private vehicleApiService: VehicleApiService,
     private clientApiService: ClientApiService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private snackBar: MatSnackBar,
   ) { }
 
   ngOnInit() {
@@ -129,18 +131,25 @@ export class RentalsComponent implements OnInit, OnDestroy {
   }
 
   rentVehicle(vehicle: Vehicle) {
-    const transaction = new Transaction();
-    transaction.vehicle = vehicle;
-    transaction.vehicleId = vehicle.pkid;
-    transaction.clientId = this.client.pkid;
-    transaction.client = this.client;
-    transaction.type = 'rental';
-    transaction.timestamp = _moment().format('YYYY-MM-DD');
-    transaction.startDate = _moment().format('YYYY-MM-DD');
-    transaction.dueDate = this.dueDate.value.format('YYYY-MM-DD');
-    this.transactionApiService.createTransaction(transaction).subscribe(() => {
-      this.isVehicleSelected = true;
-    });
+    this.vehicleApiService.isResourceAvailable(vehicle).subscribe(result => {
+      if (result) {
+        const transaction = new Transaction();
+        transaction.vehicle = vehicle;
+        transaction.vehicleId = vehicle.pkid;
+        transaction.clientId = this.client.pkid;
+        transaction.client = this.client;
+        transaction.type = 'rental';
+        transaction.timestamp = _moment().format('YYYY-MM-DD');
+        transaction.startDate = _moment().format('YYYY-MM-DD');
+        transaction.dueDate = this.dueDate.value.format('YYYY-MM-DD');
+        this.transactionApiService.createTransaction(transaction).subscribe(() => {
+          this.isVehicleSelected = true;
+        });
+      } else {
+        this.snackBar.open('Resource unavailable. Try again later', '', {duration: 5000});
+      }
+    })
+
 
   }
 

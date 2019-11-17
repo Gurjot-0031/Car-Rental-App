@@ -19,7 +19,8 @@ export class ClientRecordsComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     public clientApiService: ClientApiService,
-    private snackBar: MatSnackBar,) {
+    private snackBar: MatSnackBar,
+  ) {
   }
 
   ngOnInit() {
