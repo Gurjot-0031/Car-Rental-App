@@ -149,8 +149,6 @@ export class RentalsComponent implements OnInit, OnDestroy {
         this.snackBar.open('Resource unavailable. Try again later', '', {duration: 5000});
       }
     })
-
-
   }
 
   reset(stepper: MatVerticalStepper) {

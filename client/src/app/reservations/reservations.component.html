@@ -2,9 +2,11 @@
 <h1>Vehicle Reservation</h1>
 
 <mat-tab-group (selectedTabChange)="onTabChange($event)">
+
   <mat-tab label="Make New Reservation">
     <h3>Make a new reservation</h3>
     <mat-vertical-stepper [linear]="true" #stepper (selectionChange)="selectionChange($event)">
+
       <mat-step [stepControl]="clientFormGroup">
         <form [formGroup]="clientFormGroup">
           <ng-template matStepLabel>Choose client - A-1111-111111-11</ng-template>
@@ -30,6 +32,16 @@
           <br/>
           <div *ngIf="isClientFound">
             <button mat-flat-button color="accent" matStepperNext>Next</button>
+            <button mat-flat-button color="accent" (click)="clearClient()" style="margin-right: 1vw">Back</button>
+          </div>
+          <div *ngIf="isClientUnavailable">
+            <mat-spinner></mat-spinner>
+            <h2> Resource unavailable. Please wait or try again later ...</h2>
+            <div mat-dialog-actions style="margin-top: 12px;">
+              <div style="margin-left: auto;">
+                <button color="primary" mat-raised-button (click)="onCancelWaitClientClicked()">Close</button>
+              </div>
+            </div>
           </div>
         </form>
       </mat-step>
