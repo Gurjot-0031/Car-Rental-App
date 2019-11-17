@@ -1,5 +1,7 @@
 package com.soen6461.rental.vehicle;
 
+import java.math.BigDecimal;
+
 public class Vehicle {
 
     private Integer pkid;
@@ -10,6 +12,7 @@ public class Vehicle {
     private String color;
     private String license;
     private Integer active;
+    private BigDecimal version;
 
     public Integer getPkid() {
         return pkid;
@@ -72,6 +75,14 @@ public class Vehicle {
     }
 
     public void setActive(Integer active) { this.active = active;}
+
+    public BigDecimal getVersion() {
+        return version;
+    }
+
+    public void setVersion(BigDecimal version) {
+        this.version = version;
+    }
 
     @Override
     public String toString() {

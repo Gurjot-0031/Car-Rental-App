@@ -4,7 +4,8 @@ import {FormControl, FormGroup} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {TransactionApiService} from "../../api/transaction-api.service";
 import * as _moment from 'moment';
-import {VehicleAvailabilityService} from "../../vehicle-availability.service";
+import {timer} from "rxjs";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-dialog-vehicle-details',
@@ -14,6 +15,8 @@ import {VehicleAvailabilityService} from "../../vehicle-availability.service";
 export class DialogVehicleDetailsComponent implements OnInit {
 
   isLoading: boolean;
+  isModifier: boolean;
+  isResourceAvailable: boolean;
   isNewVehicle: boolean;
   vehicle: Vehicle;
   resultSetVehicles: Vehicle[];
@@ -42,38 +45,56 @@ export class DialogVehicleDetailsComponent implements OnInit {
     public dialogRef: MatDialogRef<DialogVehicleDetailsComponent>,
     private transactionApiService: TransactionApiService,
     private vehicleApiService: VehicleApiService,
-    private vehicleAvailabilityService: VehicleAvailabilityService
+    private snackBar: MatSnackBar,
   ) {
     this.vehicle = data['vehicle'];
     this.resultSetVehicles = data['resultSetVehicles'];
+  }
+
+  async ngOnInit() {
+    this.isLoading = true;
+    this.isResourceAvailable = true;
+
+    const repeat = timer(0, 5000);
+    const loop = repeat.subscribe(() => {
+      this.vehicleApiService.isResourceAvailable(this.vehicle).subscribe(result => {
+        if (result) {
+          this.setUp();
+          this.isLoading = false;
+          this.isResourceAvailable = true;
+          loop.unsubscribe();
+        } else {
+          this.isResourceAvailable = false;
+        }
+      });
+    })
+  }
+
+  setUp() {
     if (this.vehicle) {
       this.getVehicleStatus();
     }
-
     //user clicks view
     if (this.vehicle && this.data['action'] === 'view') {
       this.isNewVehicle = false;
       this.setFormValues(this.vehicle);
       this.vehicleForm.disable();
     }
-
     //modify
     else if (this.vehicle && this.data['action'] === 'modify') {
-      this.isNewVehicle = false;
-      this.setFormValues(this.vehicle);
-      this.vehicleForm.enable();
+      this.vehicleApiService.setStartModify(this.vehicle).subscribe(() => {
+        this.isModifier = true;
+        this.isNewVehicle = false;
+        this.setFormValues(this.vehicle);
+        this.vehicleForm.enable();
+      });
     }
-
     //new
     else {
       this.isNewVehicle = true;
       this.vehicleForm.enable();
     }
   }
-
-  ngOnInit() {
-  }
-
 
   setFormValues(vehicle) {
     this.type.setValue(vehicle.type);
@@ -85,6 +106,9 @@ export class DialogVehicleDetailsComponent implements OnInit {
   }
 
   onCancelClicked() {
+    if (this.vehicle && this.isModifier) {
+      this.vehicleApiService.setStopModify(this.vehicle).subscribe();
+    }
     this.dialogRef.close();
   }
 
@@ -126,8 +150,16 @@ export class DialogVehicleDetailsComponent implements OnInit {
     this.resultSetVehicles[index].color = this.vehicleForm.getRawValue()['color'];
     this.resultSetVehicles[index].license = this.vehicleForm.getRawValue()['license'];
 
-    this.vehicleApiService.updateVehicle(this.resultSetVehicles[index]).subscribe(() => {
-      this.dialogRef.close();
+    this.vehicleApiService.updateVehicle(this.resultSetVehicles[index]).subscribe((result) => {
+      if (result) {
+        this.dialogRef.close();
+      } else {
+        this.snackBar.open('Resource version outdated. Aborting operation.', '', {duration: 5000});
+        this.vehicleApiService.getVehicle(this.vehicle).subscribe(updatedVehicle => {
+          this.resultSetVehicles[index] = updatedVehicle;
+        });
+        this.dialogRef.close();
+      }
     });
   }
 
@@ -141,7 +173,6 @@ export class DialogVehicleDetailsComponent implements OnInit {
     vehicle.license = this.vehicleForm.getRawValue()['license'];
 
     this.vehicleApiService.createVehicle(vehicle).subscribe(() => {
-      // TODO this probably needs to change for concurrency
       this.resultSetVehicles.push(vehicle);
       this.dialogRef.close();
     });

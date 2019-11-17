@@ -22,6 +22,9 @@ public class UserController {
     public LogInResponse logIn(@RequestBody LogInRequest logInRequest) {
         LogInResponse logInResponse = userService.logIn(logInRequest);
 
+        if (!logInResponse.isSuccess) {
+            return logInResponse;
+        }
         if (logInResponse.role.equals("clerk")) {
             return logInResponse;
         }

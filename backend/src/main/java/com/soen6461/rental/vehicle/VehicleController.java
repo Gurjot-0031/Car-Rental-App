@@ -18,7 +18,7 @@ public class VehicleController {
         return vehicleService.getAllVehicles();
     }
 
-    @GetMapping("/api//{pkid}")
+    @GetMapping("/api/vehicle/{pkid}")
     public Vehicle getVehicle(@PathVariable Integer pkid) {
         return vehicleService.getVehicle(pkid);
     }
@@ -29,8 +29,8 @@ public class VehicleController {
     }
 
     @PutMapping("/api/vehicle")
-    public void updateVehicle(@RequestBody Vehicle vehicle) {
-        vehicleService.updateVehicle(vehicle);
+    public boolean updateVehicle(@RequestBody Vehicle vehicle) {
+        return vehicleService.updateVehicle(vehicle);
     }
 
     @DeleteMapping("/api/vehicle/{pkid}")
@@ -38,16 +38,30 @@ public class VehicleController {
         vehicleService.deleteVehicle(pkid);
     }
 
-    @PostMapping("/api/vehicle/{pkid}/available")
+    @PostMapping("/api/vehicle/{pkid}/available-for-dates")
     public boolean getAvailableVehicles(@PathVariable Integer pkid, @RequestBody AvailableDates dates) {
         return vehicleService.isVehicleAvailableForDates(pkid, dates);
     }
 
-    @PostMapping("/api/vehicle/available")
+    @PostMapping("/api/vehicle/available-for-dates")
     public List<Vehicle> getAvailableVehicles(@RequestBody AvailableDates dates) {
         return vehicleService.getVehicleAvailableForDates(dates);
     }
 
+    @GetMapping("/api/vehicle/{pkid}/is-available")
+    public boolean isVehicleAvailable(@PathVariable Integer pkid) {
+        return vehicleService.isAvailable(pkid);
+    }
+
+    @PostMapping("/api/vehicle/{pkid}/start-modify")
+    public void setStartModify(@PathVariable Integer pkid, @RequestBody Vehicle vehicle) {
+        vehicleService.setStartModify(vehicle);
+    }
+
+    @PostMapping("/api/vehicle/{pkid}/stop-modify")
+    public void setStopModify(@PathVariable Integer pkid, @RequestBody Vehicle vehicle) {
+        vehicleService.setStopModify(vehicle);
+    }
 
 }
 

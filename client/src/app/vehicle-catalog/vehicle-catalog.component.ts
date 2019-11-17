@@ -9,6 +9,7 @@ import * as _moment from 'moment';
 import {MatDialog} from "@angular/material/dialog";
 import {DialogVehicleDetailsComponent} from "./dialog-vehicle-details/dialog-vehicle-details.component";
 import {LogInService} from "../api/login-in.service";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 const moment = _moment;
 
@@ -56,7 +57,7 @@ export class VehicleCatalogComponent implements OnInit {
   model = new FormControl();
   type = new FormControl();
   color = new FormControl();
-  minYear = new FormControl(moment().subtract(20, 'years'));
+  minYear = new FormControl(moment().subtract(2019, 'years'));
   maxYear = new FormControl(moment());
 
   sortColumn: string;
@@ -67,7 +68,9 @@ export class VehicleCatalogComponent implements OnInit {
   constructor(
     private loginService: LogInService,
     private vehicleApiService: VehicleApiService,
-    public dialog: MatDialog) {
+    public dialog: MatDialog,
+    private snackBar: MatSnackBar,
+  ) {
   }
 
   ngOnInit() {
@@ -107,6 +110,7 @@ export class VehicleCatalogComponent implements OnInit {
       result => {
         this.resultVehicles = result.filter(v => v.active === 1);
         let filtered = this.applyFilters(this.resultVehicles);
+        console.log(filtered);
         this.dataSource.data = this.applySorting(filtered);
         this.refreshDropDownMenus(result);
         this.isLoading = false;
@@ -194,13 +198,20 @@ export class VehicleCatalogComponent implements OnInit {
   }
 
   deleteVehicle(vehicle: Vehicle) {
-    this.isLoading = true;
-    this.vehicleApiService.deleteVehicle(vehicle).subscribe(() => {
-      let index: number = this.dataSource.data.findIndex(d => d === vehicle);
-      this.dataSource.data.splice(index, 1);
-      this.dataSource = new MatTableDataSource<Vehicle>(this.dataSource.data);
-      this.isLoading = false;
-    });
+    this.vehicleApiService.isResourceAvailable(vehicle).subscribe(result => {
+      if (result) {
+        this.isLoading = true;
+        this.vehicleApiService.deleteVehicle(vehicle).subscribe(() => {
+          let index: number = this.dataSource.data.findIndex(d => d === vehicle);
+          this.dataSource.data.splice(index, 1);
+          this.dataSource = new MatTableDataSource<Vehicle>(this.dataSource.data);
+          this.isLoading = false;
+        });
+      } else {
+        this.snackBar.open('Resource unavailable. Try again later', '', {duration: 5000});
+      }
+    })
+
   }
 
 
@@ -208,7 +219,7 @@ export class VehicleCatalogComponent implements OnInit {
     return this.loginService.getRoles().includes('admin');
   }
 
-  modifyVehicleDetails(vehicle: any) {
+  modifyVehicleDetails(vehicle: Vehicle) {
     this.dialog.open(DialogVehicleDetailsComponent, {
       disableClose: true,
       autoFocus: false,
