@@ -4,7 +4,6 @@ import {FormControl, FormGroup} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {TransactionApiService} from "../../api/transaction-api.service";
 import * as _moment from 'moment';
-import {VehicleAvailabilityService} from "../../vehicle-availability.service";
 import {timer} from "rxjs";
 import {MatSnackBar} from "@angular/material/snack-bar";
 

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {Moment} from "moment";
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +21,6 @@ export class VehicleApiService {
     const dates = new AvailableDates();
     dates.start = start;
     dates.end = end;
-    console.log(dates);
     return this.http.post<Vehicle[]>("/api/vehicle/available-for-dates", dates);
   }
 
