@@ -1,93 +1,110 @@
 <div class="container">
-  <div *ngIf="isNewClient">
-    <h1>Create New Client Record</h1>
+
+  <div *ngIf="isLoading">
+    <mat-spinner></mat-spinner>
+    <div *ngIf="!isResourceAvailable">
+      <h2> Resource unavailable. Please wait or try again later ...</h2>
+    </div>
+    <div mat-dialog-actions style="margin-top: 12px;">
+      <div style="margin-left: auto;">
+        <button color="primary" mat-raised-button
+                (click)="onCancelClicked()">Close
+        </button>
+      </div>
+    </div>
   </div>
-  <div *ngIf="!isNewClient">
-    <h1>Edit Client Record</h1>
-  </div>
 
-  <form [formGroup]="clientForm">
-
-    <div class="client-form">
-      <mat-form-field>
-        <label>
-          <input type="text"
-                 matInput
-                 placeholder="First Name"
-                 formControlName="firstName">
-        </label>
-        <mat-error *ngIf="firstName.errors && firstName.errors['required']">
-          This field is required.
-        </mat-error>
-      </mat-form-field>
-
-      <mat-form-field>
-        <label>
-          <input type="text"
-                 matInput
-                 placeholder="Last Name"
-                 formControlName="lastName"
-                 data-auto="user-last-name">
-        </label>
-        <mat-error *ngIf="lastName.errors && lastName.errors['required']">
-          This field is required.
-        </mat-error>
-      </mat-form-field>
-
-      <mat-form-field>
-        <label>
-          <input type="text"
-                 matInput
-                 placeholder="Phone Number"
-                 formControlName="phoneNumber">
-        </label>
-        <mat-error *ngIf="phoneNumber.errors && phoneNumber.errors['required']">
-          This field is required.
-        </mat-error>
-      </mat-form-field>
-
-      <mat-form-field>
-        <label>
-          <input type="text"
-                 matInput
-                 placeholder="Driver License"
-                 formControlName="driverLicense">
-        </label>
-        <mat-error *ngIf="driverLicense.errors && driverLicense.errors['required']">
-          This field is required.
-        </mat-error>
-        <mat-error *ngIf="driverLicense.errors && clientForm.controls.driverLicense.errors.invalidMsg">
-          The Driver License format is A-1234-123456-12.
-        </mat-error>
-      </mat-form-field>
-
-      <mat-form-field>
-        <label>
-          <input type="text"
-                 matInput
-                 placeholder="Expiration Date"
-                 formControlName="expirationDate">
-        </label>
-        <mat-error *ngIf="expirationDate.errors && expirationDate.errors['required']">
-          This field is required.
-        </mat-error>
-      </mat-form-field>
-
+  <div *ngIf="!isLoading">
+    <div *ngIf="isNewClient">
+      <h1>Create New Client Record</h1>
+    </div>
+    <div *ngIf="!isNewClient">
+      <h1>Edit Client Record</h1>
     </div>
 
-  </form>
+    <form [formGroup]="clientForm">
 
-  <div mat-dialog-actions style="margin-top: 12px;">
-    <div style="margin-left: auto;">
-      <button mat-raised-button
-              color="primary"
-              type="submit"
-              (click)="onSubmitClicked()"
-              data-auto="save-user-button">
-        <span>Submit</span>
-      </button>
-      <button color="primary" mat-raised-button
-              (click)="onCancelClicked()">Cancel</button>
+      <div class="client-form">
+        <mat-form-field>
+          <label>
+            <input type="text"
+                   matInput
+                   placeholder="First Name"
+                   formControlName="firstName">
+          </label>
+          <mat-error *ngIf="firstName.errors && firstName.errors['required']">
+            This field is required.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <label>
+            <input type="text"
+                   matInput
+                   placeholder="Last Name"
+                   formControlName="lastName"
+                   data-auto="user-last-name">
+          </label>
+          <mat-error *ngIf="lastName.errors && lastName.errors['required']">
+            This field is required.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <label>
+            <input type="text"
+                   matInput
+                   placeholder="Phone Number"
+                   formControlName="phoneNumber">
+          </label>
+          <mat-error *ngIf="phoneNumber.errors && phoneNumber.errors['required']">
+            This field is required.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <label>
+            <input type="text"
+                   matInput
+                   placeholder="Driver License"
+                   formControlName="driverLicense">
+          </label>
+          <mat-error *ngIf="driverLicense.errors && driverLicense.errors['required']">
+            This field is required.
+          </mat-error>
+          <mat-error *ngIf="driverLicense.errors && clientForm.controls.driverLicense.errors.invalidMsg">
+            The Driver License format is A-1234-123456-12.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <label>
+            <input type="text"
+                   matInput
+                   placeholder="Expiration Date"
+                   formControlName="expirationDate">
+          </label>
+          <mat-error *ngIf="expirationDate.errors && expirationDate.errors['required']">
+            This field is required.
+          </mat-error>
+        </mat-form-field>
+
+      </div>
+
+    </form>
+
+    <div mat-dialog-actions style="margin-top: 12px;">
+      <div style="margin-left: auto;">
+        <button mat-raised-button
+                color="primary"
+                type="submit"
+                (click)="onSubmitClicked()"
+                data-auto="save-user-button">
+          <span>Submit</span>
+        </button>
+        <button color="primary" mat-raised-button
+                (click)="onCancelClicked()">Cancel</button>
+      </div>
     </div>
   </div>
 </div>

@@ -3,6 +3,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {DialogClientRecordComponent} from "./dialog-client-record/dialog-client-record.component";
 import {MatTableDataSource} from "@angular/material/table";
 import {Client, ClientApiService} from "../api/client-api.service";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-client-records',
@@ -17,7 +18,8 @@ export class ClientRecordsComponent implements OnInit {
 
   constructor(
     public dialog: MatDialog,
-    public clientApiService: ClientApiService) {
+    public clientApiService: ClientApiService,
+    private snackBar: MatSnackBar,) {
   }
 
   ngOnInit() {
@@ -33,7 +35,6 @@ export class ClientRecordsComponent implements OnInit {
     });
   }
 
-
   addOrEditClientRecord(client?: Client) {
     this.dialog.open(DialogClientRecordComponent, {
       disableClose: true,
@@ -47,8 +48,14 @@ export class ClientRecordsComponent implements OnInit {
   }
 
   deleteClientRecord(client: Client) {
-    this.clientApiService.deleteClient(client).subscribe(() => {
-      this.refreshClientList()
-    });
+    this.clientApiService.isResourceAvailable(client).subscribe(result => {
+      if (result) {
+        this.clientApiService.deleteClient(client).subscribe(() => {
+          this.refreshClientList()
+        });
+      } else {
+        this.snackBar.open('Resource unavailable. Try again later', '', {duration: 5000});
+      }
+    })
   }
 }
