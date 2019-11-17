@@ -62,6 +62,5 @@ public class VehicleController {
     public void setStopModify(@PathVariable Integer pkid, @RequestBody Vehicle vehicle) {
         vehicleService.setStopModify(vehicle);
     }
-
 }
 
