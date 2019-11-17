@@ -71,7 +71,10 @@ public class VehicleService {
         fetchVehicleAndAddToIdentityMap(pkid.intValue());
     }
 
-    void updateVehicle(Vehicle vehicle) {
+    boolean updateVehicle(Vehicle vehicle) {
+        if (!isModifiable(vehicle)) {
+            return false;
+        }
         //language = SQL
         String sql = "UPDATE vehicle SET " +
             "type='" + vehicle.getType() + "'," +
@@ -84,8 +87,8 @@ public class VehicleService {
             " WHERE pkid=" + vehicle.getPkid();
 
         getJdbcTemplate().execute(sql);
-
         vehicleIdentityMap.put(vehicle.getPkid(), vehicle);
+        return true;
     }
 
     void deleteVehicle(Integer pkid) {
@@ -179,5 +182,15 @@ public class VehicleService {
         Vehicle currentVehicle = vehicleIdentityMap.get(vehicle.getPkid());
         currentVehicle.setVersion(currentVehicle.getVersion()
             .setScale(0, RoundingMode.DOWN));
+    }
+
+    private boolean isModifiable(Vehicle vehicle) {
+        Vehicle dbVehicle = getJdbcTemplate()
+            .query(
+                "SELECT * FROM vehicle WHERE pkid=" + vehicle.getPkid(),
+                (rs, rowNum) -> mapResultSetToVehicle(rs)
+            ).get(0);
+
+        return dbVehicle.getVersion().intValue() == vehicle.getVersion().intValue();
     }
 }

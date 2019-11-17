@@ -6,6 +6,7 @@ import {TransactionApiService} from "../../api/transaction-api.service";
 import * as _moment from 'moment';
 import {VehicleAvailabilityService} from "../../vehicle-availability.service";
 import {timer} from "rxjs";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-dialog-vehicle-details',
@@ -44,7 +45,8 @@ export class DialogVehicleDetailsComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data,
     public dialogRef: MatDialogRef<DialogVehicleDetailsComponent>,
     private transactionApiService: TransactionApiService,
-    private vehicleApiService: VehicleApiService
+    private vehicleApiService: VehicleApiService,
+    private snackBar: MatSnackBar,
   ) {
     this.vehicle = data['vehicle'];
     this.resultSetVehicles = data['resultSetVehicles'];
@@ -149,8 +151,16 @@ export class DialogVehicleDetailsComponent implements OnInit {
     this.resultSetVehicles[index].color = this.vehicleForm.getRawValue()['color'];
     this.resultSetVehicles[index].license = this.vehicleForm.getRawValue()['license'];
 
-    this.vehicleApiService.updateVehicle(this.resultSetVehicles[index]).subscribe(() => {
-      this.dialogRef.close();
+    this.vehicleApiService.updateVehicle(this.resultSetVehicles[index]).subscribe((result) => {
+      if (result) {
+        this.dialogRef.close();
+      } else {
+        this.snackBar.open('Resource version outdated. Aborting operation.', '', {duration: 5000});
+        this.vehicleApiService.getVehicle(this.vehicle).subscribe(updatedVehicle => {
+          this.resultSetVehicles[index] = updatedVehicle;
+        });
+        this.dialogRef.close();
+      }
     });
   }
 

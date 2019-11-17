@@ -14,6 +14,10 @@ export class VehicleApiService {
     return this.http.get<Vehicle[]>('/api/vehicle');
   }
 
+  getVehicle(vehicle: Vehicle): Observable<Vehicle> {
+    return this.http.get<Vehicle>('/api/vehicle/' + encodeURIComponent(vehicle.pkid));
+  }
+
   getAllAvailableVehicles(start: string, end: string): Observable<Vehicle[]> {
     const dates = new AvailableDates();
     dates.start = start;
@@ -26,8 +30,8 @@ export class VehicleApiService {
     return this.http.post('/api/vehicle', vehicle);
   }
 
-  updateVehicle(vehicle: Vehicle) {
-    return this.http.put('/api/vehicle', vehicle);
+  updateVehicle(vehicle: Vehicle): Observable<boolean> {
+    return this.http.put<boolean>('/api/vehicle', vehicle);
   }
 
   // https://github.com/angular/angular/issues/19438

@@ -29,8 +29,8 @@ public class VehicleController {
     }
 
     @PutMapping("/api/vehicle")
-    public void updateVehicle(@RequestBody Vehicle vehicle) {
-        vehicleService.updateVehicle(vehicle);
+    public boolean updateVehicle(@RequestBody Vehicle vehicle) {
+        return vehicleService.updateVehicle(vehicle);
     }
 
     @DeleteMapping("/api/vehicle/{pkid}")
