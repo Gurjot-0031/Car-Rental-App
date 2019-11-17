@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, FormGroup, ValidatorFn, Validators} from "@angular/forms";
 import {Transaction, TransactionApiService} from "../api/transaction-api.service";
 import {Client, ClientApiService} from "../api/client-api.service";
@@ -10,14 +10,15 @@ import {MatDialog} from "@angular/material/dialog";
 import {MatTableDataSource} from "@angular/material/table";
 import {Vehicle, VehicleApiService} from "../api/vehicle-api.service";
 import {MatVerticalStepper} from "@angular/material/stepper";
-import {VehicleAvailabilityService} from "../vehicle-availability.service";
+import {Subscription, timer} from "rxjs";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-rentals',
   templateUrl: './rentals.component.html',
   styleUrls: ['./rentals.component.scss']
 })
-export class RentalsComponent implements OnInit {
+export class RentalsComponent implements OnInit, OnDestroy {
 
   dataSource: MatTableDataSource<Vehicle>;
   driverLicense = new FormControl('', [
@@ -36,26 +37,36 @@ export class RentalsComponent implements OnInit {
   });
 
   isClientFound: boolean;
+  isClientUnavailable: boolean;
   client: Client;
   isVehicleFound: boolean;
   isVehicleSelected: boolean;
   displayedColumns: string[] = ['type', 'make', 'model', 'actions'];
 
+  clientWaitLoop: Subscription;
+
   constructor(
     private transactionApiService: TransactionApiService,
     private vehicleApiService: VehicleApiService,
     private clientApiService: ClientApiService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private snackBar: MatSnackBar,
   ) { }
 
   ngOnInit() {
     this.isClientFound = false;
+    this.isClientUnavailable = false;
     this.isVehicleFound = false;
     this.isVehicleSelected = false;
     this.dataSource = new MatTableDataSource<Vehicle>();
   }
 
-  // This is now duplicate code. Should extract
+  ngOnDestroy() {
+    if (this.client) {
+      this.clientApiService.setStopModify(this.client).subscribe();
+    }
+  }
+
   public regexValidator(config: any): ValidatorFn {
     return (control: FormControl) => {
       let urlRegEx: RegExp = config.pattern;
@@ -72,8 +83,22 @@ export class RentalsComponent implements OnInit {
   searchForClient() {
     this.clientApiService.getClientByDriverLicense(this.driverLicense.value).subscribe(result => {
       if (result) {
-        this.isClientFound = true;
         this.client = result;
+
+        const repeat = timer(0, 5000);
+
+        this.clientWaitLoop = repeat.subscribe(() => {
+          this.clientApiService.isResourceAvailable(this.client).subscribe(isAvailable => {
+            if (isAvailable) {
+              this.isClientFound = true;
+              this.isClientUnavailable = false;
+              this.clientApiService.setStartModify(this.client).subscribe();
+              this.clientWaitLoop.unsubscribe();
+            } else {
+              this.isClientUnavailable = true;
+            }
+          })
+        });
       }
     });
   }
@@ -106,18 +131,25 @@ export class RentalsComponent implements OnInit {
   }
 
   rentVehicle(vehicle: Vehicle) {
-    const transaction = new Transaction();
-    transaction.vehicle = vehicle;
-    transaction.vehicleId = vehicle.pkid;
-    transaction.clientId = this.client.pkid;
-    transaction.client = this.client;
-    transaction.type = 'rental';
-    transaction.timestamp = _moment().format('YYYY-MM-DD');
-    transaction.startDate = _moment().format('YYYY-MM-DD');
-    transaction.dueDate = this.dueDate.value.format('YYYY-MM-DD');
-    this.transactionApiService.createTransaction(transaction).subscribe(() => {
-      this.isVehicleSelected = true;
-    });
+    this.vehicleApiService.isResourceAvailable(vehicle).subscribe(result => {
+      if (result) {
+        const transaction = new Transaction();
+        transaction.vehicle = vehicle;
+        transaction.vehicleId = vehicle.pkid;
+        transaction.clientId = this.client.pkid;
+        transaction.client = this.client;
+        transaction.type = 'rental';
+        transaction.timestamp = _moment().format('YYYY-MM-DD');
+        transaction.startDate = _moment().format('YYYY-MM-DD');
+        transaction.dueDate = this.dueDate.value.format('YYYY-MM-DD');
+        this.transactionApiService.createTransaction(transaction).subscribe(() => {
+          this.isVehicleSelected = true;
+        });
+      } else {
+        this.snackBar.open('Resource unavailable. Try again later', '', {duration: 5000});
+      }
+    })
+
 
   }
 
@@ -130,5 +162,22 @@ export class RentalsComponent implements OnInit {
     this.client = null;
     this.dataSource.data = null;
     stepper.selectedIndex = 0;
+  }
+
+  clearClient() {
+    this.isClientFound = false;
+    this.clientApiService.setStopModify(this.client).subscribe();
+    this.client = null;
+    this.driverLicense.setValue("");
+    this.driverLicense.markAsPristine();
+  }
+
+  onCancelWaitClientClicked() {
+    this.isClientFound = false;
+    this.isClientUnavailable = false;
+    this.client = null;
+    this.driverLicense.setValue("");
+    this.driverLicense.markAsPristine();
+    this.clientWaitLoop.unsubscribe();
   }
 }
