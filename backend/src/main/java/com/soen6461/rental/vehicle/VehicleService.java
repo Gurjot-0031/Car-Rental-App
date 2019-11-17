@@ -79,7 +79,8 @@ public class VehicleService {
             "model='" + vehicle.getModel() + "'," +
             "color='" + vehicle.getColor() + "'," +
             "license='" + vehicle.getLicense() + "'," +
-            "year=" + vehicle.getYear() +
+            "year='" + vehicle.getYear() + "'," +
+            "version=" + incrementVersion(vehicle) +
             " WHERE pkid=" + vehicle.getPkid();
 
         getJdbcTemplate().execute(sql);
@@ -168,11 +169,10 @@ public class VehicleService {
         currentVehicle.setVersion(currentVehicle.getVersion().add(new BigDecimal(0.1)));
     }
 
-    private void incrementVersion(Vehicle vehicle) {
-        Vehicle currentVehicle = vehicleIdentityMap.get(vehicle.getPkid());
-        currentVehicle.setVersion(currentVehicle.getVersion()
-                .setScale(0, RoundingMode.DOWN)
-                .add(new BigDecimal(0.1)));
+    private Integer incrementVersion(Vehicle vehicle) {
+        return vehicleIdentityMap.get(vehicle.getPkid())
+            .getVersion()
+            .intValue() + 1;
     }
 
     public void setStopModify(Vehicle vehicle) {

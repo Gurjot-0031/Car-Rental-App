@@ -63,16 +63,10 @@ export class DialogVehicleDetailsComponent implements OnInit {
           this.isResourceAvailable = true;
           loop.unsubscribe();
         } else {
-          console.log('loop');
           this.isResourceAvailable = false;
         }
       });
     })
-  }
-
-  private delay(ms: number)
-  {
-    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   setUp() {
@@ -100,7 +94,6 @@ export class DialogVehicleDetailsComponent implements OnInit {
       this.vehicleForm.enable();
     }
   }
-
 
   setFormValues(vehicle) {
     this.type.setValue(vehicle.type);
@@ -171,7 +164,6 @@ export class DialogVehicleDetailsComponent implements OnInit {
     vehicle.license = this.vehicleForm.getRawValue()['license'];
 
     this.vehicleApiService.createVehicle(vehicle).subscribe(() => {
-      // TODO this probably needs to change for concurrency
       this.resultSetVehicles.push(vehicle);
       this.dialogRef.close();
     });
