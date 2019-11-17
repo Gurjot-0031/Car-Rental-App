@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
 import {Vehicle, VehicleApiService} from "../api/vehicle-api.service";
 import {FormControl, FormGroup, ValidatorFn, Validators} from "@angular/forms";
@@ -11,13 +11,15 @@ import {DialogVehicleDetailsComponent} from "../vehicle-catalog/dialog-vehicle-d
 import {MatVerticalStepper} from "@angular/material/stepper";
 import {MatTabChangeEvent} from "@angular/material/tabs";
 import {VehicleAvailabilityService} from "../vehicle-availability.service";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {Subscription, timer} from "rxjs";
 
 @Component({
   selector: 'app-reservations',
   templateUrl: './reservations.component.html',
   styleUrls: ['./reservations.component.scss']
 })
-export class ReservationsComponent implements OnInit {
+export class ReservationsComponent implements OnInit, OnDestroy {
 
   dataSourceCancelReservation: MatTableDataSource<Transaction>;
   dataSourceMakeReservation: MatTableDataSource<Vehicle>;
@@ -39,6 +41,7 @@ export class ReservationsComponent implements OnInit {
   });
 
   isClientFound: boolean;
+  isClientUnavailable: boolean;
   client: Client;
   isVehicleFound: boolean;
   isVehicleSelected: boolean;
@@ -48,11 +51,14 @@ export class ReservationsComponent implements OnInit {
 
   isCancelTabIsLoading: boolean;
 
+  clientWaitLoop: Subscription;
+
   constructor(
     private transactionApiService: TransactionApiService,
     private vehicleApiService: VehicleApiService,
     private clientApiService: ClientApiService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private snackBar: MatSnackBar,
   ) {
   }
 
@@ -61,11 +67,17 @@ export class ReservationsComponent implements OnInit {
     this.isVehicleFound = false;
     this.isVehicleSelected = false;
     this.isCancelTabIsLoading = false;
+    this.isClientUnavailable = false;
     this.dataSourceMakeReservation = new MatTableDataSource<Vehicle>();
     this.dataSourceCancelReservation = new MatTableDataSource<Transaction>();
   }
 
-  // This is now duplicate code. Should extract
+  ngOnDestroy() {
+    if (this.client) {
+      this.clientApiService.setStopModify(this.client).subscribe();
+    }
+  }
+
   public regexValidator(config: any): ValidatorFn {
     return (control: FormControl) => {
       let urlRegEx: RegExp = config.pattern;
@@ -80,12 +92,26 @@ export class ReservationsComponent implements OnInit {
   }
 
   searchForClient() {
-    this.clientApiService.getClientByDriverLicense(this.driverLicense.value).subscribe(value => {
-      if (value) {
-        this.isClientFound = true;
-        this.client = value;
+    this.clientApiService.getClientByDriverLicense(this.driverLicense.value).subscribe(result => {
+      if (result) {
+        this.client = result;
+
+        const repeat = timer(0, 5000);
+
+        this.clientWaitLoop = repeat.subscribe(() => {
+          this.clientApiService.isResourceAvailable(this.client).subscribe(isAvailable => {
+            if (isAvailable) {
+              this.isClientFound = true;
+              this.isClientUnavailable = false;
+              this.clientApiService.setStartModify(this.client).subscribe();
+              this.clientWaitLoop.unsubscribe();
+            } else {
+              this.isClientUnavailable = true;
+            }
+          })
+        });
       }
-    })
+    });
   }
 
   selectionChange($event: StepperSelectionEvent) {
@@ -116,17 +142,24 @@ export class ReservationsComponent implements OnInit {
   }
 
   reserveVehicle(vehicle: Vehicle) {
-    const transaction = new Transaction();
-    transaction.vehicleId = vehicle.pkid;
-    transaction.clientId = this.client.pkid;
-    transaction.type = 'reservation';
-    transaction.timestamp = _moment().format('YYYY-MM-DD');
-    transaction.startDate = this.startDate.value.format('YYYY-MM-DD');
-    transaction.dueDate = this.dueDate.value.format('YYYY-MM-DD');
+    this.vehicleApiService.isResourceAvailable(vehicle).subscribe(result => {
+      if (result) {
+        const transaction = new Transaction();
+        transaction.vehicleId = vehicle.pkid;
+        transaction.clientId = this.client.pkid;
+        transaction.type = 'reservation';
+        transaction.timestamp = _moment().format('YYYY-MM-DD');
+        transaction.startDate = this.startDate.value.format('YYYY-MM-DD');
+        transaction.dueDate = this.dueDate.value.format('YYYY-MM-DD');
 
-    this.transactionApiService.createTransaction(transaction).subscribe(() => {
-      this.isVehicleSelected = true;
+        this.transactionApiService.createTransaction(transaction).subscribe(() => {
+          this.isVehicleSelected = true;
+        });
+      } else {
+        this.snackBar.open('Resource unavailable. Try again later', '', {duration: 5000});
+      }
     });
+
   }
 
   reset(stepper: MatVerticalStepper) {
@@ -160,5 +193,22 @@ export class ReservationsComponent implements OnInit {
       this.isCancelTabIsLoading = false;
       this.refreshReservationDataSource();
     });
+  }
+
+  clearClient() {
+    this.isClientFound = false;
+    this.clientApiService.setStopModify(this.client).subscribe();
+    this.client = null;
+    this.driverLicense.setValue("");
+    this.driverLicense.markAsPristine();
+  }
+
+  onCancelWaitClientClicked() {
+    this.isClientFound = false;
+    this.isClientUnavailable = false;
+    this.client = null;
+    this.driverLicense.setValue("");
+    this.driverLicense.markAsPristine();
+    this.clientWaitLoop.unsubscribe();
   }
 }
