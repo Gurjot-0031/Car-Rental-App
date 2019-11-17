@@ -125,7 +125,8 @@ export class RentalsComponent implements OnInit, OnDestroy {
       width: '40vw',
       data: {
         vehicle: vehicle,
-        resultSetVehicles: this.dataSource.data
+        resultSetVehicles: this.dataSource.data,
+        action: 'view'
       }
     });
   }

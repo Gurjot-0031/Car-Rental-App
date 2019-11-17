@@ -136,7 +136,8 @@ export class ReservationsComponent implements OnInit, OnDestroy {
       width: '40vw',
       data: {
         vehicle: vehicle,
-        resultSetVehicles: this.dataSourceMakeReservation.data
+        resultSetVehicles: this.dataSourceMakeReservation.data,
+        action: 'view'
       }
     });
   }
