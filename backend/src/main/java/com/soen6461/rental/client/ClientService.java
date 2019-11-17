@@ -114,7 +114,8 @@ public class ClientService {
             "lastname='" + client.lastName + "'," +
             "driver_license='" + client.driverLicense + "'," +
             "expiration_date='" + client.expirationDate + "'," +
-            "phone_number='" + client.phoneNumber + "'" +
+            "phone_number='" + client.phoneNumber + "'," +
+            "version=" + incrementVersion(client) +
             " WHERE pkid=" + client.pkid;
 
         getJdbcTemplate().execute(sql);
@@ -167,7 +168,7 @@ public class ClientService {
 
     void setStopModify(Client vehicle) {
         Client currentVehicle = clientIdentityMap.get(vehicle.pkid);
-        currentVehicle.version = (currentVehicle.version.setScale(0, RoundingMode.DOWN));
+        currentVehicle.version = new BigDecimal(currentVehicle.version.intValue());
     }
 
     private boolean isModifiable(Client client) {
