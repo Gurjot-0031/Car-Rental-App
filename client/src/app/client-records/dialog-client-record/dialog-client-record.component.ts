@@ -2,6 +2,8 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {FormControl, FormGroup, ValidatorFn, Validators} from "@angular/forms";
 import {Client, ClientApiService} from "../../api/client-api.service";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {timer} from "rxjs";
 
 @Component({
   selector: 'app-dialog-client-record',
@@ -10,6 +12,9 @@ import {Client, ClientApiService} from "../../api/client-api.service";
 })
 export class DialogClientRecordComponent implements OnInit {
 
+  isLoading: boolean;
+  isModifier: boolean;
+  isResourceAvailable: boolean;
   isNewClient: boolean;
   client: Client;
 
@@ -35,23 +40,46 @@ export class DialogClientRecordComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data,
     public dialogRef: MatDialogRef<DialogClientRecordComponent>,
-    private clientApiService: ClientApiService
+    private clientApiService: ClientApiService,
+    private snackBar: MatSnackBar,
   ) {
     this.client = data['client'];
-
-    if (this.client) {
-      this.isNewClient = false;
-      this.firstName.setValue(this.client.firstName);
-      this.lastName.setValue(this.client.lastName);
-      this.expirationDate.setValue(this.client.expirationDate);
-      this.driverLicense.setValue(this.client.driverLicense);
-      this.phoneNumber.setValue(this.client.phoneNumber);
-    } else {
-      this.isNewClient = true;
-    }
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.isLoading = true;
+    this.isResourceAvailable = true;
+
+    const repeat = timer(0, 5000);
+    const loop = repeat.subscribe(() => {
+      this.clientApiService.isResourceAvailable(this.client).subscribe(result => {
+        if (result) {
+          this.setUp();
+          this.isLoading = false;
+          this.isResourceAvailable = true;
+          loop.unsubscribe();
+        } else {
+          this.isResourceAvailable = false;
+        }
+      });
+    })
+  }
+
+  private setUp() {
+    if (this.client) {
+      this.clientApiService.setStartModify(this.client).subscribe(() => {
+        this.isNewClient = false;
+        this.isModifier = true;
+        this.firstName.setValue(this.client.firstName);
+        this.lastName.setValue(this.client.lastName);
+        this.expirationDate.setValue(this.client.expirationDate);
+        this.driverLicense.setValue(this.client.driverLicense);
+        this.phoneNumber.setValue(this.client.phoneNumber);
+      })
+    } else {
+      this.isModifier = false;
+      this.isNewClient = true;
+    }
   }
 
   public regexValidator(config: any): ValidatorFn {
@@ -94,6 +122,9 @@ export class DialogClientRecordComponent implements OnInit {
   }
 
   onCancelClicked() {
+    if (!this.isNewClient && this.isModifier) {
+      this.clientApiService.setStopModify(this.client).subscribe();
+    }
     this.dialogRef.close()
   }
 }

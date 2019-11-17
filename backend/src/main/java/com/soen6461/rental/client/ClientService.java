@@ -1,63 +1,113 @@
 package com.soen6461.rental.client;
 
+import com.google.common.collect.Maps;
+import com.soen6461.rental.vehicle.Vehicle;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class ClientService {
 
     private final DataSource dataSource;
+    private Map<Integer, Client> clientIdentityMap;
 
     public ClientService(DataSource dataSource) {
         this.dataSource = dataSource;
+        this.clientIdentityMap = generateIdentityMap();
     }
 
-    public List<Client> getAllClients() {
-        return getJdbcTemplate()
+    private Map<Integer, Client> generateIdentityMap() {
+        List<Client> result = getJdbcTemplate()
             .query(
                 "SELECT * FROM client",
                 (rs, rowNum) -> mapResultSetToClient(rs)
             );
+        return result
+            .stream()
+            .collect(
+                Collectors.toMap(c -> c.pkid, c -> c)
+            );
+    }
+
+    List<Client> getAllClients() {
+        return new ArrayList<>(clientIdentityMap.values());
     }
 
     public Client getClient(Integer pkid) {
-        return getJdbcTemplate()
+        if (clientIdentityMap.containsKey(pkid)) {
+            return clientIdentityMap.get(pkid);
+        }
+        Client client = getJdbcTemplate()
             .query(
                 "SELECT * FROM client WHERE pkid=" + pkid,
                 (rs, rowNum) -> mapResultSetToClient(rs)
             ).get(0);
+        clientIdentityMap.put(client.pkid, client);
+        return client;
     }
 
-    public Client getClientByDriverLicense(String driverLicense) {
+    Client getClientByDriverLicense(String driverLicense) {
+        List<Client> clients = clientIdentityMap
+            .values()
+            .stream()
+            .filter(c -> c.driverLicense.equals(driverLicense))
+            .collect(Collectors.toList());
+
+        // if client found, return it
+        if (clients.size() == 1) {
+            return clients.get(0);
+        }
+
         //language = SQL
         String sql = "SELECT * FROM client WHERE driver_license='" + driverLicense + "'";
 
-        return getJdbcTemplate()
+        Client client = getJdbcTemplate()
             .query(
                 sql,
                 (rs, rowNum) -> mapResultSetToClient(rs)
             ).get(0);
+        clientIdentityMap.put(client.pkid, client);
+        return client;
     }
 
-    public void createClient(Client client) {
-        //language = SQL
-        String sql = "INSERT INTO client (firstname, lastname, driver_license, expiration_date, phone_number) \n" +
-            "VALUES ('" +
-            client.firstName + "', \'" +
-            client.lastName + "', \'" +
-            client.driverLicense + "', \'" +
-            client.expirationDate + "', \'" +
-            client.phoneNumber + "');";
+    void createClient(Client client) {
+        Map<String, Object> insertMap = Maps.newHashMap();
+        insertMap.put("type", client.active);
+        insertMap.put("make", client.driverLicense);
+        insertMap.put("model", client.expirationDate);
+        insertMap.put("color", client.firstName);
+        insertMap.put("license", client.lastName);
+        insertMap.put("year", client.phoneNumber);
+        insertMap.put("version", 1);
 
-        getJdbcTemplate().execute(sql);
+
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(dataSource);
+        simpleJdbcInsert.setTableName("client");
+        simpleJdbcInsert.setGeneratedKeyName("pkid");
+
+        Number pkid = simpleJdbcInsert.executeAndReturnKey(insertMap);
+        fetchClientAndAddToIdentityMap(pkid.intValue());
     }
 
-    public void updateClient(Client client) {
+    private void fetchClientAndAddToIdentityMap(Integer pkid) {
+        clientIdentityMap.put(pkid, getClient(pkid));
+    }
+
+    boolean updateClient(Client client) {
+        if (!isModifiable(client)) {
+            return false;
+        }
         //language = SQL
         String sql = "UPDATE client SET " +
             "firstname='" + client.firstName + "'," +
@@ -68,6 +118,8 @@ public class ClientService {
             " WHERE pkid=" + client.pkid;
 
         getJdbcTemplate().execute(sql);
+        clientIdentityMap.put(client.pkid, client);
+        return true;
     }
 
     public void deleteClient(Integer pkid) {
@@ -75,6 +127,8 @@ public class ClientService {
         String sql = "UPDATE client SET active=0 WHERE pkid=" + pkid;
 
         getJdbcTemplate().execute(sql);
+
+        clientIdentityMap.remove(pkid);
     }
 
     private Client mapResultSetToClient(ResultSet rs) throws SQLException {
@@ -86,11 +140,44 @@ public class ClientService {
         client.expirationDate = rs.getString("expiration_date");
         client.phoneNumber = rs.getString("phone_number");
         client.active = rs.getInt("active");
+        client.version = (new BigDecimal(rs.getFloat("version")));
         return client;
     }
 
     private JdbcTemplate getJdbcTemplate() {
         return new JdbcTemplate(dataSource);
+    }
+
+    boolean isAvailable(Integer pkid) {
+        return hasDecimal(clientIdentityMap.get(pkid).version);
+    }
+
+    private boolean hasDecimal(BigDecimal version) {
+        return version.remainder(BigDecimal.ONE).compareTo(new BigDecimal("0")) == 0;
+    }
+
+    void setStartModify(Client vehicle) {
+        Client currentVehicle = clientIdentityMap.get(vehicle.pkid);
+        currentVehicle.version = currentVehicle.version.add(new BigDecimal(0.1));
+    }
+
+    private Integer incrementVersion(Client vehicle) {
+        return clientIdentityMap.get(vehicle.pkid).version.intValue() + 1;
+    }
+
+    void setStopModify(Client vehicle) {
+        Client currentVehicle = clientIdentityMap.get(vehicle.pkid);
+        currentVehicle.version = (currentVehicle.version.setScale(0, RoundingMode.DOWN));
+    }
+
+    private boolean isModifiable(Client client) {
+        Client dbVehicle = getJdbcTemplate()
+            .query(
+                "SELECT * FROM client WHERE pkid=" + client.pkid,
+                (rs, rowNum) -> mapResultSetToClient(rs)
+            ).get(0);
+
+        return dbVehicle.version.intValue() == client.version.intValue();
     }
 
 }

@@ -211,9 +211,7 @@ export class VehicleCatalogComponent implements OnInit {
         this.snackBar.open('Resource unavailable. Try again later', '', {duration: 5000});
       }
     })
-
   }
-
 
   isAdmin() {
     return this.loginService.getRoles().includes('admin');

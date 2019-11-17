@@ -21,22 +21,23 @@ public class VehicleService {
 
     public VehicleService(DataSource dataSource) {
         this.dataSource = dataSource;
-        this.vehicleIdentityMap = null;
+        this.vehicleIdentityMap = generateIdentityMap();
+    }
+
+    private Map<Integer, Vehicle> generateIdentityMap() {
+        List<Vehicle> result = getJdbcTemplate()
+            .query(
+                "SELECT * FROM vehicle",
+                (rs, rowNum) -> mapResultSetToVehicle(rs)
+            );
+        return result
+            .stream()
+            .collect(
+                Collectors.toMap(Vehicle::getPkid, v -> v)
+            );
     }
 
     List<Vehicle> getAllVehicles() {
-        if (vehicleIdentityMap == null) {
-            List<Vehicle> result = getJdbcTemplate()
-                .query(
-                    "SELECT * FROM vehicle",
-                    (rs, rowNum) -> mapResultSetToVehicle(rs)
-                );
-            vehicleIdentityMap = result
-                .stream()
-                .collect(
-                    Collectors.toMap(Vehicle::getPkid, v -> v)
-                );
-        }
         return new ArrayList<>(vehicleIdentityMap.values());
     }
 
@@ -45,11 +46,13 @@ public class VehicleService {
         if (vehicleIdentityMap.containsKey(pkid)) {
             return vehicleIdentityMap.get(pkid);
         }
-        return getJdbcTemplate()
+        Vehicle vehicle = getJdbcTemplate()
             .query(
                 "SELECT * FROM vehicle WHERE pkid=" + pkid,
                 (rs, rowNum) -> mapResultSetToVehicle(rs)
             ).get(0);
+        vehicleIdentityMap.put(vehicle.getPkid(), vehicle);
+        return vehicle;
     }
 
     void createVehicle(Vehicle vehicle) {
@@ -101,13 +104,10 @@ public class VehicleService {
     }
 
     private void fetchVehicleAndAddToIdentityMap(Integer pkid) {
-        if (vehicleIdentityMap == null) {
-            return;
-        }
         vehicleIdentityMap.put(pkid, getVehicle(pkid));
     }
 
-    public boolean isVehicleAvailableForDates(Integer pkid, AvailableDates dates) {
+    boolean isVehicleAvailableForDates(Integer pkid, AvailableDates dates) {
         //language = SQL
         String sql = "SELECT count(*) as restrictions FROM transaction " +
             "WHERE vehicle_id =" + pkid + " AND " +
@@ -154,12 +154,11 @@ public class VehicleService {
         return vehicle;
     }
 
-
     private JdbcTemplate getJdbcTemplate() {
         return new JdbcTemplate(dataSource);
     }
 
-    public boolean isAvailable(Integer pkid) {
+    boolean isAvailable(Integer pkid) {
         return hasDecimal(vehicleIdentityMap.get(pkid).getVersion());
     }
 
@@ -167,7 +166,7 @@ public class VehicleService {
         return version.remainder(BigDecimal.ONE).compareTo(new BigDecimal("0")) == 0;
     }
 
-    public void setStartModify(Vehicle vehicle) {
+    void setStartModify(Vehicle vehicle) {
         Vehicle currentVehicle = vehicleIdentityMap.get(vehicle.getPkid());
         currentVehicle.setVersion(currentVehicle.getVersion().add(new BigDecimal(0.1)));
     }
@@ -178,7 +177,7 @@ public class VehicleService {
             .intValue() + 1;
     }
 
-    public void setStopModify(Vehicle vehicle) {
+    void setStopModify(Vehicle vehicle) {
         Vehicle currentVehicle = vehicleIdentityMap.get(vehicle.getPkid());
         currentVehicle.setVersion(currentVehicle.getVersion()
             .setScale(0, RoundingMode.DOWN));

@@ -32,6 +32,18 @@ export class ClientApiService {
   getClientByDriverLicense(driverLicense: string) {
     return this.http.get<Client>('/api/client/driver-license/' + encodeURIComponent(driverLicense));
   }
+
+  isResourceAvailable(client: Client): Observable<boolean> {
+    return this.http.get<boolean>('/api/client/' + encodeURIComponent(client.pkid) + '/is-available');
+  }
+
+  setStartModify(client: Client) {
+    return this.http.post('/api/client/' + encodeURIComponent(client.pkid) + '/start-modify', client);
+  }
+
+  setStopModify(client: Client) {
+    return this.http.post('/api/client/' + encodeURIComponent(client.pkid) + '/stop-modify', client);
+  }
 }
 
 export class Client {
@@ -42,4 +54,5 @@ export class Client {
   expirationDate: string;
   phoneNumber: string;
   active: number;
+  version: number;
 }
