@@ -55,19 +55,23 @@ export class DialogVehicleDetailsComponent implements OnInit {
     this.isLoading = true;
     this.isResourceAvailable = true;
 
-    const repeat = timer(0, 5000);
-    const loop = repeat.subscribe(() => {
-      this.vehicleApiService.isResourceAvailable(this.vehicle).subscribe(result => {
-        if (result) {
-          this.setUp();
-          this.isLoading = false;
-          this.isResourceAvailable = true;
-          loop.unsubscribe();
-        } else {
-          this.isResourceAvailable = false;
-        }
-      });
-    })
+    if (this.vehicle) {
+      const repeat = timer(0, 5000);
+      const loop = repeat.subscribe(() => {
+        this.vehicleApiService.isResourceAvailable(this.vehicle).subscribe(result => {
+          if (result) {
+            this.setUp();
+            this.isLoading = false;
+            this.isResourceAvailable = true;
+            loop.unsubscribe();
+          } else {
+            this.isResourceAvailable = false;
+          }
+        });
+      })
+    } else {
+      this.setUp();
+    }
   }
 
   setUp() {
@@ -91,8 +95,10 @@ export class DialogVehicleDetailsComponent implements OnInit {
     }
     //new
     else {
+      this.isResourceAvailable = true;
       this.isNewVehicle = true;
       this.vehicleForm.enable();
+      this.isLoading = false;
     }
   }
 
