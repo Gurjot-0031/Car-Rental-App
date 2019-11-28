@@ -19,6 +19,7 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     this.isLoading = true;
     if (!this.loginService.getUsername()) {
+      //TODO REMOVE THIS FOR DEMO!!!
       this.loginService.signIn('dev','only').subscribe(() => this.isLoading = false);
     } else {
       this.isLoading = false;
@@ -26,7 +27,7 @@ export class HomeComponent implements OnInit {
   }
 
   @HostListener('window:beforeunload', ['$event'])
-  doSomething($event) {
+  beforeWindowUnload($event) {
     console.log($event);
     this.loginService.logout().subscribe();
   }
