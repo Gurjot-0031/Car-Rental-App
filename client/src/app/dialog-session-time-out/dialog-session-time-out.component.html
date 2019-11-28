@@ -1,0 +1,18 @@
+<div class="container">
+  <h2> Session expiring. Do you wish to extend?</h2>
+  <div mat-dialog-actions style="margin-top: 12px;">
+    <div style="margin-left: auto;">
+      <button mat-raised-button
+              color="primary"
+              type="submit"
+              (click)="onYesClicked()">
+        Yes
+      </button>
+      <button color="primary" mat-raised-button
+              [routerLink]="['/login']"
+              (click)="onNoClicked()">
+        No
+      </button>
+    </div>
+  </div>
+</div>

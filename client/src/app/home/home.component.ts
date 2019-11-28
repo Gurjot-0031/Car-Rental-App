@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {LogInService} from "../api/login-in.service";
 import {Router} from "@angular/router";
 
@@ -23,6 +23,12 @@ export class HomeComponent implements OnInit {
     } else {
       this.isLoading = false;
     }
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  doSomething($event) {
+    console.log($event);
+    this.loginService.logout().subscribe();
   }
 
   getUsername() {

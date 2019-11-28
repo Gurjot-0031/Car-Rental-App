@@ -37,6 +37,7 @@ import {MatStepperModule} from "@angular/material/stepper";
 import {MatTabsModule} from "@angular/material/tabs";
 import { TransactionsComponent } from './transactions/transactions.component';
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import { DialogSessionTimeOutComponent } from './dialog-session-time-out/dialog-session-time-out.component';
 
 
 @NgModule({
@@ -51,7 +52,8 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
     ReturnsComponent,
     DialogClientRecordComponent,
     DialogVehicleDetailsComponent,
-    TransactionsComponent
+    TransactionsComponent,
+    DialogSessionTimeOutComponent
   ],
   imports: [
     BrowserModule,
@@ -86,7 +88,8 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
   entryComponents: [
     RootComponent,
     DialogClientRecordComponent,
-    DialogVehicleDetailsComponent
+    DialogVehicleDetailsComponent,
+    DialogSessionTimeOutComponent
   ],
   providers: [],
   bootstrap: [RootComponent]
