@@ -137,6 +137,7 @@ export class DialogVehicleDetailsComponent implements OnInit {
   }
 
   onCancelClicked() {
+    this.resourceTimeOutService.stopTimer();
     if (this.vehicle && this.isModifier) {
       this.vehicleApiService.setStopModify(this.vehicle).subscribe();
     }
@@ -171,6 +172,7 @@ export class DialogVehicleDetailsComponent implements OnInit {
     this.vehicle = this.resultSetVehicles[nextIndex];
     this.getVehicleStatus();
     this.setFormValues(this.vehicle);
+    this.resourceTimeOutService.stopTimer();
   }
 
   onModifyClicked() {
@@ -183,6 +185,7 @@ export class DialogVehicleDetailsComponent implements OnInit {
     this.resultSetVehicles[index].license = this.vehicleForm.getRawValue()['license'];
 
     this.vehicleApiService.updateVehicle(this.resultSetVehicles[index]).subscribe((result) => {
+      this.resourceTimeOutService.stopTimer();
       if (result) {
         this.dialogRef.close();
       } else {

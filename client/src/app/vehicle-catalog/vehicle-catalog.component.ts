@@ -1,15 +1,15 @@
 import {Component, OnInit} from '@angular/core';
-import {Vehicle, VehicleApiService} from "../api/vehicle-api.service";
-import {MatTableDataSource} from "@angular/material/table";
+import {Vehicle, VehicleApiService} from '../api/vehicle-api.service';
+import {MatTableDataSource} from '@angular/material/table';
 import {FormControl} from '@angular/forms';
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 import {MatDatepicker} from '@angular/material/datepicker';
 import * as _moment from 'moment';
-import {MatDialog} from "@angular/material/dialog";
-import {DialogVehicleDetailsComponent} from "./dialog-vehicle-details/dialog-vehicle-details.component";
-import {LogInService} from "../api/login-in.service";
-import {MatSnackBar} from "@angular/material/snack-bar";
+import {MatDialog} from '@angular/material/dialog';
+import {DialogVehicleDetailsComponent} from './dialog-vehicle-details/dialog-vehicle-details.component';
+import {LogInService} from '../api/login-in.service';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 const moment = _moment;
 
@@ -109,8 +109,7 @@ export class VehicleCatalogComponent implements OnInit {
     this.vehicleApiService.getAllVehicles().subscribe(
       result => {
         this.resultVehicles = result.filter(v => v.active === 1);
-        let filtered = this.applyFilters(this.resultVehicles);
-        console.log(filtered);
+        const filtered = this.applyFilters(this.resultVehicles);
         this.dataSource.data = this.applySorting(filtered);
         this.refreshDropDownMenus(result);
         this.isLoading = false;
@@ -146,7 +145,7 @@ export class VehicleCatalogComponent implements OnInit {
       return (a, b) => a[property] == b[property] ? 0 :
         a[property] < b[property] ? 1 : -1;
     }
-  };
+  }
 
   private propertySort(property) {
     if (!this.sortDirection || this.sortDirection === 'Ascending') {
@@ -190,7 +189,7 @@ export class VehicleCatalogComponent implements OnInit {
       autoFocus: false,
       width: '40vw',
       data: {
-        vehicle: vehicle,
+        vehicle,
         resultSetVehicles: this.dataSource.data,
         action: 'view'
       }
@@ -202,7 +201,7 @@ export class VehicleCatalogComponent implements OnInit {
       if (result) {
         this.isLoading = true;
         this.vehicleApiService.deleteVehicle(vehicle).subscribe(() => {
-          let index: number = this.dataSource.data.findIndex(d => d === vehicle);
+          const index: number = this.dataSource.data.findIndex(d => d === vehicle);
           this.dataSource.data.splice(index, 1);
           this.dataSource = new MatTableDataSource<Vehicle>(this.dataSource.data);
           this.isLoading = false;
@@ -210,7 +209,7 @@ export class VehicleCatalogComponent implements OnInit {
       } else {
         this.snackBar.open('Resource unavailable. Try again later', '', {duration: 5000});
       }
-    })
+    });
   }
 
   isAdmin() {
@@ -223,7 +222,7 @@ export class VehicleCatalogComponent implements OnInit {
       autoFocus: false,
       width: '40vw',
       data: {
-        vehicle: vehicle,
+        vehicle,
         resultSetVehicles: this.dataSource.data,
         action: 'modify'
       }

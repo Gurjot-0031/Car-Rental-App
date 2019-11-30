@@ -45,18 +45,18 @@ export class ClientRecordsComponent implements OnInit {
     }).afterClosed().subscribe(() => {
         this.refreshClientList();
       }
-    )
+    );
   }
 
   deleteClientRecord(client: Client) {
     this.clientApiService.isResourceAvailable(client).subscribe(result => {
       if (result) {
         this.clientApiService.deleteClient(client).subscribe(() => {
-          this.refreshClientList()
+          this.refreshClientList();
         });
       } else {
         this.snackBar.open('Resource unavailable. Try again later', '', {duration: 5000});
       }
-    })
+    });
   }
 }

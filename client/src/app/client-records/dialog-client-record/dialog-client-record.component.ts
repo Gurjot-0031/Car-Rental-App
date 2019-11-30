@@ -1,11 +1,11 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {FormControl, FormGroup, ValidatorFn, Validators} from "@angular/forms";
-import {Client, ClientApiService} from "../../api/client-api.service";
-import {MatSnackBar} from "@angular/material/snack-bar";
-import {timer} from "rxjs";
-import {ResourceTimeOutService} from "../../resource-time-out.service";
-import {DialogResourceTimeOutComponent} from "../../dialog-resource-time-out/dialog-resource-time-out.component";
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
+import {Client, ClientApiService} from '../../api/client-api.service';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {timer} from 'rxjs';
+import {ResourceTimeOutService} from '../../resource-time-out.service';
+import {DialogResourceTimeOutComponent} from '../../dialog-resource-time-out/dialog-resource-time-out.component';
 
 @Component({
   selector: 'app-dialog-client-record',
@@ -47,7 +47,7 @@ export class DialogClientRecordComponent implements OnInit {
     private resourceTimeOutService: ResourceTimeOutService,
     public dialog: MatDialog,
   ) {
-    this.client = data['client'];
+    this.client = data.client;
   }
 
   async ngOnInit() {
@@ -67,7 +67,7 @@ export class DialogClientRecordComponent implements OnInit {
             this.isResourceAvailable = false;
           }
         });
-      })
+      });
     } else {
       this.isLoading = false;
       this.isModifier = false;
@@ -107,13 +107,13 @@ export class DialogClientRecordComponent implements OnInit {
         this.expirationDate.setValue(this.client.expirationDate);
         this.driverLicense.setValue(this.client.driverLicense);
         this.phoneNumber.setValue(this.client.phoneNumber);
-      })
+      });
     }
   }
 
   public regexValidator(config: any): ValidatorFn {
     return (control: FormControl) => {
-      let urlRegEx: RegExp = config.pattern;
+      const urlRegEx: RegExp = config.pattern;
       if (control.value && !control.value.match(urlRegEx)) {
         return {
           invalidMsg: config.msg
@@ -135,7 +135,7 @@ export class DialogClientRecordComponent implements OnInit {
       clientRecord.phoneNumber = this.phoneNumber.value;
 
       this.clientApiService.createClient(clientRecord).subscribe(() => {
-        this.dialogRef.close()
+        this.dialogRef.close();
       });
 
     } else {
@@ -145,15 +145,17 @@ export class DialogClientRecordComponent implements OnInit {
       this.client.expirationDate = this.expirationDate.value;
       this.client.phoneNumber = this.phoneNumber.value;
       this.clientApiService.updateClient(this.client).subscribe(() => {
-        this.dialogRef.close()
+        this.resourceTimeOutService.stopTimer();
+        this.dialogRef.close();
       });
     }
   }
 
   onCancelClicked() {
+    this.resourceTimeOutService.stopTimer();
     if (!this.isNewClient && this.isModifier) {
       this.clientApiService.setStopModify(this.client).subscribe();
     }
-    this.dialogRef.close()
+    this.dialogRef.close();
   }
 }
