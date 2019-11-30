@@ -237,7 +237,7 @@ export class VehicleCatalogComponent implements OnInit {
       width: '40vw',
       data: {
         resultSetVehicles: this.dataSource.data,
-        action: 'modify'
+        action: 'new'
       }
     }).afterClosed().subscribe(() =>
       this.dataSource.data = this.applySorting(this.applyFilters(this.dataSource.data)));

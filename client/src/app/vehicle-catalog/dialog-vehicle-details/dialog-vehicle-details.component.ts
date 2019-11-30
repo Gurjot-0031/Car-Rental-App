@@ -7,7 +7,6 @@ import * as _moment from 'moment';
 import {timer} from "rxjs";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {ResourceTimeOutService} from "../../resource-time-out.service";
-import {DialogSessionTimeOutComponent} from "../../dialog-session-time-out/dialog-session-time-out.component";
 import {DialogResourceTimeOutComponent} from "../../dialog-resource-time-out/dialog-resource-time-out.component";
 
 @Component({
