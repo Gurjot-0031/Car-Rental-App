@@ -1,10 +1,9 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable, of, Subscription} from "rxjs";
-import {map, switchMap, tap} from "rxjs/operators";
+import {switchMap} from "rxjs/operators";
 import {SessionTimeOutService} from "../session-time-out.service";
 import {MatDialog} from "@angular/material/dialog";
-import {DialogVehicleDetailsComponent} from "../vehicle-catalog/dialog-vehicle-details/dialog-vehicle-details.component";
 import {DialogSessionTimeOutComponent} from "../dialog-session-time-out/dialog-session-time-out.component";
 import {Router} from "@angular/router";
 
@@ -67,7 +66,6 @@ export class LogInService {
           if (isExtend) {
             console.log("Extending session...");
             this.sessionTimeoutService.resetTimer();
-            this.sessionTimeoutService.startTimer();
           } else {
             console.log("Not extending session...");
             this.logout().subscribe();

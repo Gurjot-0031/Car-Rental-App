@@ -38,6 +38,7 @@ import {MatTabsModule} from "@angular/material/tabs";
 import { TransactionsComponent } from './transactions/transactions.component';
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import { DialogSessionTimeOutComponent } from './dialog-session-time-out/dialog-session-time-out.component';
+import { DialogResourceTimeOutComponent } from './dialog-resource-time-out/dialog-resource-time-out.component';
 
 
 @NgModule({
@@ -53,7 +54,8 @@ import { DialogSessionTimeOutComponent } from './dialog-session-time-out/dialog-
     DialogClientRecordComponent,
     DialogVehicleDetailsComponent,
     TransactionsComponent,
-    DialogSessionTimeOutComponent
+    DialogSessionTimeOutComponent,
+    DialogResourceTimeOutComponent
   ],
   imports: [
     BrowserModule,
@@ -89,7 +91,8 @@ import { DialogSessionTimeOutComponent } from './dialog-session-time-out/dialog-
     RootComponent,
     DialogClientRecordComponent,
     DialogVehicleDetailsComponent,
-    DialogSessionTimeOutComponent
+    DialogSessionTimeOutComponent,
+    DialogResourceTimeOutComponent
   ],
   providers: [],
   bootstrap: [RootComponent]

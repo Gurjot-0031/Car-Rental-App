@@ -1,13 +1,17 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
+import {ResourceTimeOutService} from "../resource-time-out.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class VehicleApiService {
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private resourceTimeoutService: ResourceTimeOutService,
+  ) { }
 
   getAllVehicles(): Observable<Vehicle[]> {
     return this.http.get<Vehicle[]>('/api/vehicle');

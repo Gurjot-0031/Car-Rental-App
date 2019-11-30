@@ -1,6 +1,7 @@
 import {Component, HostListener, OnInit} from '@angular/core';
 import {LogInService} from "../api/login-in.service";
 import {Router} from "@angular/router";
+import {ResourceTimeOutService} from "../resource-time-out.service";
 
 @Component({
   selector: 'app-home',
@@ -13,6 +14,7 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private loginService: LogInService,
+    private resourceTimeoutService: ResourceTimeOutService,
     private router: Router) {
   }
 
@@ -30,6 +32,7 @@ export class HomeComponent implements OnInit {
   beforeWindowUnload($event) {
     console.log($event);
     this.loginService.logout().subscribe();
+    this.resourceTimeoutService.stopTimer();
   }
 
   getUsername() {

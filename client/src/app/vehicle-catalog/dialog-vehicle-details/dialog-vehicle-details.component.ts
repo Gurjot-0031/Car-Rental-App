@@ -1,11 +1,14 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {Vehicle, VehicleApiService} from "../../api/vehicle-api.service";
 import {FormControl, FormGroup} from "@angular/forms";
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {TransactionApiService} from "../../api/transaction-api.service";
 import * as _moment from 'moment';
 import {timer} from "rxjs";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {ResourceTimeOutService} from "../../resource-time-out.service";
+import {DialogSessionTimeOutComponent} from "../../dialog-session-time-out/dialog-session-time-out.component";
+import {DialogResourceTimeOutComponent} from "../../dialog-resource-time-out/dialog-resource-time-out.component";
 
 @Component({
   selector: 'app-dialog-vehicle-details',
@@ -46,6 +49,8 @@ export class DialogVehicleDetailsComponent implements OnInit {
     private transactionApiService: TransactionApiService,
     private vehicleApiService: VehicleApiService,
     private snackBar: MatSnackBar,
+    private resourceTimeOutService: ResourceTimeOutService,
+    public dialog: MatDialog,
   ) {
     this.vehicle = data['vehicle'];
     this.resultSetVehicles = data['resultSetVehicles'];
@@ -87,6 +92,27 @@ export class DialogVehicleDetailsComponent implements OnInit {
     //modify
     else if (this.vehicle && this.data['action'] === 'modify') {
       this.vehicleApiService.setStartModify(this.vehicle).subscribe(() => {
+        this.resourceTimeOutService.startTimer(this.vehicle);
+        this.resourceTimeOutService.timeoutExpired.subscribe((res) => {
+          this.dialog.open(DialogResourceTimeOutComponent, {
+            disableClose: true,
+            autoFocus: false,
+            width: '40vw',
+          }).afterClosed().subscribe(
+            (isExtend) => {
+              if (isExtend) {
+                this.resourceTimeOutService.resetTimer();
+              } else {
+                this.resourceTimeOutService.stopTimer();
+                this.onCancelClicked();
+              }
+            },
+            (reason) => {
+              this.resourceTimeOutService.stopTimer();
+              this.onCancelClicked();
+            }
+          );
+        });
         this.isModifier = true;
         this.isNewVehicle = false;
         this.setFormValues(this.vehicle);
@@ -122,6 +148,7 @@ export class DialogVehicleDetailsComponent implements OnInit {
     this.isLoading = true;
     const now = _moment().format('YYYY-MM-DD');
     this.vehicleApiService.isVehicleAvailableForDates(this.vehicle, now, now).subscribe(result => {
+      this.isLoading = false;
       this.vehicleStatus = result ? "Available" : "Unavailable";
     });
   }

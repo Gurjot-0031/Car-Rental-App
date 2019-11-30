@@ -12,6 +12,8 @@ import {Vehicle, VehicleApiService} from "../api/vehicle-api.service";
 import {MatVerticalStepper} from "@angular/material/stepper";
 import {Subscription, timer} from "rxjs";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {ResourceTimeOutService} from "../resource-time-out.service";
+import {DialogResourceTimeOutComponent} from "../dialog-resource-time-out/dialog-resource-time-out.component";
 
 @Component({
   selector: 'app-rentals',
@@ -51,6 +53,7 @@ export class RentalsComponent implements OnInit, OnDestroy {
     private clientApiService: ClientApiService,
     public dialog: MatDialog,
     private snackBar: MatSnackBar,
+    private resourceTimeOutService: ResourceTimeOutService,
   ) { }
 
   ngOnInit() {
@@ -94,6 +97,30 @@ export class RentalsComponent implements OnInit, OnDestroy {
               this.isClientUnavailable = false;
               this.clientApiService.setStartModify(this.client).subscribe();
               this.clientWaitLoop.unsubscribe();
+
+              this.resourceTimeOutService.timeoutExpired.subscribe(() => {
+                this.dialog.open(DialogResourceTimeOutComponent, {
+                  disableClose: true,
+                  autoFocus: false,
+                  width: '40vw',
+                }).afterClosed().subscribe(
+                  (isExtend) => {
+                    if (isExtend) {
+                      this.resourceTimeOutService.resetTimer();
+                    } else {
+                      this.resourceTimeOutService.stopTimer();
+                      this.clientApiService.setStopModify(this.client).subscribe();
+                      this.isClientFound = false;
+                      this.client = null;
+                    }
+                  },
+                  (reason) => {
+                    this.resourceTimeOutService.stopTimer();
+                    this.clientApiService.setStopModify(this.client).subscribe();
+                  }
+                );
+              });
+
             } else {
               this.isClientUnavailable = true;
             }

@@ -1,9 +1,11 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {FormControl, FormGroup, ValidatorFn, Validators} from "@angular/forms";
 import {Client, ClientApiService} from "../../api/client-api.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {timer} from "rxjs";
+import {ResourceTimeOutService} from "../../resource-time-out.service";
+import {DialogResourceTimeOutComponent} from "../../dialog-resource-time-out/dialog-resource-time-out.component";
 
 @Component({
   selector: 'app-dialog-client-record',
@@ -42,6 +44,8 @@ export class DialogClientRecordComponent implements OnInit {
     public dialogRef: MatDialogRef<DialogClientRecordComponent>,
     private clientApiService: ClientApiService,
     private snackBar: MatSnackBar,
+    private resourceTimeOutService: ResourceTimeOutService,
+    public dialog: MatDialog,
   ) {
     this.client = data['client'];
   }
@@ -50,24 +54,52 @@ export class DialogClientRecordComponent implements OnInit {
     this.isLoading = true;
     this.isResourceAvailable = true;
 
-    const repeat = timer(0, 5000);
-    const loop = repeat.subscribe(() => {
-      this.clientApiService.isResourceAvailable(this.client).subscribe(result => {
-        if (result) {
-          this.setUp();
-          this.isLoading = false;
-          this.isResourceAvailable = true;
-          loop.unsubscribe();
-        } else {
-          this.isResourceAvailable = false;
-        }
-      });
-    })
+    if (this.client) {
+      const repeat = timer(0, 5000);
+      const loop = repeat.subscribe(() => {
+        this.clientApiService.isResourceAvailable(this.client).subscribe(result => {
+          if (result) {
+            this.setUp();
+            this.isLoading = false;
+            this.isResourceAvailable = true;
+            loop.unsubscribe();
+          } else {
+            this.isResourceAvailable = false;
+          }
+        });
+      })
+    } else {
+      this.isLoading = false;
+      this.isModifier = false;
+      this.isNewClient = true;
+    }
   }
 
   private setUp() {
     if (this.client) {
       this.clientApiService.setStartModify(this.client).subscribe(() => {
+        this.resourceTimeOutService.startTimer(this.client);
+        this.resourceTimeOutService.timeoutExpired.subscribe(() => {
+          this.dialog.open(DialogResourceTimeOutComponent, {
+            disableClose: true,
+            autoFocus: false,
+            width: '40vw',
+          }).afterClosed().subscribe(
+            (isExtend) => {
+              if (isExtend) {
+                this.resourceTimeOutService.resetTimer();
+              } else {
+                this.resourceTimeOutService.stopTimer();
+                this.onCancelClicked();
+              }
+            },
+            (reason) => {
+              this.resourceTimeOutService.stopTimer();
+              this.onCancelClicked();
+            }
+          );
+        });
+
         this.isNewClient = false;
         this.isModifier = true;
         this.firstName.setValue(this.client.firstName);
@@ -76,9 +108,6 @@ export class DialogClientRecordComponent implements OnInit {
         this.driverLicense.setValue(this.client.driverLicense);
         this.phoneNumber.setValue(this.client.phoneNumber);
       })
-    } else {
-      this.isModifier = false;
-      this.isNewClient = true;
     }
   }
 
