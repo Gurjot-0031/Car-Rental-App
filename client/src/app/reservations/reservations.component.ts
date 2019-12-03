@@ -178,9 +178,9 @@ export class ReservationsComponent implements OnInit, OnDestroy {
         transaction.timestamp = _moment().format('YYYY-MM-DD');
         transaction.startDate = this.startDate.value.format('YYYY-MM-DD');
         transaction.dueDate = this.dueDate.value.format('YYYY-MM-DD');
-
         this.transactionApiService.createTransaction(transaction).subscribe(() => {
           this.isVehicleSelected = true;
+          this.resourceTimeOutService.stopTimer();
         });
       } else {
         this.snackBar.open('Resource unavailable. Try again later', '', {duration: 5000});

@@ -111,6 +111,8 @@ public class VehicleService {
         //language = SQL
         String sql = "SELECT count(*) as restrictions FROM transaction " +
             "WHERE vehicle_id =" + pkid + " AND " +
+            "return_date is NULL AND " +
+            "cancel_date is NULL AND " +
             "(start_date <= '" + dates.end + "\' AND " +
             "due_date >= '" + dates.start + "\')";
 

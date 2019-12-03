@@ -83,12 +83,12 @@ public class ClientService {
 
     void createClient(Client client) {
         Map<String, Object> insertMap = Maps.newHashMap();
-        insertMap.put("type", client.active);
-        insertMap.put("make", client.driverLicense);
-        insertMap.put("model", client.expirationDate);
-        insertMap.put("color", client.firstName);
-        insertMap.put("license", client.lastName);
-        insertMap.put("year", client.phoneNumber);
+        insertMap.put("driver_license", client.driverLicense);
+        insertMap.put("expiration_date", client.expirationDate);
+        insertMap.put("firstname", client.firstName);
+        insertMap.put("lastname", client.lastName);
+        insertMap.put("phone_number", client.phoneNumber);
+        insertMap.put("active", true);
         insertMap.put("version", 1);
 
 

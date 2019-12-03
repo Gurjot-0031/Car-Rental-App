@@ -31,7 +31,6 @@ export class ReturnsComponent implements OnInit {
   }
 
   returnTransaction(transaction: Transaction) {
-    console.log('patate');
     this.transactionApiService.returnTransaction(transaction).subscribe(() => {
       this.loadAllNotReturnedTransactions();
     });

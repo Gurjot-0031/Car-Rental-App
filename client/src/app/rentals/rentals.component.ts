@@ -133,8 +133,8 @@ export class RentalsComponent implements OnInit, OnDestroy {
   selectionChange($event: StepperSelectionEvent) {
     // index 2 = vehicle selection
     if ($event.selectedIndex === 2) {
-      let now = _moment().format('YYYY-MM-DD');
-      let dueDate = this.dueDate.value.format('YYYY-MM-DD');
+      const now = _moment().format('YYYY-MM-DD');
+      const dueDate = this.dueDate.value.format('YYYY-MM-DD');
 
       this.vehicleApiService
         .getAllAvailableVehicles(now, dueDate)
@@ -171,6 +171,7 @@ export class RentalsComponent implements OnInit, OnDestroy {
         transaction.startDate = _moment().format('YYYY-MM-DD');
         transaction.dueDate = this.dueDate.value.format('YYYY-MM-DD');
         this.transactionApiService.createTransaction(transaction).subscribe(() => {
+          this.resourceTimeOutService.stopTimer();
           this.isVehicleSelected = true;
         });
       } else {
