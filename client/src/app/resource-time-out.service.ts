@@ -20,10 +20,6 @@ export class ResourceTimeOutService {
 
   constructor(public dialog: MatDialog,) {
     console.log('Constructed resourceTimeOutService ' + this._serviceId);
-
-    this.timeoutExpired.subscribe(n => {
-      console.log('---timeout expired');
-    });
     this.startTimer();
   }
 
@@ -46,6 +42,7 @@ export class ResourceTimeOutService {
   public stopTimer() {
     console.log('---stop resource timer');
     this.timerSubscription.unsubscribe();
+    this.timeoutExpired = new Subject<number>();
   }
 
   public resetTimer() {
@@ -63,8 +60,5 @@ export class ResourceTimeOutService {
   private timerComplete(n: number) {
     console.log('---timer complete resource timer');
     this.timeoutExpired.next(++this._count);
-    if (this.resetOnTrigger) {
-      this.startTimer();
-    }
   }
 }

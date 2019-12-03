@@ -96,6 +96,7 @@ export class DialogVehicleDetailsComponent implements OnInit, OnDestroy {
     } else if (this.vehicle && this.data.action === 'modify') {
       this.vehicleApiService.setStartModify(this.vehicle).subscribe(() => {
         this.resourceTimeOutService.startTimer(this.vehicle);
+
         this.resourceTimeOutService.timeoutExpired.subscribe((res) => {
           this.dialog.open(DialogResourceTimeOutComponent, {
             disableClose: true,
