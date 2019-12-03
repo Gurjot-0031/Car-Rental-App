@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {MatDialogRef} from "@angular/material/dialog";
-import {Router} from "@angular/router";
+import {MatDialogRef} from '@angular/material/dialog';
+import {Subscription, timer} from 'rxjs';
 
 @Component({
   selector: 'app-dialog-session-time-out',
@@ -9,18 +9,27 @@ import {Router} from "@angular/router";
 })
 export class DialogSessionTimeOutComponent implements OnInit {
 
+  private timer$: Subscription;
+  private timeoutSeconds = 20;
+
   constructor(
     public dialogRef: MatDialogRef<DialogSessionTimeOutComponent>,
   ) { }
 
   ngOnInit() {
+    this.timer$ =
+      timer(this.timeoutSeconds * 1000).subscribe(() => {
+        this.onNoClicked();
+      });
   }
 
   onYesClicked() {
-    this.dialogRef.close(true)
+    this.timer$.unsubscribe();
+    this.dialogRef.close(true);
   }
 
   onNoClicked() {
-    this.dialogRef.close(false)
+    this.timer$.unsubscribe();
+    this.dialogRef.close(false);
   }
 }

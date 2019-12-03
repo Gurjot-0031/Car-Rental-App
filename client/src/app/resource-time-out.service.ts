@@ -1,17 +1,16 @@
 import { Injectable } from '@angular/core';
-import {Observable, Subject, Subscription, timer} from "rxjs";
-import {DialogSessionTimeOutComponent} from "./dialog-session-time-out/dialog-session-time-out.component";
-import {MatDialog} from "@angular/material/dialog";
-import {Vehicle} from "./api/vehicle-api.service";
-import {Client} from "./api/client-api.service";
+import {Observable, Subject, Subscription, timer} from 'rxjs';
+import {MatDialog} from '@angular/material/dialog';
+import {Vehicle} from './api/vehicle-api.service';
+import {Client} from './api/client-api.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ResourceTimeOutService {
-  private _count: number = 0;
+  private _count = 0;
   private _serviceId: string = 'resourceTimeOut-' + Math.floor(Math.random() * 10000);
-  private _timeoutSeconds: number = 30;
+  private _timeoutSeconds = 30;
   private timerSubscription: Subscription;
   private timer: Observable<number>;
   private resetOnTrigger: boolean = false;
@@ -20,10 +19,10 @@ export class ResourceTimeOutService {
   resource: Vehicle | Client;
 
   constructor(public dialog: MatDialog,) {
-    console.log("Constructed resourceTimeOutService " + this._serviceId);
+    console.log('Constructed resourceTimeOutService ' + this._serviceId);
 
     this.timeoutExpired.subscribe(n => {
-      console.log("timeoutExpired subject next.. " + n.toString());
+      console.log('timeoutExpired subject next.. ' + n.toString());
     });
     this.startTimer();
   }

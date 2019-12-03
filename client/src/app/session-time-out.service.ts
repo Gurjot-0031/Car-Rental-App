@@ -1,23 +1,23 @@
 import { Injectable } from '@angular/core';
-import {Observable, Subject, Subscription, timer} from "rxjs";
+import {Observable, Subject, Subscription, timer} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SessionTimeOutService {
-  private _count: number = 0;
+  private _count: 0;
   private _serviceId: string = 'idleTimeoutSvc-' + Math.floor(Math.random() * 10000);
-  private _timeoutSeconds: number = 600;
+  private _timeoutSeconds = 120;
   private timerSubscription: Subscription;
   private timer: Observable<number>;
-  private resetOnTrigger: boolean = false;
+  private resetOnTrigger = false;
   public timeoutExpired: Subject<number> = new Subject<number>();
 
   constructor() {
-    console.log("Constructed idleTimeoutService " + this._serviceId);
+    console.log('Constructed idleTimeoutService ' + this._serviceId);
 
     this.timeoutExpired.subscribe(n => {
-      console.log("timeoutExpired subject next.. " + n.toString())
+      console.log('timeoutExpired subject next.. ' + n.toString());
     });
 
     this.startTimer();
