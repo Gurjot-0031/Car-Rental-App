@@ -1,20 +1,20 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {Vehicle, VehicleApiService} from "../../api/vehicle-api.service";
-import {FormControl, FormGroup} from "@angular/forms";
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {TransactionApiService} from "../../api/transaction-api.service";
+import {Component, HostListener, Inject, OnDestroy, OnInit} from '@angular/core';
+import {Vehicle, VehicleApiService} from '../../api/vehicle-api.service';
+import {FormControl, FormGroup} from '@angular/forms';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {TransactionApiService} from '../../api/transaction-api.service';
 import * as _moment from 'moment';
-import {timer} from "rxjs";
-import {MatSnackBar} from "@angular/material/snack-bar";
-import {ResourceTimeOutService} from "../../resource-time-out.service";
-import {DialogResourceTimeOutComponent} from "../../dialog-resource-time-out/dialog-resource-time-out.component";
+import {timer} from 'rxjs';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {ResourceTimeOutService} from '../../resource-time-out.service';
+import {DialogResourceTimeOutComponent} from '../../dialog-resource-time-out/dialog-resource-time-out.component';
 
 @Component({
   selector: 'app-dialog-vehicle-details',
   templateUrl: './dialog-vehicle-details.component.html',
   styleUrls: ['./dialog-vehicle-details.component.scss']
 })
-export class DialogVehicleDetailsComponent implements OnInit {
+export class DialogVehicleDetailsComponent implements OnInit, OnDestroy {
 
   isLoading: boolean;
   isModifier: boolean;
@@ -41,6 +41,7 @@ export class DialogVehicleDetailsComponent implements OnInit {
   );
 
   vehicleStatus: string;
+  timerNumbers: number[] = [];
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data,
@@ -72,24 +73,27 @@ export class DialogVehicleDetailsComponent implements OnInit {
             this.isResourceAvailable = false;
           }
         });
-      })
+      });
     } else {
       this.setUp();
     }
+  }
+
+  @HostListener('window:beforeunload')
+  ngOnDestroy(): void {
+    console.log('RIP');
   }
 
   setUp() {
     if (this.vehicle) {
       this.getVehicleStatus();
     }
-    //user clicks view
-    if (this.vehicle && this.data['action'] === 'view') {
+    // user clicks view
+    if (this.vehicle && this.data.action === 'view') {
       this.isNewVehicle = false;
       this.setFormValues(this.vehicle);
       this.vehicleForm.disable();
-    }
-    //modify
-    else if (this.vehicle && this.data['action'] === 'modify') {
+    } else if (this.vehicle && this.data.action === 'modify') {
       this.vehicleApiService.setStartModify(this.vehicle).subscribe(() => {
         this.resourceTimeOutService.startTimer(this.vehicle);
         this.resourceTimeOutService.timeoutExpired.subscribe((res) => {
@@ -102,13 +106,8 @@ export class DialogVehicleDetailsComponent implements OnInit {
               if (isExtend) {
                 this.resourceTimeOutService.resetTimer();
               } else {
-                this.resourceTimeOutService.stopTimer();
                 this.onCancelClicked();
               }
-            },
-            (reason) => {
-              this.resourceTimeOutService.stopTimer();
-              this.onCancelClicked();
             }
           );
         });
@@ -117,9 +116,7 @@ export class DialogVehicleDetailsComponent implements OnInit {
         this.setFormValues(this.vehicle);
         this.vehicleForm.enable();
       });
-    }
-    //new
-    else {
+    } else {
       this.isResourceAvailable = true;
       this.isNewVehicle = true;
       this.vehicleForm.enable();
@@ -133,7 +130,7 @@ export class DialogVehicleDetailsComponent implements OnInit {
     this.model.setValue(vehicle.model);
     this.year.setValue(vehicle.year);
     this.color.setValue(vehicle.color);
-    this.license.setValue(vehicle.license)
+    this.license.setValue(vehicle.license);
   }
 
   onCancelClicked() {
@@ -149,7 +146,7 @@ export class DialogVehicleDetailsComponent implements OnInit {
     const now = _moment().format('YYYY-MM-DD');
     this.vehicleApiService.isVehicleAvailableForDates(this.vehicle, now, now).subscribe(result => {
       this.isLoading = false;
-      this.vehicleStatus = result ? "Available" : "Unavailable";
+      this.vehicleStatus = result ? 'Available' : 'Unavailable';
     });
   }
 

@@ -14,7 +14,8 @@ export class DialogSessionTimeOutComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<DialogSessionTimeOutComponent>,
-  ) { }
+  ) {
+  }
 
   ngOnInit() {
     this.timer$ =

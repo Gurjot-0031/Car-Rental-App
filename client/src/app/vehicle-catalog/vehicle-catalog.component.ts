@@ -10,6 +10,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {DialogVehicleDetailsComponent} from './dialog-vehicle-details/dialog-vehicle-details.component';
 import {LogInService} from '../api/login-in.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {ResourceTimeOutService} from '../resource-time-out.service';
 
 const moment = _moment;
 
@@ -70,6 +71,7 @@ export class VehicleCatalogComponent implements OnInit {
     private vehicleApiService: VehicleApiService,
     public dialog: MatDialog,
     private snackBar: MatSnackBar,
+    private resourceTimeOutService: ResourceTimeOutService,
   ) {
   }
 
@@ -145,11 +147,10 @@ export class VehicleCatalogComponent implements OnInit {
       return (a, b) => a[property] == b[property] ? 0 :
         a[property] < b[property] ? 1 : -1;
     }
-  }
+  };
 
   private propertySort(property) {
     if (!this.sortDirection || this.sortDirection === 'Ascending') {
-
     }
   }
 
@@ -193,6 +194,8 @@ export class VehicleCatalogComponent implements OnInit {
         resultSetVehicles: this.dataSource.data,
         action: 'view'
       }
+    }).afterClosed().subscribe(() => {
+      this.resourceTimeOutService.stopTimer();
     });
   }
 
