@@ -19,12 +19,12 @@
             <mat-form-field class="filter-form-field">
               <input type="text"
                      class="filter-input"
-                     placeholder="Client Driver License"
+                     placeholder="Vehicle License Plate"
                      aria-label="Number"
-                     matInput [formControl]="clientFilter"
-                     [matAutocomplete]="client">
-              <mat-autocomplete #client="matAutocomplete">
-                <mat-option *ngFor="let option of clientLicensesFilteredOptions | async" [value]="option">
+                     matInput [formControl]="vehicleFilter"
+                     [matAutocomplete]="vehicle">
+              <mat-autocomplete #vehicle="matAutocomplete">
+                <mat-option *ngFor="let option of vehiclePlatesFilteredOptions | async" [value]="option">
                   {{option}}
                 </mat-option>
               </mat-autocomplete>
@@ -33,12 +33,12 @@
             <mat-form-field class="filter-form-field">
               <input type="text"
                      class="filter-input"
-                     placeholder="Vehicle License Plate"
+                     placeholder="Client Driver License"
                      aria-label="Number"
-                     matInput [formControl]="vehicleFilter"
-                     [matAutocomplete]="vehicle">
-              <mat-autocomplete #vehicle="matAutocomplete">
-                <mat-option *ngFor="let option of vehiclePlatesFilteredOptions | async" [value]="option">
+                     matInput [formControl]="clientFilter"
+                     [matAutocomplete]="client">
+              <mat-autocomplete #client="matAutocomplete">
+                <mat-option *ngFor="let option of clientLicensesFilteredOptions | async" [value]="option">
                   {{option}}
                 </mat-option>
               </mat-autocomplete>

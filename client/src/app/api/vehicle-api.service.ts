@@ -25,7 +25,7 @@ export class VehicleApiService {
     const dates = new AvailableDates();
     dates.start = start;
     dates.end = end;
-    return this.http.post<Vehicle[]>("/api/vehicle/available-for-dates", dates);
+    return this.http.post<Vehicle[]>('/api/vehicle/available-for-dates', dates);
   }
 
   createVehicle(vehicle: Vehicle) {

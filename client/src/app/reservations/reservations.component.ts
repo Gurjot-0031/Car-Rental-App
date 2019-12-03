@@ -209,7 +209,9 @@ export class ReservationsComponent implements OnInit, OnDestroy {
   refreshReservationDataSource() {
     this.isCancelTabIsLoading = true;
     this.transactionApiService.getAllReservations().subscribe(result => {
-      this.dataSourceCancelReservation.data = result.filter(t => !t.cancelDate);
+      this.dataSourceCancelReservation.data = result
+        .filter(t => !t.cancelDate)
+        .filter(t => !t.returnDate);
       this.isCancelTabIsLoading = false;
     });
   }

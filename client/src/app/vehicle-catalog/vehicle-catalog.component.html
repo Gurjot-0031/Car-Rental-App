@@ -147,7 +147,7 @@
     </mat-table>
   </div>
 
-  <div class="fab-container">
+  <div class="fab-container" *ngIf="isAdmin()">
     <div class="add-vehicle-button">
       <button mat-fab
               color="primary"
