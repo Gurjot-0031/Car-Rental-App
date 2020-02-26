@@ -1,9 +1,5 @@
 # soen6461 - Car Rental System for SOEN6461 Fall 2019
 
-## Releases
-
-https://github.com/richbighouse/soen6461/releases/
-
 ## Team Members
 1. Richard Grand'Maison - 26145965 - rich.grandmaison@gmail.com
 1. Pargol Poshtareh - 26428126 - pargol.poshtareh@gmail.com
